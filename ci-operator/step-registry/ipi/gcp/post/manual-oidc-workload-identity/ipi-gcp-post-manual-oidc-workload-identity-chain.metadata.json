@@ -2,10 +2,8 @@
 	"path": "ipi/gcp/post/manual-oidc-workload-identity/ipi-gcp-post-manual-oidc-workload-identity-chain.yaml",
 	"owners": {
 		"approvers": [
-			"abutcher",
-			"2uasimojo",
-			"suhanime",
-			"dlom"
+			"akhil-rane",
+			"joelddiaz"
 		]
 	}
 }

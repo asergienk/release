@@ -22,7 +22,7 @@ spec:
     type: Git
   strategy:
     type: Docker
-  successfulBuildsHistoryLimit: 6
+  successfulBuildsHistoryLimit: 5
   triggers:
   - type: ImageChange
   - type: ConfigChange

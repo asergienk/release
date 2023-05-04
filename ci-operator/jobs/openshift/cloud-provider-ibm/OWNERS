@@ -6,11 +6,12 @@
 
 approvers:
 - elmiko
+- fedosin
 - joelspeed
+- lobziik
 options: {}
 reviewers:
-- damdo
 - elmiko
+- fedosin
 - joelspeed
-- odvarkadaniel
-- radekmanak
+- lobziik

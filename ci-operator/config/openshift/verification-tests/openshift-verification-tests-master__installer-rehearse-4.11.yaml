@@ -3,10 +3,6 @@ base_images:
     name: "4.11"
     namespace: ocp
     tag: ansible
-  aws-efs-csi-operator-create-efs:
-    name: "4.11"
-    namespace: ocp
-    tag: aws-efs-csi-operator-create-efs
   dev-scripts:
     name: test
     namespace: ocp-kni
@@ -37,63 +33,30 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
-- as: installer-rehearse-debug
-  cron: '@yearly'
-  steps:
-    cluster_profile: aws-qe
-    env:
-      BASE_DOMAIN: qe.devcluster.openshift.com
-      SLEEP_DURATION: 2h
-    post:
-    - ref: cucushift-installer-wait
-    - chain: cucushift-installer-rehearse-aws-ipi-deprovision
-    pre:
-    - chain: cucushift-installer-rehearse-aws-ipi-provision
 - as: installer-rehearse-aws
-  cron: '@yearly'
+  interval: 960h
   steps:
     cluster_profile: aws-qe
     env:
       BASE_DOMAIN: qe.devcluster.openshift.com
-    workflow: cucushift-installer-rehearse-aws-upi
-- as: installer-rehearse-aws-c2s
-  cron: '@yearly'
-  steps:
-    cluster_profile: aws-c2s-qe
-    env:
-      BASE_DOMAIN: qe.devcluster.openshift.com
-    workflow: cucushift-installer-rehearse-aws-c2s-ipi-disconnected-private
-- as: installer-rehearse-aws-sc2s
-  cron: '@yearly'
-  steps:
-    cluster_profile: aws-sc2s-qe
-    env:
-      BASE_DOMAIN: qe.devcluster.openshift.com
-    workflow: cucushift-installer-rehearse-aws-sc2s-ipi-disconnected-private
+    workflow: cucushift-installer-rehearse-aws-ipi-imdsv2
 - as: installer-rehearse-gcp
-  cluster: build05
-  cron: '@yearly'
+  interval: 960h
   steps:
     cluster_profile: gcp-qe
-    workflow: cucushift-installer-rehearse-gcp-ipi-disconnected-workers-rhel8
+    workflow: cucushift-installer-rehearse-gcp-ipi-disconnected-private-ovn
 - as: installer-rehearse-azure
-  cron: '@yearly'
+  interval: 960h
   steps:
     cluster_profile: azure-qe
     env:
       BASE_DOMAIN: qe.azure.devcluster.openshift.com
-    workflow: cucushift-installer-rehearse-azure-ipi-proxy-techpreview
+    workflow: cucushift-installer-rehearse-azure-ipi-workers-marketimage
 - as: installer-rehearse-vsphere
-  cron: '@yearly'
+  interval: 960h
   steps:
     cluster_profile: vsphere
-    workflow: cucushift-installer-rehearse-vsphere-upi-disconnecting-network
-- as: installer-rehearse-nutanix
-  cluster: build01
-  cron: '@yearly'
-  steps:
-    cluster_profile: nutanix-qe
-    workflow: cucushift-installer-rehearse-nutanix-ipi
+    workflow: cucushift-installer-rehearse-vsphere-ipi-ovn-sdn2ovn
 zz_generated_metadata:
   branch: master
   org: openshift

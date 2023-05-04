@@ -1,12 +1,14 @@
 releases:
   initial:
     release:
-      channel: candidate
+      channel: fast
       version: "4.10"
   intermediate:
-    release:
-      channel: candidate
-      version: "4.11"
+    prerelease:
+      product: ocp
+      version_bounds:
+        lower: 4.11.0-0
+        upper: 4.12.0-0
   latest:
     candidate:
       product: ocp
@@ -25,9 +27,6 @@ tests:
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_UPGRADE_OPTIONS: ""
-    observers:
-      enable:
-      - observers-resource-watch
     test:
     - as: set-releases-release
       commands: echo "${RELEASE_IMAGE_INTERMEDIATE},${RELEASE_IMAGE_LATEST}" > ${SHARED_DIR}/override-upgrade

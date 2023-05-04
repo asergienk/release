@@ -4,13 +4,13 @@ label:
     - allowed_users:
       - 2uasimojo
       - abutcher
-      - dlom
+      - akhil-rane
+      - joelddiaz
       - suhanime
       label: backport-risk-assessed
     - allowed_users:
       - lwan-wanglin
       - jianping-shu
-      - huangmingxia
       label: cherry-pick-approved
 plugins:
   openshift/cloud-credential-operator:

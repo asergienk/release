@@ -4,8 +4,6 @@ tide:
     - community-4.6
     - community-4.7
     - openshift-4.10
-    - openshift-4.11
-    - openshift-4.12
     - openshift-4.2
     - openshift-4.3
     - openshift-4.4
@@ -16,8 +14,6 @@ tide:
     - openshift-4.9
     - release-4.0
     - release-4.10
-    - release-4.11
-    - release-4.12
     - release-4.2
     - release-4.3
     - release-4.4
@@ -38,26 +34,23 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/cluster-ingress-operator
   - includedBranches:
-    - openshift-4.13
-    - release-4.13
+    - openshift-4.11
+    - release-4.11
     labels:
     - approved
-    - backport-risk-assessed
     - bugzilla/valid-bug
-    - cherry-pick-approved
     - lgtm
+    - staff-eng-approved
     missingLabels:
     - backports/unvalidated-commits
     - bugzilla/invalid-bug
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/cluster-ingress-operator
@@ -67,6 +60,22 @@ tide:
     labels:
     - approved
     - bugzilla/valid-bug
+    - lgtm
+    missingLabels:
+    - backports/unvalidated-commits
+    - bugzilla/invalid-bug
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    - keep-main-query-separate
+    - needs-rebase
+    repos:
+    - openshift/cluster-ingress-operator
+  - includedBranches:
+    - main
+    - master
+    labels:
+    - approved
     - docs-approved
     - lgtm
     - px-approved
@@ -77,25 +86,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
-    - keep-main-query-separate
-    - needs-rebase
-    repos:
-    - openshift/cluster-ingress-operator
-  - includedBranches:
-    - main
-    - master
-    labels:
-    - approved
-    - bugzilla/valid-bug
-    - lgtm
-    missingLabels:
-    - backports/unvalidated-commits
-    - bugzilla/invalid-bug
-    - do-not-merge/hold
-    - do-not-merge/invalid-owners-file
-    - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - keep-main-query-separate
     - needs-rebase
     repos:
@@ -108,8 +98,6 @@ tide:
     - openshift-4.1
     - openshift-4.10
     - openshift-4.11
-    - openshift-4.12
-    - openshift-4.13
     - openshift-4.2
     - openshift-4.3
     - openshift-4.4
@@ -123,8 +111,6 @@ tide:
     - release-4.1
     - release-4.10
     - release-4.11
-    - release-4.12
-    - release-4.13
     - release-4.2
     - release-4.3
     - release-4.4
@@ -142,7 +128,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/cluster-ingress-operator

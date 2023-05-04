@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/e2e-agnostic
     decorate: true
     decoration_config:
@@ -79,7 +79,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build03
+    cluster: build02
     context: ci/prow/e2e-aws
     decorate: true
     decoration_config:
@@ -153,7 +153,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/e2e-metal-assisted
     decorate: true
     decoration_config:
@@ -227,7 +227,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build05
+    cluster: build02
     context: ci/prow/e2e-metal-ipi
     decorate: true
     decoration_config:
@@ -235,7 +235,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-baremetal-operator-release-4.7-e2e-metal-ipi
@@ -302,7 +301,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build05
+    cluster: build02
     context: ci/prow/e2e-metal-ipi-ovn-dualstack
     decorate: true
     decoration_config:
@@ -310,7 +309,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-baremetal-operator-release-4.7-e2e-metal-ipi-ovn-dualstack
@@ -377,7 +375,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build05
+    cluster: build02
     context: ci/prow/e2e-metal-ipi-ovn-ipv6
     decorate: true
     decoration_config:
@@ -385,7 +383,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-baremetal-operator-release-4.7-e2e-metal-ipi-ovn-ipv6
@@ -452,7 +449,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build05
+    cluster: build02
     context: ci/prow/e2e-metal-ipi-upgrade
     decorate: true
     decoration_config:
@@ -460,7 +457,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-baremetal-operator-release-4.7-e2e-metal-ipi-upgrade
@@ -527,7 +523,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build05
+    cluster: build02
     context: ci/prow/e2e-metal-ipi-virtualmedia
     decorate: true
     decoration_config:
@@ -535,7 +531,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-baremetal-operator-release-4.7-e2e-metal-ipi-virtualmedia
@@ -602,7 +597,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/generate-check
     decorate: true
     decoration_config:
@@ -651,7 +646,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/gofmt
     decorate: true
     decoration_config:
@@ -700,7 +695,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/govet
     decorate: true
     decoration_config:
@@ -749,7 +744,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -799,7 +794,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/lint
     decorate: true
     decoration_config:
@@ -848,7 +843,7 @@ presubmits:
     branches:
     - ^release-4\.7$
     - ^release-4\.7-
-    cluster: build04
+    cluster: build02
     context: ci/prow/unit
     decorate: true
     decoration_config:

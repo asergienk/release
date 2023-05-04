@@ -7,13 +7,11 @@
 approvers:
 - dustman9000
 - jewzaam
-- mjlshen
 - wshearn
 options: {}
 reviewers:
-- bmeng
+- blrm
 - dustman9000
+- grdryn
 - jewzaam
-- mjlshen
-- mrbarge
 - wshearn

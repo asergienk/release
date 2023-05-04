@@ -226,11 +226,11 @@ tests:
   optional: true
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-gcp
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
-    workflow: openshift-e2e-gcp
+    workflow: openshift-e2e-gcp-loki
 - as: e2e-aws-ovn
   optional: true
   steps:
@@ -314,7 +314,6 @@ tests:
     cluster_profile: aws
     workflow: openshift-e2e-aws-sdn-multi
 - as: e2e-metal-ipi
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -324,7 +323,6 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -334,7 +332,6 @@ tests:
         NETWORK_TYPE=OVNKubernetes
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-ovn-dualstack
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal

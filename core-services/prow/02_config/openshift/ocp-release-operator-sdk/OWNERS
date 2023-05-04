@@ -5,19 +5,19 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- everettraven
+- asmacdo
+- camilamacedo86
 - fabianvf
-- grokspawn
+- jmrodri
 - joelanford
-- oceanc80
 - theishshah
 - varshaprasad96
 options: {}
 reviewers:
-- everettraven
+- asmacdo
+- camilamacedo86
 - fabianvf
-- grokspawn
+- jmrodri
 - joelanford
-- oceanc80
 - theishshah
 - varshaprasad96

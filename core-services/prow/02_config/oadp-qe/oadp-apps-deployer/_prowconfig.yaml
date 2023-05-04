@@ -1,6 +1,0 @@
-branch-protection:
-  orgs:
-    oadp-qe:
-      repos:
-        oadp-apps-deployer:
-          unmanaged: true

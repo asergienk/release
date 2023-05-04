@@ -8,74 +8,36 @@ chain:
       default: "3"
       documentation: "The number nodes to automatically create and join to the cluster."
     - name: HYPERSHIFT_BASE_DOMAIN
-      default: ""
+      default: "ci.hypershift.devcluster.openshift.com"
       documentation: "The cluster's FQDN will be a subdomain of the base domain."
     - name: HYPERSHIFT_AWS_REGION
       default: "us-east-1"
       documentation: "The AWS region of the cluster."
-    - name: ENDPOINT_ACCESS
-      default: "Public"
-      documentation: "Access for control plane endpoints (Public, PublicAndPrivate, Private)"
     - name: CONTROLPLANE_OPERATOR_IMAGE
       default: ""
       documentation: "The CPO image to use. Set to LATEST to use the latest one"
     - name: EXTRA_ARGS
       default: ""
       documentation: "Extra args to pass to the create cluster aws command"
-    - name: HYPERSHIFT_GUEST_INFRA_OCP_ACCOUNT
-      default: "false"
-      documentation: "Whether to use the generic CI account or the HyperShift OSD account for the guest clusters infra. For the infra created for the clusters. E.g. For cluster-bot we use the generic CI account"
-    - name: ENABLE_ICSP
-      default: "false"
-      documentation: "if true, add image content sources config(path=${SHARED_DIR}/mgmt_iscp.yaml)"
-    - name: HYPERSHIFT_HC_RELEASE_IMAGE
-      default: ""
-      documentation: "Release image used for the HostedCluster. Empty by default it will use release:latest"
-    - name: HYPERSHIFT_CP_AVAILABILITY_POLICY
-      default: "SingleReplica"
-      documentation: "Availability policy for hosted cluster components. Supported options: SingleReplica, HighlyAvailable, default SingleReplica"
-    - name: HYPERSHIFT_INFRA_AVAILABILITY_POLICY
-      default: "SingleReplica"
-      documentation: "Availability policy for infrastructure services in guest cluster. Supported options: SingleReplica, HighlyAvailable, default SingleReplica"
-    - name: HYPERSHIFT_INSTANCE_TYPE
-      default: "m5.xlarge"
-      documentation: "Instance type for the cluster nodes"
     commands: |-
       set -exuo pipefail
-      AWS_GUEST_INFRA_CREDENTIALS_FILE="/etc/hypershift-ci-jobs-awscreds/credentials"
-      DEFAULT_BASE_DOMAIN=ci.hypershift.devcluster.openshift.com
-      
-      if [[ $HYPERSHIFT_GUEST_INFRA_OCP_ACCOUNT == "true" ]]; then
-        AWS_GUEST_INFRA_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/.awscred"
-        DEFAULT_BASE_DOMAIN=origin-ci-int-aws.dev.rhcloud.com
-      fi
-      DOMAIN=${HYPERSHIFT_BASE_DOMAIN:-$DEFAULT_BASE_DOMAIN}
-      RELEASE_IMAGE=${HYPERSHIFT_HC_RELEASE_IMAGE:-$RELEASE_IMAGE_LATEST}
-      
-      ICSP_COMMAND=""
-      if [[ $ENABLE_ICSP == "true" ]]; then
-        ICSP_COMMAND=$(echo "--image-content-sources ${SHARED_DIR}/mgmt_iscp.yaml")
-      fi
 
       # We don't have the value of HYPERSHIFT_RELEASE_LATEST when we set CONTROLPLANE_OPERATOR_IMAGE so we
       # have to use a hack like this.
       [[ ${CONTROLPLANE_OPERATOR_IMAGE} = "LATEST" ]] && CONTROLPLANE_OPERATOR_IMAGE="${HYPERSHIFT_RELEASE_LATEST}"
 
-      CLUSTER_NAME="$(echo -n $PROW_JOB_ID|sha256sum|cut -c-20)"
+      CLUSTER_NAME="$(echo -n $PROW_JOB_ID|cut -d- -f-2)"
       echo "$(date) Creating HyperShift cluster ${CLUSTER_NAME}"
       /usr/bin/hypershift create cluster aws \
-        ${EXTRA_ARGS} ${ICSP_COMMAND} \
+        ${EXTRA_ARGS} \
         --name ${CLUSTER_NAME} \
         --node-pool-replicas ${HYPERSHIFT_NODE_COUNT} \
-        --instance-type ${HYPERSHIFT_INSTANCE_TYPE} \
-        --base-domain ${DOMAIN} \
-        --endpoint-access ${ENDPOINT_ACCESS} \
+        --instance-type=m5.xlarge \
+        --base-domain ${HYPERSHIFT_BASE_DOMAIN} \
         --region ${HYPERSHIFT_AWS_REGION} \
-        --control-plane-availability-policy ${HYPERSHIFT_CP_AVAILABILITY_POLICY} \
-        --infra-availability-policy ${HYPERSHIFT_INFRA_AVAILABILITY_POLICY} \
         --pull-secret=/etc/ci-pull-credentials/.dockerconfigjson \
-        --aws-creds=${AWS_GUEST_INFRA_CREDENTIALS_FILE} \
-        --release-image ${RELEASE_IMAGE} \
+        --aws-creds /etc/hypershift-pool-aws-credentials/credentials \
+        --release-image ${RELEASE_IMAGE_LATEST} \
         --control-plane-operator-image=${CONTROLPLANE_OPERATOR_IMAGE:-} \
         --additional-tags="expirationDate=$(date -d '4 hours' --iso=minutes --utc)"
 
@@ -87,12 +49,16 @@ chain:
       echo "Waiting for clusteroperators to be ready"
       export KUBECONFIG=${SHARED_DIR}/nested_kubeconfig
       until \
-        oc wait clusterversion/version --for='condition=Available=True' > /dev/null; do
+        oc wait --all=true clusteroperator --for='condition=Available=True' >/dev/null && \
+        oc wait --all=true clusteroperator --for='condition=Progressing=False' >/dev/null && \
+        oc wait --all=true clusteroperator --for='condition=Degraded=False' >/dev/null;  do
           echo "$(date --rfc-3339=seconds) Clusteroperators not yet ready"
-          oc get clusterversion 2>/dev/null || true
           sleep 1s
       done
-    from: hypershift-operator
+    from_image:
+      namespace: ocp
+      name: "4.12"
+      tag: hypershift-operator
     grace_period: 5m0s
     resources:
       requests:
@@ -100,8 +66,8 @@ chain:
         memory: 100Mi
     timeout: 30m0s
     credentials:
-    - mount_path: /etc/hypershift-ci-jobs-awscreds
-      name: hypershift-ci-jobs-awscreds
+    - mount_path: /etc/hypershift-pool-aws-credentials
+      name: hypershift-pool-aws-credentials
       namespace: test-credentials
     - mount_path: /etc/ci-pull-credentials
       name: ci-pull-credentials

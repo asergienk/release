@@ -6,7 +6,9 @@
 
 approvers:
 - alebedev87
+- arjunrn
 - ayesha54
+- dhritishikhar
 - elbehery
 - lmzuccarelli
 - sairameshv
@@ -15,7 +17,9 @@ approvers:
 options: {}
 reviewers:
 - alebedev87
+- arjunrn
 - ayesha54
+- dhritishikhar
 - elbehery
 - lmzuccarelli
 - sairameshv

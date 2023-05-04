@@ -17,6 +17,7 @@ lgtm:
 plugins:
   redhat-developer/odo:
     plugins:
+    - approve
     - project
     - milestone
     - milestonestatus

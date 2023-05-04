@@ -19,7 +19,7 @@ images:
 releases:
   initial:
     release:
-      channel: fast
+      channel: stable
       version: "4.9"
   latest:
     integration:

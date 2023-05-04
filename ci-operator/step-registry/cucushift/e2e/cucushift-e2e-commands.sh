@@ -38,10 +38,9 @@ if [ -z "${E2E_SKIP_TAGS}" ] ; then
 else
     export E2E_SKIP_TAGS="${E2E_SKIP_TAGS} and not @customer and not @security"
 fi
-echo "E2E_RUN_TAGS is '${E2E_RUN_TAGS}'"
-echo "E2E_SKIP_TAGS is '${E2E_SKIP_TAGS}'"
 
 cd verification-tests
+export BUSHSLICER_LOG_LEVEL=plain
 # run normal tests
 export BUSHSLICER_REPORT_DIR="${ARTIFACT_DIR}/parallel/normal"
 timestamp_start="$(date +%s)"
@@ -60,23 +59,25 @@ parallel_cucumber -n "${PARALLEL}" ${PARALLEL_CUCUMBER_OPTIONS} --exec \
      parallel_cucumber --group-by found --only-group ${TEST_ENV_NUMBER} -o "--tags \"${E2E_RUN_TAGS} and ${E2E_SKIP_TAGS} and not @serial and not @console and @admin\" -p junit"' || true
 show_time_used "$timestamp_start" 'admin'
 
+# run console tests
+export BUSHSLICER_REPORT_DIR="${ARTIFACT_DIR}/parallel/console"
+timestamp_start="$(date +%s)"
+parallel_cucumber -n 2 ${PARALLEL_CUCUMBER_OPTIONS} --exec \
+    'export OPENSHIFT_ENV_OCP4_USER_MANAGER_USERS=$(echo ${USERS} | cut -d "," -f ${TEST_ENV_NUMBER},$((${TEST_ENV_NUMBER}+${PARALLEL})),$((${TEST_ENV_NUMBER}+${PARALLEL}*2)),$((${TEST_ENV_NUMBER}+${PARALLEL}*3)));
+     export WORKSPACE=/tmp/dir${TEST_ENV_NUMBER};
+     parallel_cucumber --group-by found --only-group ${TEST_ENV_NUMBER} -o "--tags \"${E2E_RUN_TAGS} and ${E2E_SKIP_TAGS} and not @serial and @console\" -p junit"' || true
+show_time_used "$timestamp_start" 'console'
+
 # run the rest tests in serial
 export BUSHSLICER_REPORT_DIR="${ARTIFACT_DIR}/serial"
 export OPENSHIFT_ENV_OCP4_USER_MANAGER_USERS="${USERS}"
 timestamp_start="$(date +%s)"
-set -x
-cucumber --tags "${E2E_RUN_TAGS} and ${E2E_SKIP_TAGS} and (@console or @serial)" -p junit || true
-set +x
-show_time_used "$timestamp_start" 'console or serial'
+cucumber --tags "${E2E_RUN_TAGS} and ${E2E_SKIP_TAGS} and @serial" -p junit || true
+show_time_used "$timestamp_start" 'serial'
 
 # summarize test results
 echo "Summarizing test result..."
-mapfile -t test_suite_failures < <(grep -r -E 'testsuite.*failures="[1-9][0-9]*"' "${ARTIFACT_DIR}" | grep -o -E 'failures="[0-9]+"' | sed -E 's/failures="([0-9]+)"/\1/')
-failures=0
-for (( i=0; i<${#test_suite_failures[@]}; ++i ))
-do
-    let failures+=${test_suite_failures[$i]}
-done
+failures=$(grep '<testsuite failures="[1-9].*"' "${ARTIFACT_DIR}" -r | wc -l || true)
 if [ $((failures)) == 0 ]; then
     echo "All tests have passed"
 else

@@ -1,1 +1,0 @@
-registry.ci.openshift.org/node-observability-operator/node-observability-agent:node-observability-agent quay.io/node-observability-operator/node-observability-agent:latest

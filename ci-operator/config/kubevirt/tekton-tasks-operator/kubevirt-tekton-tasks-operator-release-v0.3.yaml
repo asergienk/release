@@ -34,7 +34,7 @@ tests:
           memory: 200Mi
 - as: e2e-functests
   steps:
-    cluster_profile: gcp-virtualization
+    cluster_profile: gcp
     test:
     - as: e2e-functests
       cli: latest

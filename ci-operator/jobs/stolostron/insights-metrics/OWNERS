@@ -5,8 +5,6 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- anxhela21
-- dislbenn
 - jlpadilla
 - sherinv
 - xrajesh
@@ -14,3 +12,8 @@ approvers:
 options: {}
 reviewers:
 - dislbenn
+- jlpadilla
+- robdolares
+- sherinv
+- xrajesh
+- zlayne

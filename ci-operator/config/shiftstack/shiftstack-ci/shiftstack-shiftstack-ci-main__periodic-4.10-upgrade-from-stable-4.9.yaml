@@ -10,7 +10,7 @@ base_images:
 releases:
   initial:
     release:
-      channel: fast
+      channel: stable
       version: "4.9"
   latest:
     candidate:
@@ -26,14 +26,14 @@ resources:
       memory: 200Mi
 tests:
 - as: e2e-openstack-upgrade
-  cron: 58 21  * * 6
+  interval: 48h
   steps:
     cluster_profile: openstack-vexxhost
     env:
       TEST_TYPE: upgrade-conformance
-    workflow: openshift-upgrade-openstack
+    workflow: openshift-upgrade-openstack-loki
 - as: e2e-openstack-kuryr-upgrade
-  cron: 10 10  * * 6
+  interval: 72h
   steps:
     cluster_profile: openstack-kuryr
     env:
@@ -44,7 +44,7 @@ tests:
       TEST_TYPE: upgrade
       TEST_UPGRADE_OPTIONS: ""
       TEST_UPGRADE_SUITE: none
-    workflow: openshift-upgrade-openstack
+    workflow: openshift-upgrade-openstack-loki
 zz_generated_metadata:
   branch: main
   org: shiftstack

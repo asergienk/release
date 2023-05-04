@@ -1,29 +1,8 @@
 tide:
   queries:
   - includedBranches:
-    - openshift-4.13
-    - release-4.13
-    labels:
-    - approved
-    - backport-risk-assessed
-    - bugzilla/valid-bug
-    - cherry-pick-approved
-    - lgtm
-    missingLabels:
-    - backports/unvalidated-commits
-    - bugzilla/invalid-bug
-    - do-not-merge/hold
-    - do-not-merge/invalid-owners-file
-    - do-not-merge/work-in-progress
-    - jira/invalid-bug
-    - needs-rebase
-    repos:
-    - openshift/gcp-pd-csi-driver
-  - includedBranches:
     - release-4.0
     - release-4.10
-    - release-4.11
-    - release-4.12
     - release-4.2
     - release-4.3
     - release-4.4
@@ -44,28 +23,23 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/gcp-pd-csi-driver
   - includedBranches:
-    - main
-    - master
+    - openshift-4.11
+    - release-4.11
     labels:
     - approved
     - bugzilla/valid-bug
-    - docs-approved
     - lgtm
-    - px-approved
-    - qe-approved
+    - staff-eng-approved
     missingLabels:
     - backports/unvalidated-commits
     - bugzilla/invalid-bug
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
-    - keep-main-query-separate
     - needs-rebase
     repos:
     - openshift/gcp-pd-csi-driver
@@ -82,7 +56,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - keep-main-query-separate
     - needs-rebase
     repos:
@@ -94,8 +67,6 @@ tide:
     - release-4.1
     - release-4.10
     - release-4.11
-    - release-4.12
-    - release-4.13
     - release-4.2
     - release-4.3
     - release-4.4
@@ -114,7 +85,25 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
+    - needs-rebase
+    repos:
+    - openshift/gcp-pd-csi-driver
+  - includedBranches:
+    - main
+    - master
+    labels:
+    - approved
+    - docs-approved
+    - lgtm
+    - px-approved
+    - qe-approved
+    missingLabels:
+    - backports/unvalidated-commits
+    - bugzilla/invalid-bug
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    - keep-main-query-separate
     - needs-rebase
     repos:
     - openshift/gcp-pd-csi-driver
@@ -125,8 +114,6 @@ tide:
     - release-4.1
     - release-4.10
     - release-4.11
-    - release-4.12
-    - release-4.13
     - release-4.2
     - release-4.3
     - release-4.4
@@ -147,7 +134,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/gcp-pd-csi-driver

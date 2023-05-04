@@ -2,9 +2,8 @@ chain:
   as: ipi-nutanix-pre
   steps:
   - chain: ipi-conf-nutanix
-  - ref: ovn-conf
   - chain: ipi-install
-  - chain: ipi-install-nutanix
+  - ref: ipi-conf-nutanix-image-registry
   documentation: |-
     The IPI setup step contains all steps that provision an OpenShift cluster
     with a default configuration on Nutanix cluster.

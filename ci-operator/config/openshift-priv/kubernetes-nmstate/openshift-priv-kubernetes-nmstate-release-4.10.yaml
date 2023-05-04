@@ -76,7 +76,7 @@ releases:
       version: "4.10"
   stable:
     release:
-      channel: fast
+      channel: stable
       version: "4.10"
 resources:
   '*':
@@ -91,7 +91,6 @@ tests:
   container:
     from: src
 - as: e2e-handler-sdn-ipv4
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -101,7 +100,6 @@ tests:
         MIRROR_IMAGES=false
     workflow: kubernetes-nmstate-e2e-handler
 - as: e2e-operator-sdn-ipv4
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:

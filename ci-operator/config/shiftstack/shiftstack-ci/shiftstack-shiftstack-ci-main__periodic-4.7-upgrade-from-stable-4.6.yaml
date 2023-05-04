@@ -28,12 +28,12 @@ resources:
       memory: 200Mi
 tests:
 - as: e2e-openstack-upgrade
-  minimum_interval: 8766h
+  interval: 72h
   steps:
     cluster_profile: openstack-vexxhost
     env:
       TEST_TYPE: upgrade-conformance
-    workflow: openshift-upgrade-openstack
+    workflow: openshift-upgrade-openstack-loki
 zz_generated_metadata:
   branch: main
   org: shiftstack

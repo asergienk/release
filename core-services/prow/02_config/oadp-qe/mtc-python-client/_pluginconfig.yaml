@@ -1,4 +1,0 @@
-plugins:
-  oadp-qe/mtc-python-client:
-    plugins:
-    - trigger

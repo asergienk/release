@@ -1,3 +1,10 @@
+external_plugins:
+  openshift/kubernetes:
+  - endpoint: http://jira-lifecycle-plugin
+    events:
+    - issue_comment
+    - pull_request
+    name: jira-lifecycle-plugin
 label:
   restricted_labels:
     openshift/kubernetes:
@@ -14,10 +21,8 @@ label:
       - label: backport-risk-assessed
       label: cherry-pick-approved
     - allowed_users:
-      - ingvagabund
       - jsafrane
       - soltysh
-      - stlaz
       - sttts
       - s-urbaniak
       - tkashem
@@ -34,16 +39,6 @@ label:
       - sttts
       - tkashem
       label: bugzilla/invalid-bug
-    - allowed_users:
-      - soltysh
-      - sttts
-      - tkashem
-      label: jira/valid-bug
-    - allowed_users:
-      - soltysh
-      - sttts
-      - tkashem
-      label: jira/invalid-bug
     - allowed_users:
       - soltysh
       - sttts

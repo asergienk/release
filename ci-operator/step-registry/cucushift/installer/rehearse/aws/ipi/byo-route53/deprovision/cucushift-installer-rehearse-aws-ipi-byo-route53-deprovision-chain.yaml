@@ -1,7 +1,9 @@
 chain:
   as: cucushift-installer-rehearse-aws-ipi-byo-route53-deprovision
   steps:
-  - chain: cucushift-installer-rehearse-aws-ipi-deprovision
+  - ref: gather-aws-console
+  - chain: gather
+  - ref: ipi-deprovision-deprovision
   - ref: aws-deprovision-stacks
   - ref: aws-deprovision-route53-private-hosted-zone
   documentation: |-

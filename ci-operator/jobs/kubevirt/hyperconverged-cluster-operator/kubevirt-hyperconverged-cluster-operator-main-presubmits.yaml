@@ -1,27 +1,28 @@
 presubmits:
   kubevirt/hyperconverged-cluster-operator:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build03
-    context: ci/prow/ci-index-hco-bundle
+    cluster: build04
+    context: ci/prow/ci-index
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-ci-index-hco-bundle
-    rerun_command: /test ci-index-hco-bundle
+    name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-ci-index
+    rerun_command: /test ci-index
+    run_if_changed: ^(build/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|Makefile|go\.mod|go\.sum)$
     spec:
       containers:
       - args:
         - --gcs-upload-secret=/secrets/gcs/service-account.json
         - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
         - --report-credentials-file=/etc/report/credentials
-        - --target=ci-index-hco-bundle
+        - --target=ci-index
         command:
         - ci-operator
         image: ci-operator:latest
@@ -48,13 +49,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )ci-index-hco-bundle,?($|\s.*)
+    trigger: (?m)^/test( | .* )ci-index,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/ci-index-hco-upgrade-bundle
     decorate: true
     decoration_config:
@@ -104,7 +105,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/ci-index-hco-upgrade-prev-bundle
     decorate: true
     decoration_config:
@@ -154,14 +155,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-image-index-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-image-index-aws
@@ -216,7 +217,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -229,14 +230,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-image-index-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-image-index-azure
@@ -291,7 +292,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -311,7 +312,7 @@ presubmits:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
-      ci-operator.openshift.io/cloud-cluster-profile: gcp-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-image-index-gcp
@@ -365,8 +366,12 @@ presubmits:
         secret:
           secretName: ci-pull-credentials
       - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-gcp-virtualization
+        projected:
+          sources:
+          - secret:
+              name: cluster-secrets-gcp
+          - configMap:
+              name: cluster-profile-gcp
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -379,14 +384,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-image-index-sno-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-image-index-sno-aws
@@ -442,7 +447,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -455,14 +460,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-image-index-sno-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-image-index-sno-azure
@@ -518,7 +523,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -531,14 +536,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-kv-smoke-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-kv-smoke-azure
@@ -593,7 +598,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -613,7 +618,7 @@ presubmits:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
-      ci-operator.openshift.io/cloud-cluster-profile: gcp-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-kv-smoke-gcp
@@ -667,8 +672,12 @@ presubmits:
         secret:
           secretName: ci-pull-credentials
       - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-gcp-virtualization
+        projected:
+          sources:
+          - secret:
+              name: cluster-secrets-gcp
+          - configMap:
+              name: cluster-profile-gcp
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -681,14 +690,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-index-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-index-aws
@@ -743,7 +752,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -756,14 +765,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-index-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-index-azure
@@ -818,7 +827,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -831,14 +840,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-index-sno-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-index-sno-aws
@@ -894,7 +903,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -907,14 +916,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-index-sno-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-index-sno-azure
@@ -970,7 +979,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -983,14 +992,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-prev-index-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-prev-index-aws
@@ -1045,7 +1054,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1058,14 +1067,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-prev-index-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-prev-index-azure
@@ -1120,7 +1129,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1133,14 +1142,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-prev-index-sno-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-prev-index-sno-aws
@@ -1196,7 +1205,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1209,14 +1218,14 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/hco-e2e-upgrade-prev-index-sno-azure
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
-      ci-operator.openshift.io/cloud-cluster-profile: azure-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-hco-e2e-upgrade-prev-index-sno-azure
@@ -1272,7 +1281,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-azure-virtualization
+          secretName: cluster-secrets-azure4
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1285,7 +1294,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -1331,12 +1340,12 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )images,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build03
-    context: ci/prow/okd-ci-index-hco-bundle
+    cluster: build04
+    context: ci/prow/okd-ci-index
     decorate: true
     decoration_config:
       skip_cloning: true
@@ -1344,15 +1353,16 @@ presubmits:
       ci-operator.openshift.io/variant: okd
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-okd-ci-index-hco-bundle
-    rerun_command: /test okd-ci-index-hco-bundle
+    name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-okd-ci-index
+    rerun_command: /test okd-ci-index
+    run_if_changed: ^(build/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|Makefile|go\.mod|go\.sum)$
     spec:
       containers:
       - args:
         - --gcs-upload-secret=/secrets/gcs/service-account.json
         - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
         - --report-credentials-file=/etc/report/credentials
-        - --target=ci-index-hco-bundle
+        - --target=ci-index
         - --variant=okd
         command:
         - ci-operator
@@ -1380,13 +1390,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )okd-ci-index-hco-bundle,?($|\s.*)
+    trigger: (?m)^/test( | .* )okd-ci-index,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/okd-ci-index-hco-upgrade-bundle
     decorate: true
     decoration_config:
@@ -1438,7 +1448,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/okd-ci-index-hco-upgrade-prev-bundle
     decorate: true
     decoration_config:
@@ -1490,20 +1500,20 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/okd-hco-e2e-image-index-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci-operator.openshift.io/variant: okd
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-okd-hco-e2e-image-index-aws
     rerun_command: /test okd-hco-e2e-image-index-aws
-    run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
+    run_if_changed: ^(build/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
     spec:
       containers:
       - args:
@@ -1554,7 +1564,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1574,7 +1584,7 @@ presubmits:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
-      ci-operator.openshift.io/cloud-cluster-profile: gcp-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci-operator.openshift.io/variant: okd
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
@@ -1630,8 +1640,12 @@ presubmits:
         secret:
           secretName: ci-pull-credentials
       - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-gcp-virtualization
+        projected:
+          sources:
+          - secret:
+              name: cluster-secrets-gcp
+          - configMap:
+              name: cluster-profile-gcp
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1644,20 +1658,20 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/okd-hco-e2e-upgrade-index-aws
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci-operator.openshift.io/variant: okd
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-okd-hco-e2e-upgrade-index-aws
     rerun_command: /test okd-hco-e2e-upgrade-index-aws
-    run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
+    run_if_changed: ^(build/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|Makefile|go\.mod|go\.sum)$
     spec:
       containers:
       - args:
@@ -1708,7 +1722,7 @@ presubmits:
           secretName: ci-pull-credentials
       - name: cluster-profile
         secret:
-          secretName: cluster-secrets-aws-virtualization
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1728,13 +1742,13 @@ presubmits:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
-      ci-operator.openshift.io/cloud-cluster-profile: gcp-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci-operator.openshift.io/variant: okd
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-hyperconverged-cluster-operator-main-okd-hco-e2e-upgrade-index-gcp
     rerun_command: /test okd-hco-e2e-upgrade-index-gcp
-    run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
+    run_if_changed: ^(build/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|Makefile|go\.mod|go\.sum)$
     spec:
       containers:
       - args:
@@ -1784,8 +1798,12 @@ presubmits:
         secret:
           secretName: ci-pull-credentials
       - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-gcp-virtualization
+        projected:
+          sources:
+          - secret:
+              name: cluster-secrets-gcp
+          - configMap:
+              name: cluster-profile-gcp
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -1798,7 +1816,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build03
+    cluster: build04
     context: ci/prow/okd-images
     decorate: true
     decoration_config:

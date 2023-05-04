@@ -8,6 +8,9 @@ export AWS_SHARED_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/.awscred"
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
+# TODO: move to image
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 EXPIRATION_DATE=$(date -d '4 hours' --iso=minutes --utc)
 TAGS="Key=expirationDate,Value=${EXPIRATION_DATE}"
 
@@ -16,7 +19,7 @@ PATCH=/tmp/install-config-sharednetwork.yaml.patch
 
 REGION="${LEASED_RESOURCE}"
 
-CLUSTER_NAME="$(yq-go r "${CONFIG}" 'metadata.name')"
+CLUSTER_NAME="$(/tmp/yq r "${CONFIG}" 'metadata.name')"
 
 curl -L https://raw.githubusercontent.com/openshift/installer/master/upi/aws/cloudformation/01_vpc.yaml -o /tmp/01_vpc.yaml
 
@@ -66,4 +69,4 @@ platform:
     subnets: ${subnets}
 EOF
 
-yq-go m -x -i "${CONFIG}" "${PATCH}"
+/tmp/yq m -x -i "${CONFIG}" "${PATCH}"

@@ -4,10 +4,15 @@ chain:
   - ref: azure-provision-resourcegroup
   - ref: azure-provision-vnet
   - chain: azure-provision-bastionhost
-  - chain: ipi-conf-azure
+  - ref: ipi-conf
   - ref: ipi-conf-proxy
+  - ref: ipi-conf-azure
   - ref: ipi-conf-azure-provisionednetwork
-  - chain: ipi-install
+  - ref: ipi-install-monitoringpvc
+  - ref: ipi-install-rbac
+  - ref: openshift-cluster-bot-rbac
+  - ref: ipi-install-install
+  - ref: ipi-install-times-collection
   - ref: enable-qe-catalogsource
   env:
   - name: RESTRICTED_NETWORK

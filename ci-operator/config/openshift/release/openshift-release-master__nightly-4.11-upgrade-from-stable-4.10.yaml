@@ -41,9 +41,11 @@ base_images:
     tag: upi-installer
 releases:
   initial:
-    release:
-      channel: candidate
-      version: "4.11"
+    prerelease:
+      product: ocp
+      version_bounds:
+        lower: 4.10.0-0
+        upper: 4.11.0-0
   latest:
     candidate:
       product: ocp
@@ -55,19 +57,16 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
-- as: e2e-metal-ipi-bm-upgrade
-  cluster: build05
-  cron: 0 6 1 1 *
+- as: e2e-metal-ipi-upgrade
+  cron: 0 0 1 1 *
   steps:
     cluster_profile: equinix-ocp-metal
     env:
-      CLUSTERTYPE: baremetal
       TEST_TYPE: upgrade-conformance
     workflow: baremetalds-e2e-upgrade
   timeout: 5h0m0s
 - as: e2e-metal-ipi-upgrade-ovn-ipv6
-  cluster: build05
-  cron: 0 6 1 1 *
+  cron: 0 0 1 1 *
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -75,7 +74,7 @@ tests:
     workflow: baremetalds-e2e-upgrade-ovn-ipv6
   timeout: 5h0m0s
 - as: e2e-aws-upgrade
-  cron: 21 14 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
@@ -83,13 +82,21 @@ tests:
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-aws
 - as: e2e-aws-upgrade-ovn-single-node
-  cron: 27 18 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-aws-single-node
+- as: e2e-azure-upgrade-ovn-single-node
+  interval: 24h
+  steps:
+    cluster_profile: azure-2
+    env:
+      BASE_DOMAIN: ci2.azure.devcluster.openshift.com
+      TEST_TYPE: upgrade-conformance
+    workflow: openshift-upgrade-azure-single-node
 zz_generated_metadata:
   branch: master
   org: openshift

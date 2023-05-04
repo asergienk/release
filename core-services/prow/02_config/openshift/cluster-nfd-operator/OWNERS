@@ -5,12 +5,11 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- chr15p
-- yevgeny-shnaidman
+- arangogutierrez
 options: {}
 reviewers:
-- bthurber
-- chr15p
-- qbarrand
-- ybettan
+- arangogutierrez
+- dagrayvid
+- jmencak
+- kpouget
 - yevgeny-shnaidman

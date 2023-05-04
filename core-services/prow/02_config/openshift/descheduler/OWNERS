@@ -6,10 +6,13 @@
 
 approvers:
 - ingvagabund
-- knelasevero
+- mfojtik
+- ravisantoshgudimetla
 - soltysh
+- sttts
 options: {}
 reviewers:
 - ingvagabund
-- knelasevero
+- ravisantoshgudimetla
 - soltysh
+- sttts

@@ -6,22 +6,20 @@ presubmits:
     - ^release-4\.13$
     - ^release-4\.13-
     cluster: vsphere
-    context: ci/prow/e2e-vsphere-ovn
+    context: ci/prow/e2e-vsphere-ccm
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci-operator.openshift.io/cloud: vsphere
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cloud-provider-vsphere-release-4.13-e2e-vsphere-ovn
+    name: pull-ci-openshift-priv-cloud-provider-vsphere-release-4.13-e2e-vsphere-ccm
     optional: true
     path_alias: github.com/kubernetes/cloud-provider-vsphere
-    rerun_command: /test e2e-vsphere-ovn
+    rerun_command: /test e2e-vsphere-ccm
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -31,8 +29,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/usr/local/e2e-vsphere-ovn-cluster-profile
-        - --target=e2e-vsphere-ovn
+        - --secret-dir=/usr/local/e2e-vsphere-ccm-cluster-profile
+        - --target=e2e-vsphere-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -45,7 +43,7 @@ presubmits:
         - mountPath: /etc/boskos
           name: boskos
           readOnly: true
-        - mountPath: /usr/local/e2e-vsphere-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-vsphere-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -70,35 +68,36 @@ presubmits:
       - name: cluster-profile
         secret:
           secretName: cluster-secrets-vsphere
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-vsphere-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-vsphere-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
     cluster: vsphere
-    context: ci/prow/e2e-vsphere-ovn-upgrade
+    context: ci/prow/e2e-vsphere-ccm-install
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci-operator.openshift.io/cloud: vsphere
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cloud-provider-vsphere-release-4.13-e2e-vsphere-ovn-upgrade
+    name: pull-ci-openshift-priv-cloud-provider-vsphere-release-4.13-e2e-vsphere-ccm-install
     optional: true
     path_alias: github.com/kubernetes/cloud-provider-vsphere
-    rerun_command: /test e2e-vsphere-ovn-upgrade
+    rerun_command: /test e2e-vsphere-ccm-install
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -108,8 +107,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/usr/local/e2e-vsphere-ovn-upgrade-cluster-profile
-        - --target=e2e-vsphere-ovn-upgrade
+        - --secret-dir=/usr/local/e2e-vsphere-ccm-install-cluster-profile
+        - --target=e2e-vsphere-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -122,7 +121,7 @@ presubmits:
         - mountPath: /etc/boskos
           name: boskos
           readOnly: true
-        - mountPath: /usr/local/e2e-vsphere-ovn-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-vsphere-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -147,13 +146,16 @@ presubmits:
       - name: cluster-profile
         secret:
           secretName: cluster-secrets-vsphere
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-vsphere-ovn-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-vsphere-ccm-install,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
@@ -163,9 +165,7 @@ presubmits:
     context: ci/prow/images
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -204,6 +204,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -220,9 +223,7 @@ presubmits:
     context: ci/prow/unit
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -261,6 +262,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -277,9 +281,7 @@ presubmits:
     context: ci/prow/verify
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -318,6 +320,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -334,9 +339,7 @@ presubmits:
     context: ci/prow/verify-git-history
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -376,6 +379,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials

@@ -81,7 +81,6 @@ tests:
   container:
     from: src
 - as: e2e-handler-sdn-ipv4
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal

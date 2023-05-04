@@ -1,7 +1,3 @@
-lgtm:
-- repos:
-  - openshift/cincinnati-graph-data
-  review_acts_as_lgtm: true
 plugins:
   openshift/cincinnati-graph-data:
     plugins:
@@ -11,4 +7,3 @@ triggers:
   - openshift/cincinnati-graph-data
   trusted_apps:
   - openshift-ota-bot
-  - dependabot

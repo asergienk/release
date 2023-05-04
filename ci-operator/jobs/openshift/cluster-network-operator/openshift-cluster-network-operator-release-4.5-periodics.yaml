@@ -1,7 +1,7 @@
 periodics:
 - agent: kubernetes
-  cluster: build04
-  cron: 58 23 24 */12 *
+  cluster: build02
+  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true

@@ -5,15 +5,23 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- everettraven
+- camilamacedo86
+- fabianvf
+- hasbro17
+- jmrodri
 - joelanford
 - rashmigottipati
+- shawn-hurley
 - theishshah
 - varshaprasad96
 options: {}
 reviewers:
-- everettraven
+- camilamacedo86
+- fabianvf
+- hasbro17
+- jmrodri
 - joelanford
 - rashmigottipati
+- shawn-hurley
 - theishshah
 - varshaprasad96

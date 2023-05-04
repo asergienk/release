@@ -2,7 +2,7 @@ build_root:
   image_stream_tag:
     name: builder
     namespace: stolostron
-    tag: nodejs14-linux
+    tag: nodejs10-linux
 resources:
   '*':
     requests:

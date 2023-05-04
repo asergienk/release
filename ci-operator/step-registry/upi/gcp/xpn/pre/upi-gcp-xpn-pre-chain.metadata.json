@@ -2,9 +2,9 @@
 	"path": "upi/gcp/xpn/pre/upi-gcp-xpn-pre-chain.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"abhinavdahiya",
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

@@ -3,20 +3,17 @@ workflow:
   steps:
     cluster_profile: packet-assisted
     allow_best_effort_post_steps: true
-    allow_skip_on_success: true
     pre:
-      - ref: baremetalds-packet-setup
-      - chain: assisted-common-pre
+      - chain: assisted-baremetal-setup
     test:
       - ref: assisted-baremetal-conf
       - ref: assisted-baremetal-test
     post:
-      - ref: assisted-common-gather
-      - ref: baremetalds-packet-gather-metadata
+      - ref: assisted-baremetal-gather
       - ref: baremetalds-packet-teardown
     env:
       TEST_SUITE: minimal
-      PACKET_PLAN: "c3.medium.x86"
+      PACKET_PLAN: "m3.large.x86"
       PACKET_OS: "rocky_8"
   documentation: |-
     This workflow executes the common end-to-end test suite on a cluster provisioned by running assisted-installer on a packet server.

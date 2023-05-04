@@ -1,8 +1,0 @@
-{
-	"path": "assisted/nutanix/teardown/cluster/assisted-nutanix-teardown-cluster-ref.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

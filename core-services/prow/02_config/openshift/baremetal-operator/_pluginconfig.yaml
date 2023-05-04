@@ -14,8 +14,9 @@ label:
       - zaneb
       label: backport-risk-assessed
     - allowed_users:
-      - pamoedom
-      - jadhaj
+      - lshilin-r
+      - omichaeli
+      - rbartal
       label: cherry-pick-approved
 plugins:
   openshift/baremetal-operator:

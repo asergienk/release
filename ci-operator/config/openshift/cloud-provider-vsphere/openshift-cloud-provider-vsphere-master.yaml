@@ -1,26 +1,29 @@
 base_images:
   base:
-    name: "4.14"
+    name: "4.12"
     namespace: ocp
     tag: base
-  ocp_builder_rhel-8-golang-1.19-openshift-4.14:
+  ocp_builder_rhel-8-golang-1.18-openshift-4.11:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.14
+    tag: rhel-8-golang-1.18-openshift-4.11
 binary_build_commands: make binaries
 build_root:
-  from_repository: true
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: golang-1.17
 canonical_go_repository: github.com/kubernetes/cloud-provider-vsphere
 images:
 - dockerfile_path: openshift-hack/images/cloud-controller-manager-openshift.Dockerfile
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.14:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.11:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.14
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.11
   to: vsphere-cloud-controller-manager
 promotion:
-  name: "4.14"
+  name: "4.12"
   namespace: ocp
 resources:
   '*':
@@ -30,7 +33,7 @@ resources:
       cpu: 100m
       memory: 200Mi
 tag_specification:
-  name: "4.14"
+  name: "4.12"
   namespace: ocp
 tests:
 - as: unit
@@ -46,18 +49,18 @@ tests:
   commands: make verify
   container:
     from: src
-- as: e2e-vsphere-ovn
+- as: e2e-vsphere-ccm
   optional: true
   skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: vsphere
-    workflow: openshift-e2e-vsphere
-- as: e2e-vsphere-ovn-upgrade
+    workflow: openshift-e2e-vsphere-ccm
+- as: e2e-vsphere-ccm-install
   optional: true
   skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: vsphere
-    workflow: openshift-upgrade-vsphere
+    workflow: openshift-e2e-vsphere-ccm-install
 zz_generated_metadata:
   branch: master
   org: openshift

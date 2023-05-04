@@ -2,11 +2,11 @@
 	"path": "upi/aws/upi-aws-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"staebler",
 			"rna-afk",
 			"patrickdillon",
 			"jhixson74",
-			"jianlinliu",
-			"yunjiang29"
+			"jstuever"
 		]
 	}
 }

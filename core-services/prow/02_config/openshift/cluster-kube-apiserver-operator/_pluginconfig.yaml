@@ -11,9 +11,8 @@ label:
     - allowed_users:
       - soltysh
       - sttts
-      - stlaz
+      - s-urbaniak
       - tkashem
-      - ingvagabund
       label: backport-risk-assessed
 plugins:
   openshift/cluster-kube-apiserver-operator:

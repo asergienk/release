@@ -40,21 +40,10 @@ tests:
     make -f Makefile test-local
   container:
     from: src
-- as: ocm-ci-rbac
-  steps:
-    workflow: ocm-ci-rbac
-- as: pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: thanos
-    env:
-      IMAGE_REPO: thanos
-      REGISTRY_ORG: stolostron
-    workflow: ocm-ci-image-mirror
 - as: e2e-kind
   steps:
     env:
-      AWS_CREDENTIALS_SECRET: ocm-obs-usa-aws-kind
+      AWS_CREDENTIALS_SECRET: ocm-obs-china-aws-kind
       AWS_INSTANCE_TYPE: t3.small
     post:
     - ref: ocm-e2e-kind-destroy

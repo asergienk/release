@@ -15,6 +15,9 @@ images:
       as:
       - registry.ci.openshift.org/stolostron/builder:go1.17-linux
   to: clusterclaims-controller
+promotion:
+  name: "2.4"
+  namespace: stolostron
 resources:
   '*':
     requests:
@@ -63,6 +66,7 @@ tests:
     test:
     - as: publish
       commands: |-
+        export OSCI_IMAGE_REMOTE_REPO_SRC="registry.ci.openshift.org/stolostron"
         export SELF="make -f Makefile.prow"
         export OSCI_PUBLISH_DELAY="0"
         make -f Makefile.prow osci/publish

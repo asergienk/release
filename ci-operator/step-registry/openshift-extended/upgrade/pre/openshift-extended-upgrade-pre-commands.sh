@@ -41,42 +41,20 @@ if test -f "${SHARED_DIR}/bastion_private_address"
 then
     QE_BASTION_PRIVATE_ADDRESS=$(cat "${SHARED_DIR}/bastion_private_address")
     export QE_BASTION_PRIVATE_ADDRESS
+    if ! whoami &> /dev/null; then
+        if [[ -w /etc/passwd ]]; then
+            echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
+        fi
+    fi
 fi
 if test -f "${SHARED_DIR}/bastion_ssh_user"
 then
     QE_BASTION_SSH_USER=$(cat "${SHARED_DIR}/bastion_ssh_user")
 fi
-
-if test -f "${SHARED_DIR}/bastion_public_address" ||  test -f "${SHARED_DIR}/bastion_private_address" || oc get service ssh-bastion -n "${SSH_BASTION_NAMESPACE:-test-ssh-bastion}" &> /dev/null
-then
-    echo "Ensure our UID, which is randomly generated, is in /etc/passwd. This is required to be able to SSH"
-    if ! whoami &> /dev/null; then
-        echo "try to add user ${USER_NAME:-default}"
-        if [[ -w /etc/passwd ]]; then
-            echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
-            echo "added user ${USER_NAME:-default}"
-        fi
-    fi
-else
-    echo "do not need to ensure UID in passwd"
-fi
-
 mkdir -p ~/.ssh
 cp "${CLUSTER_PROFILE_DIR}/ssh-privatekey" ~/.ssh/ssh-privatekey || true
 chmod 0600 ~/.ssh/ssh-privatekey || true
 eval export SSH_CLOUD_PRIV_KEY="~/.ssh/ssh-privatekey"
-
-test -f "${CLUSTER_PROFILE_DIR}/ssh-publickey" || echo "ssh-publickey file does not exist"
-cp "${CLUSTER_PROFILE_DIR}/ssh-publickey" ~/.ssh/ssh-publickey || true
-chmod 0644 ~/.ssh/ssh-publickey || true
-eval export SSH_CLOUD_PUB_KEY="~/.ssh/ssh-publickey"
-
-#set env for rosa which are required by hypershift qe team
-if test -f "${CLUSTER_PROFILE_DIR}/ocm-token"
-then
-    TEST_ROSA_TOKEN=$(cat "${CLUSTER_PROFILE_DIR}/ocm-token") || true
-    export TEST_ROSA_TOKEN
-fi
 
 # configure enviroment for different cluster
 echo "CLUSTER_TYPE is ${CLUSTER_TYPE}"
@@ -101,22 +79,13 @@ aws)
     export KUBE_SSH_USER=core
     export SSH_CLOUD_PRIV_AWS_USER="${QE_BASTION_SSH_USER:-core}"
     ;;
-aws-usgov|aws-c2s|aws-sc2s)
+aws-usgov)
     mkdir -p ~/.ssh
     export SSH_CLOUD_PRIV_AWS_USER="${QE_BASTION_SSH_USER:-core}"
     export KUBE_SSH_USER=core
     export TEST_PROVIDER="none"
     ;;
-alibabacloud)
-    mkdir -p ~/.ssh
-    cp "${CLUSTER_PROFILE_DIR}/ssh-privatekey" ~/.ssh/kube_alibaba_rsa || true
-    export SSH_CLOUD_PRIV_ALIBABA_USER="${QE_BASTION_SSH_USER:-core}"
-    export KUBE_SSH_USER=core
-    export PROVIDER_ARGS="-provider=alibabacloud -gce-zone=us-east-1"
-    REGION="$(oc get -o jsonpath='{.status.platformStatus.alibabacloud.region}' infrastructure cluster)"
-    export TEST_PROVIDER="{\"type\":\"alibabacloud\",\"region\":\"${REGION}\",\"multizone\":true,\"multimaster\":true}"
-;;
-azure4|azuremag|azure-arm64)
+azure4)
     mkdir -p ~/.ssh
     cp "${CLUSTER_PROFILE_DIR}/ssh-privatekey" ~/.ssh/kube_azure_rsa || true
     export SSH_CLOUD_PRIV_AZURE_USER="${QE_BASTION_SSH_USER:-core}"
@@ -140,10 +109,8 @@ openstack*)
     source "${SHARED_DIR}/cinder_credentials.sh"
     export TEST_PROVIDER='{"type":"openstack"}';;
 ovirt) export TEST_PROVIDER='{"type":"ovirt"}';;
-equinix-ocp-metal|equinix-ocp-metal-qe)
+equinix-ocp-metal)
     export TEST_PROVIDER='{"type":"skeleton"}';;
-nutanix|nutanix-qe)
-    export TEST_PROVIDER='{"type":"nutanix"}';;
 *)
     echo >&2 "Unsupported cluster type '${CLUSTER_TYPE}'"
     if [ "W${FORCE_SUCCESS_EXIT}W" == "WnoW" ]; then
@@ -176,26 +143,20 @@ trap 'echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_TEST_END"' EXIT
 
 # check if the cluster is ready
 oc version --client
-oc wait nodes --all --for=condition=Ready=true --timeout=15m
-oc wait clusteroperators --all --for=condition=Progressing=false --timeout=15m
+oc wait nodes --all --for=condition=Ready=true --timeout=10m
+oc wait clusteroperators --all --for=condition=Progressing=false --timeout=10m
 
 # execute the cases
 function run {
     test_scenarios=""
-    hardcoded_filters="~NonUnifyCI&;~DEPRECATED&;~CPaasrunOnly&;~VMonly&;~ProdrunOnly&;~StagerunOnly&;NonPreRelease&;PreChkUpgrade&"
-    echo "TEST_SCENARIOS_PREUPG: \"${TEST_SCENARIOS_PREUPG:-}\""
+    echo "TEST_SCENRAIOS_PREUPG: \"${TEST_SCENRAIOS_PREUPG:-}\""
     echo "TEST_ADDITIONAL_PREUPG: \"${TEST_ADDITIONAL_PREUPG:-}\""
-    echo "TEST_FILTERS: \"${TEST_FILTERS:-}\""
-    echo "FILTERS_ADDITIONAL: \"${FILTERS_ADDITIONAL:-}\""
-    echo "TEST_FILTERS_PREUPG: \"${TEST_FILTERS_PREUPG:-}\""
     echo "TEST_IMPORTANCE: \"${TEST_IMPORTANCE}\""
     echo "TEST_TIMEOUT: \"${TEST_TIMEOUT}\""
-    if [[ -n "${TEST_SCENARIOS_PREUPG:-}" ]]; then
-        readarray -t scenarios <<< "${TEST_SCENARIOS_PREUPG}"
+    if [[ -n "${TEST_SCENRAIOS_PREUPG:-}" ]]; then
+        readarray -t scenarios <<< "${TEST_SCENRAIOS_PREUPG}"
         for scenario in "${scenarios[@]}"; do
-            if [ "W${scenario}W" != "WW" ]; then
-                test_scenarios="${test_scenarios}|${scenario}"
-            fi
+            test_scenarios="${test_scenarios}|${scenario}"
         done
     else
         echo "there is no scenario"
@@ -203,11 +164,11 @@ function run {
     fi
 
     if [ "W${test_scenarios}W" == "WW" ]; then
-        echo "fail to parse ${TEST_SCENARIOS_PREUPG}"
+        echo "fail to parse ${TEST_SCENRAIOS_PREUPG}"
         exit 1
     fi
-    echo "test scenarios: ${test_scenarios:1}"
-    test_scenarios="${test_scenarios:1}"
+    echo "test scenarios: ${test_scenarios:1:-1}"
+    test_scenarios="${test_scenarios:1:-1}"
 
     test_additional=""
     if [[ -n "${TEST_ADDITIONAL_PREUPG:-}" ]]; then
@@ -228,14 +189,13 @@ function run {
     extended-platform-tests run all --dry-run | \
         grep -E "${test_scenarios}" | grep -E "${TEST_IMPORTANCE}" > ./case_selected
 
-    test_filters="${hardcoded_filters};${TEST_FILTERS}"
-    if [[ -n "${FILTERS_ADDITIONAL:-}" ]]; then
-        echo "add filter FILTERS_ADDITIONAL"
-        test_filters="${test_filters};${FILTERS_ADDITIONAL:-}"
-    fi
+    test_filters=""
     if [[ -n "${TEST_FILTERS_PREUPG:-}" ]]; then
-        echo "add filter TEST_FILTERS_PREUPG"
-        test_filters="${test_filters};${TEST_FILTERS_PREUPG:-}"
+        # shellcheck disable=SC2153
+        test_filters="~NonUnifyCI&;~CPaasrunOnly&;~VMonly&;~ProdrunOnly&;~StagerunOnly&;NonPreRelease&;PreChkUpgrade&;${TEST_FILTERS};${TEST_FILTERS_PREUPG}"
+    else
+        # shellcheck disable=SC2153
+        test_filters="~NonUnifyCI&;~CPaasrunOnly&;~VMonly&;~ProdrunOnly&;~StagerunOnly&;NonPreRelease&;PreChkUpgrade&;${TEST_FILTERS}"
     fi
     echo "final test_filters: \"${test_filters}\""
 

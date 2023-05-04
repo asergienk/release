@@ -1,7 +1,6 @@
 ref:
   as: workers-rhel-scaleup
   from: ansible
-  cli: latest
   commands: workers-rhel-scaleup-commands.sh
   resources:
     requests:

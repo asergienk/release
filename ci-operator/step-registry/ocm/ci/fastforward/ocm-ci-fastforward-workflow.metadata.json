@@ -2,6 +2,7 @@
 	"path": "ocm/ci/fastforward/ocm-ci-fastforward-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"gurnben",
 			"kyl-bempah",
 			"mark-nc",

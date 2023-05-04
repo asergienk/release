@@ -1,6 +1,4 @@
 tide:
-  merge_method:
-    ViaQ/logging-fluentd: rebase
   queries:
   - labels:
     - approved
@@ -11,7 +9,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - keep-main-query-separate
     - needs-rebase
     repos:

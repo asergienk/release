@@ -9,6 +9,7 @@ label:
     - allowed_teams:
       - openshift-patch-managers
       allowed_users:
+      - ArangoGutierrez
       - kpouget
       label: backport-risk-assessed
     - allowed_users:

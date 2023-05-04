@@ -4,6 +4,8 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 CONFIG="${SHARED_DIR}/install-config.yaml"
 
 # mirror registry
@@ -27,22 +29,15 @@ echo '{"auths":{}}' | jq --argjson a "{\"${MIRROR_REGISTRY_HOST}\": {\"auth\": \
 
 # Additional CA & pull secret patch
 CONFIG_PATCH="${SHARED_DIR}/pull_secret_ca.yaml.patch"
-
-additional_trust_bundle="${SHARED_DIR}/additional_trust_bundle"
-cat /var/run/vault/mirror-registry/client_ca.crt > "${additional_trust_bundle}"
-if [[ "${CLUSTER_TYPE:-}" =~ ^aws-s?c2s$ ]]; then
-  echo >> "${additional_trust_bundle}"
-  cat "${CLUSTER_PROFILE_DIR}/shift-ca-chain.cert.pem" >> "${additional_trust_bundle}"
-fi
 cat > "${CONFIG_PATCH}" << EOF
 pullSecret: >
   $(cat "${mirror_registry_pull_secret}" | jq -c .)
 additionalTrustBundle: |
-`sed 's/^/  /g' "${additional_trust_bundle}"`
+`sed 's/^/  /g' "/var/run/vault/mirror-registry/client_ca.crt"`
 EOF
-yq-go m -x -i "${CONFIG}" "${CONFIG_PATCH}"
+/tmp/yq m -x -i "${CONFIG}" "${CONFIG_PATCH}"
 
 # imageContentSources patch
-yq-go m -x -i "${CONFIG}" "${install_config_icsp_patch}"
+/tmp/yq m -x -i "${CONFIG}" "${install_config_icsp_patch}"
 
 rm -f "${mirror_registry_pull_secret}"

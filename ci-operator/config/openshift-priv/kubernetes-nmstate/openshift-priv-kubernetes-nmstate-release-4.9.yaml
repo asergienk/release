@@ -78,7 +78,6 @@ tests:
   container:
     from: src
 - as: e2e-handler-sdn-ipv4
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -89,7 +88,6 @@ tests:
       IMAGE_BUILDER: echo
     workflow: kubernetes-nmstate-e2e-handler
 - as: e2e-operator-sdn-ipv4
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:

@@ -2,11 +2,11 @@
 	"path": "upi/aws/proxy/post/upi-aws-proxy-post-chain.yaml",
 	"owners": {
 		"approvers": [
+			"staebler",
 			"rna-afk",
 			"patrickdillon",
 			"jhixson74",
-			"jianlinliu",
-			"yunjiang29"
+			"jstuever"
 		]
 	}
 }

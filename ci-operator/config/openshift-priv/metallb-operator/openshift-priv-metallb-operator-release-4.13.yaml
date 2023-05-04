@@ -15,10 +15,10 @@ base_images:
     name: 4.13-priv
     namespace: ocp-private
     tag: metallb-frr
-  ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+  ocp_builder_rhel-8-golang-1.18-openshift-4.11:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.13
+    tag: rhel-8-golang-1.18-openshift-4.11
   redhat-operator-index:
     name: redhat-operator-index
     namespace: ci
@@ -33,9 +33,9 @@ images:
 - dockerfile_path: Dockerfile.openshift
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.11:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.11
   to: metallb-operator
 operator:
   bundles:
@@ -109,7 +109,6 @@ tests:
     test:
     - as: e2e
       commands: |
-        hack/validate_ocp_bundle.sh
         export OO_INSTALL_NAMESPACE=openshift-metallb-operator
         export USE_LOCAL_RESOURCES=true
         export IS_OPENSHIFT=1
@@ -122,7 +121,6 @@ tests:
           memory: 200Mi
     workflow: optional-operators-ci-aws-upgrade
 - as: metallb-e2e-metal-ipi
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -135,7 +133,6 @@ tests:
         METALLB_OPERATOR_BRANCH=main
     workflow: baremetalds-metallb-e2e
 - as: metallb-e2e-metal-ipi-ovn
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:

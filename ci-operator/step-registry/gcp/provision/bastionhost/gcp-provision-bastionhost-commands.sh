@@ -13,12 +13,6 @@ if [[ ! -f "${bastion_ignition_file}" ]]; then
   echo "'${bastion_ignition_file}' not found, abort." && exit 1
 fi
 
-if [[ -s "${SHARED_DIR}/xpn.json" ]]; then
-  echo "Reading variables from ${SHARED_DIR}/xpn.json..."
-  NETWORK="$(jq -r '.clusterNetwork' "${SHARED_DIR}/xpn.json")"
-  CONTROL_PLANE_SUBNET="$(jq -r '.controlSubnet' "${SHARED_DIR}/xpn.json")"
-fi
-
 if [[ -z "${NETWORK}" || -z "${CONTROL_PLANE_SUBNET}" ]] && [[ ! -s "${SHARED_DIR}/customer_vpc_subnets.yaml" ]]; then
   echo "Lack of VPC info, abort." && exit 1
 fi
@@ -27,16 +21,20 @@ fi
 #####################################
 ##############Initialize#############
 #####################################
+
+# TODO: move to image
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 workdir=`mktemp -d`
 
-curl -sL https://raw.githubusercontent.com/yunjiang29/ocp-test-data/main/coreos-for-bastion-host/fedora-coreos-stable.json -o /tmp/fedora-coreos-stable.json
-IMAGE_NAME=$(jq -r .architectures.x86_64.images.gcp.name < /tmp/fedora-coreos-stable.json)
+curl -L -o ${workdir}/fcos-stable.json https://builds.coreos.fedoraproject.org/streams/stable.json
+IMAGE_NAME=$(jq -r .architectures.x86_64.images.gcp.name < ${workdir}/fcos-stable.json)
 if [ -z "${IMAGE_NAME}" ]; then
   echo "Missing IMAGE in region: ${REGION}" 1>&2
   exit 1
 fi
-IMAGE_PROJECT=$(jq -r .architectures.x86_64.images.gcp.project < /tmp/fedora-coreos-stable.json)
-IMAGE_RELEASE=$(jq -r .architectures.x86_64.images.gcp.release < /tmp/fedora-coreos-stable.json)
+IMAGE_PROJECT=$(jq -r .architectures.x86_64.images.gcp.project < ${workdir}/fcos-stable.json)
+IMAGE_RELEASE=$(jq -r .architectures.x86_64.images.gcp.release < ${workdir}/fcos-stable.json)
 echo "Using FCOS ${IMAGE_RELEASE} IMAGE: ${IMAGE_NAME}"
 
 
@@ -44,12 +42,6 @@ echo "Using FCOS ${IMAGE_RELEASE} IMAGE: ${IMAGE_NAME}"
 ###############Log In################
 #####################################
 
-if [[ -s "${SHARED_DIR}/xpn.json" ]] && [[ -f "${CLUSTER_PROFILE_DIR}/xpn_creds.json" ]]; then
-  echo "Activating XPN service-account..."
-  GOOGLE_CLOUD_XPN_KEYFILE_JSON="${CLUSTER_PROFILE_DIR}/xpn_creds.json"
-  gcloud auth activate-service-account --key-file="${GOOGLE_CLOUD_XPN_KEYFILE_JSON}"
-  GOOGLE_CLOUD_XPN_SA=$(jq -r .client_email "${GOOGLE_CLOUD_XPN_KEYFILE_JSON}")
-fi
 GOOGLE_PROJECT_ID="$(< ${CLUSTER_PROFILE_DIR}/openshift_gcp_project)"
 export GCP_SHARED_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/gce.json"
 sa_email=$(jq -r .client_email ${GCP_SHARED_CREDENTIALS_FILE})
@@ -64,8 +56,8 @@ echo "Using region: ${REGION}"
 
 VPC_CONFIG="${SHARED_DIR}/customer_vpc_subnets.yaml"
 if [[ -z "${NETWORK}" || -z "${CONTROL_PLANE_SUBNET}" ]]; then
-  NETWORK=$(yq-go r "${VPC_CONFIG}" 'platform.gcp.network')
-  CONTROL_PLANE_SUBNET=$(yq-go r "${VPC_CONFIG}" 'platform.gcp.controlPlaneSubnet')
+  NETWORK=$(/tmp/yq r "${VPC_CONFIG}" 'platform.gcp.network')
+  CONTROL_PLANE_SUBNET=$(/tmp/yq r "${VPC_CONFIG}" 'platform.gcp.controlPlaneSubnet')
 fi
 if [[ -z "${NETWORK}" || -z "${CONTROL_PLANE_SUBNET}" ]]; then
   echo "Could not find VPC network and control-plane subnet" && exit 1
@@ -98,13 +90,13 @@ echo "Waiting for the proxy service starting running..." && sleep 60s
 
 if [[ -s "${SHARED_DIR}/xpn.json" ]]; then
   HOST_PROJECT="$(jq -r '.hostProject' "${SHARED_DIR}/xpn.json")"
-  project_option="--project=${HOST_PROJECT} --account ${GOOGLE_CLOUD_XPN_SA}"
+  project_option="--project=${HOST_PROJECT}"
 else
   project_option=""
 fi
 gcloud ${project_option} compute firewall-rules create "${bastion_name}-ingress-allow" \
   --network ${NETWORK} \
-  --allow tcp:22,tcp:3128,tcp:3129,tcp:5000,tcp:6001,tcp:6002,tcp:8080,tcp:873 \
+  --allow tcp:22,tcp:3128,tcp:3129,tcp:5000,tcp:6001,tcp:6002,tcp:8080 \
   --target-tags="${bastion_name}"
 cat > "${SHARED_DIR}/bastion-destroy.sh" << EOF
 gcloud compute instances delete -q "${bastion_name}" --zone=${ZONE_0}
@@ -140,7 +132,7 @@ echo "${proxy_public_url}" > "${SHARED_DIR}/proxy_public_url"
 echo "${proxy_private_url}" > "${SHARED_DIR}/proxy_private_url"
 
 # echo proxy IP to ${SHARED_DIR}/proxyip
-echo "${bastion_public_ip}" > "${SHARED_DIR}/proxyip"
+echo "${bastion_public_ip}" >> "${SHARED_DIR}/proxyip"
 
 #####################################
 ####Register mirror registry DNS#####

@@ -1,9 +1,6 @@
 ref:
   as: upi-conf-vsphere-ova
-  from_image:
-    namespace: ocp
-    name: "4.12"
-    tag: upi-installer
+  from: upi-installer
   grace_period: 10m
   commands: upi-conf-vsphere-ova-commands.sh
   resources:

@@ -2,12 +2,12 @@ build_root:
   image_stream_tag:
     name: builder
     namespace: stolostron
-    tag: go1.18-linux
+    tag: go1.17-linux
 images:
 - dockerfile_path: Dockerfile
   to: observatorium
 promotion:
-  name: "2.8"
+  name: "2.6"
   namespace: stolostron
 releases:
   initial:
@@ -38,38 +38,11 @@ tests:
     make test --always-make
   container:
     from: test-bin
-- as: sonar-pre-submit
-  commands: |
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
-  container:
-    from: src
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
-- as: sonar-post-submit
-  commands: |
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
-  container:
-    from: src
-  postsubmit: true
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
-- as: pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: observatorium
-    env:
-      IMAGE_REPO: observatorium
-      REGISTRY_ORG: stolostron
-    workflow: ocm-ci-image-mirror
 - as: fast-forward
   postsubmit: true
   steps:
     env:
-      DESTINATION_BRANCH: release-2.8
+      DESTINATION_BRANCH: release-2.6
     workflow: ocm-ci-fastforward
 zz_generated_metadata:
   branch: main

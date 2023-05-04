@@ -1,38 +1,26 @@
 label:
   restricted_labels:
     openshift/origin:
-    - allowed_teams:
-      - openshift-staff-engineers
-      allowed_users:
-      - akram
-      - coreydaley
-      - dgoodwin
-      - dmage
-      - dtantsur
-      - ingvagabund
+    - allowed_users:
       - jsafrane
       - mandre
-      - s-urbaniak
       - soltysh
-      - stbenjam
       - sttts
+      - s-urbaniak
       - tkashem
+      - dmage
+      - akram
+      - coreydaley
       label: backport-risk-assessed
-    - allowed_teams:
-      - openshift-staff-engineers
-      allowed_users:
-      - dgoodwin
-      - gangwgr
-      - jadhaj
-      - jitendar-singh
-      - kasturinarra
-      - pamoedom
-      - prietyc123
-      - stbenjam
-      - sunilcio
-      - wangke19
+    - allowed_users:
       - xingxingxia
+      - kasturinarra
+      - sunilcio
       - zhouying7780
+      - wangke19
+      - gangwgr
+      - jitendar-singh
+      - prietyc123
       assign_on:
       - label: backport-risk-assessed
       label: cherry-pick-approved

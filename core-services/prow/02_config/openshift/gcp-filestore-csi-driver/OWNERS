@@ -9,7 +9,6 @@ approvers:
 - dobsonj
 - gnufied
 - jsafrane
-- mpatlasov
 - romanbednar
 - tsmetana
 options: {}
@@ -18,6 +17,5 @@ reviewers:
 - dobsonj
 - gnufied
 - jsafrane
-- mpatlasov
 - romanbednar
 - tsmetana

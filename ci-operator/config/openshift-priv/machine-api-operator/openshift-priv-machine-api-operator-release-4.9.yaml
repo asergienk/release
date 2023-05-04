@@ -83,6 +83,19 @@ tests:
         requests:
           cpu: 100m
     workflow: ipi-aws
+- as: e2e-aws-operator-tech-preview
+  optional: true
+  steps:
+    cluster_profile: aws
+    test:
+    - as: test
+      cli: latest
+      commands: JUNIT_DIR=${ARTIFACT_DIR} make test-e2e-tech-preview
+      from: stable:cluster-api-actuator-pkg
+      resources:
+        requests:
+          cpu: 100m
+    workflow: ipi-aws
 - as: e2e-aws-upgrade
   steps:
     cluster_profile: aws
@@ -119,7 +132,6 @@ tests:
           cpu: 100m
     workflow: ipi-gcp
 - as: e2e-metal-ipi
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -129,7 +141,6 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-upgrade
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -142,7 +153,6 @@ tests:
       TEST_TYPE: upgrade
     workflow: baremetalds-e2e-upgrade
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -152,7 +162,6 @@ tests:
         NETWORK_TYPE=OVNKubernetes
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-ovn-dualstack
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -162,7 +171,6 @@ tests:
         NETWORK_TYPE=OVNKubernetes
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-virtualmedia
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -189,7 +197,7 @@ tests:
     test:
     - as: e2e-test
       commands: JUNIT_DIR=${ARTIFACT_DIR} make test-e2e
-      from: stable:cluster-api-actuator-pkg
+      from: src
       resources:
         requests:
           cpu: 100m

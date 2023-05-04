@@ -1,4 +1,0 @@
-plugins:
-  rhpit/interop-tests:
-    plugins:
-    - trigger

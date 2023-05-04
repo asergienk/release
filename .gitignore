@@ -1,5 +1,4 @@
 .idea/*
-.vscode/
 jenkins/library/.idea/*
 *.iml
 *_generated.yml
@@ -10,5 +9,3 @@ jenkins/controllers/.idea/*
 *.swp
 clusters/app.ci/.actual_diff
 *.pyc
-### macOS ###
-.DS_Store

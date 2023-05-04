@@ -3,7 +3,7 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.18
+    tag: golang-1.17
 images:
 - dockerfile_literal: FROM bin
   from: bin
@@ -40,16 +40,6 @@ tests:
     cluster_profile: openstack-vexxhost
     env:
       CONFIG_TYPE: minimal
-    test:
-    - ref: openstack-test-openstack
-    workflow: openshift-e2e-openstack-ipi
-- as: test-kuryr
-  steps:
-    cluster_profile: openstack-kuryr
-    env:
-      BASE_DOMAIN: shiftstack.devcluster.openshift.com
-      CONFIG_TYPE: minimal
-      NETWORK_TYPE: Kuryr
     test:
     - ref: openstack-test-openstack
     workflow: openshift-e2e-openstack-ipi

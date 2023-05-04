@@ -9,8 +9,6 @@ approvers:
 - bng0y
 - boranx
 - fahlmant
-- mjlshen
-- rafael-azevedo
 options: {}
 reviewers:
 - abyrne55
@@ -19,7 +17,6 @@ reviewers:
 - boranx
 - fahlmant
 - lnguyen1401
-- mjlshen
 - ritmun
 - robotmaxtron
 - tiwillia

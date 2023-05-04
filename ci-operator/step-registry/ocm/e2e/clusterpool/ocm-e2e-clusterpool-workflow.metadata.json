@@ -2,6 +2,7 @@
 	"path": "ocm/e2e/clusterpool/ocm-e2e-clusterpool-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"gurnben",
 			"kyl-bempah",
 			"mark-nc",

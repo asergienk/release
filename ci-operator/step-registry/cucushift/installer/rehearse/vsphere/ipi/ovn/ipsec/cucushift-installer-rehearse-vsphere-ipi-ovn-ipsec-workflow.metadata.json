@@ -3,17 +3,13 @@
 	"owners": {
 		"approvers": [
 			"jianlinliu",
-			"jinyunma",
-			"lihongan",
-			"anuragthehatter",
-			"zhaozhanqi"
+			"gpei",
+			"jinyunma"
 		],
 		"reviewers": [
 			"jianlinliu",
-			"jinyunma",
-			"lihongan",
-			"anuragthehatter",
-			"zhaozhanqi"
+			"gpei",
+			"jinyunma"
 		]
 	}
 }

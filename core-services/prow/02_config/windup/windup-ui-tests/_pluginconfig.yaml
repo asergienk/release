@@ -1,4 +1,0 @@
-plugins:
-  windup/windup-ui-tests:
-    plugins:
-    - trigger

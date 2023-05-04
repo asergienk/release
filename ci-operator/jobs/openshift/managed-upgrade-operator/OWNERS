@@ -6,6 +6,7 @@
 
 approvers:
 - bmeng
+- dofinn
 - mrbarge
 - ravitri
 - wanghaoran1988
@@ -13,9 +14,9 @@ options: {}
 reviewers:
 - a7vicky
 - bmeng
+- dofinn
 - jwai7
 - mrbarge
 - ravitri
 - rendhalver
-- shitaljante
-- weherdh
+- t0masd

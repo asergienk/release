@@ -20,10 +20,6 @@
     "multi-serial":{
       "optional":true,
       "prowJob":{"name":"periodic-ci-openshift-multiarch-master-nightly-4.11-ocp-e2e-serial-aws-heterogeneous"}
-    },
-    "multi-aws-ovn-upgrade": {
-      "optional":true,
-      "prowJob":{"name":"periodic-ci-openshift-multiarch-master-nightly-4.11-ocp-e2e-aws-ovn-heterogeneous-upgrade"}
     }
   }
 }

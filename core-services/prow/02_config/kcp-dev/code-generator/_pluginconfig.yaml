@@ -28,11 +28,6 @@ external_plugins:
     events:
     - issue_comment
     name: payload-testing-prow-plugin
-  - endpoint: http://jira-lifecycle-plugin
-    events:
-    - issue_comment
-    - pull_request
-    name: jira-lifecycle-plugin
 lgtm:
 - repos:
   - kcp-dev/code-generator
@@ -40,7 +35,6 @@ lgtm:
 plugins:
   kcp-dev/code-generator:
     plugins:
-    - approve
     - assign
     - blunderbuss
     - bugzilla
@@ -55,8 +49,6 @@ plugins:
     - label
     - lgtm
     - lifecycle
-    - milestone
-    - milestonestatus
     - override
     - pony
     - retitle
@@ -68,3 +60,4 @@ plugins:
     - owners-label
     - wip
     - yuks
+    - approve

@@ -1,10 +1,6 @@
 chain:
   as: cucushift-installer-rehearse-gcp-ipi-proxy-deprovision
-  steps:
-  - chain: gather-network
-  - chain: gather-core-dump
-  - ref: gather-gcp-console
-  - ref: gather-proxy
+  steps: 
   - chain: ipi-deprovision
   - ref: gcp-deprovision-bastionhost
   - ref: gcp-deprovision-vpc

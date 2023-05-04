@@ -21,8 +21,7 @@ ref:
       documentation: |-
         The tag for the destination image reference. If blank, the tag for
         a presubmit will be <version>-PR<pull_num>-<commit_sha> and for a
-        postsubmit will be <version>-<commit_sha>. If equals to YearIndex assigns
-        on IMAGE_TAG the date as full current date YYYYMMDD.
+        postsubmit will be <version>-<commit_sha>.
     - name: REGISTRY_HOST
       default: quay.io
       documentation: |-
@@ -41,7 +40,7 @@ ref:
         The name of the file in REGISTRY_SECRET with the contents of
         the .docker/config.json file encoded in base64.
     - name: RELEASE_VERSION
-      default: ""
+      default: "0.1"
       documentation: |-
         The current release version for the product.
     - name: SECRETS_PATH

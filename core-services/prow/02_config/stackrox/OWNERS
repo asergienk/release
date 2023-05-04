@@ -1,5 +1,4 @@
 approvers:
-- dcaravel
 - gavin-stackrox
 - house-d
 - janisz
@@ -13,7 +12,6 @@ approvers:
 - viswajithiii
 - vjwilson
 reviewers:
-- dcaravel
 - gavin-stackrox
 - house-d
 - janisz

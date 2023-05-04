@@ -5,19 +5,16 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- annazivkovic
-- barbacbd
 - jhixson74
+- jstuever
 - patrickdillon
-- r4f4
-- rna-afk
-- sadasu
 - sdodson
 options: {}
 reviewers:
 - annazivkovic
 - barbacbd
 - jhixson74
+- jstuever
 - patrickdillon
 - r4f4
 - rna-afk

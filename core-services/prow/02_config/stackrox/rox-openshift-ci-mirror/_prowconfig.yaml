@@ -1,0 +1,6 @@
+branch-protection:
+  orgs:
+    stackrox:
+      repos:
+        rox-openshift-ci-mirror:
+          unmanaged: true

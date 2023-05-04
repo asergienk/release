@@ -1,12 +1,14 @@
 releases:
   initial:
     release:
-      channel: candidate
+      channel: fast
       version: "4.9"
   intermediate:
-    release:
-      channel: candidate
-      version: "4.10"
+    prerelease:
+      product: ocp
+      version_bounds:
+        lower: 4.10.0-0
+        upper: 4.11.0-0
   latest:
     candidate:
       product: ocp

@@ -5,8 +5,8 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
-    context: ci/prow/e2e-aws-ovn
+    cluster: build03
+    context: ci/prow/e2e-aws
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -18,9 +18,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-api-provider-aws-master-e2e-aws-ovn
+    name: pull-ci-openshift-priv-cluster-api-provider-aws-master-e2e-aws
     path_alias: sigs.k8s.io/cluster-api-provider-aws
-    rerun_command: /test e2e-aws-ovn
+    rerun_command: /test e2e-aws
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -31,8 +31,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-aws-cluster-profile
+        - --target=e2e-aws
         command:
         - ci-operator
         image: ci-operator:latest
@@ -48,7 +48,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-aws-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -82,13 +82,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-aws-serial
     decorate: true
     decoration_config:
@@ -166,71 +166,6 @@ presubmits:
         secret:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-aws-serial,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build03
-    context: ci/prow/e2e-hypershift
-    decorate: true
-    decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
-    hidden: true
-    labels:
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-api-provider-aws-master-e2e-hypershift
-    path_alias: sigs.k8s.io/cluster-api-provider-aws
-    rerun_command: /test e2e-hypershift
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --oauth-token-path=/usr/local/github-credentials/oauth
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --target=e2e-hypershift
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /usr/local/github-credentials
-          name: github-credentials-openshift-ci-robot-private-git-cloner
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-hypershift,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:

@@ -3,37 +3,36 @@ base_images:
     name: ubi-minimal
     namespace: ocp
     tag: "8"
-  stolostron_builder_go1.19-linux:
+  open-cluster-management_builder_go1.16-linux:
     name: builder
-    namespace: stolostron
-    tag: go1.19-linux
+    namespace: open-cluster-management
+    tag: go1.16-linux
 binary_build_commands: make build --warn-undefined-variables
 build_root:
   image_stream_tag:
-    name: builder
-    namespace: stolostron
-    tag: go1.19-linux
+    name: release
+    namespace: openshift
+    tag: golang-1.15
 images:
-- dockerfile_path: build/Dockerfile
+- dockerfile_path: Dockerfile
   from: base
   inputs:
-    stolostron_builder_go1.19-linux:
+    open-cluster-management_builder_go1.16-linux:
       as:
-      - golang:1.19
-  to: addon-manager
+      - registry.ci.openshift.org/open-cluster-management/builder:go1.16-linux
+  to: addon-framework
 promotion:
-  disabled: true
   name: "2.3"
   namespace: stolostron
 releases:
   initial:
     integration:
-      name: "4.10"
+      name: "4.7"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.10"
+      name: "4.7"
       namespace: ocp
 resources:
   '*':
@@ -44,51 +43,46 @@ resources:
       memory: 200Mi
 test_binary_build_commands: make build GO_BUILD_FLAGS:='-race' --warn-undefined-variables
 tests:
-- as: pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: addon-manager
-    env:
-      IMAGE_REPO: addon-manager
-      REGISTRY_ORG: stolostron
-    workflow: ocm-ci-image-mirror
-- as: pr-merge-image-mirror
-  postsubmit: true
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: addon-manager
-    env:
-      IMAGE_REPO: addon-manager
-      IMAGE_TAG: main
-      REGISTRY_ORG: stolostron
-    workflow: ocm-ci-image-mirror
-- as: sonar-pre-submit
+- as: build
   commands: |
-    export SONAR_GO_TEST_ARGS="./..."
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
+    true
   container:
-    from: src
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
-- as: sonar-post-submit
+    from: bin
+- as: verify
   commands: |
-    export SONAR_GO_TEST_ARGS="./..."
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
+    make verify -k --warn-undefined-variables
   container:
-    from: src
-  postsubmit: true
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
-- as: fast-forward
-  postsubmit: true
+    from: bin
+- as: verify-deps
+  commands: |
+    make verify-deps -k --warn-undefined-variables
+  container:
+    from: bin
+- as: unit
+  commands: |
+    make test-unit JUNITFILE=${ARTIFACT_DIR}/junit_report.xml --warn-undefined-variables
+  container:
+    from: test-bin
+- as: integration
+  commands: make test-integration
+  container:
+    from: test-bin
+- as: e2e
   steps:
-    env:
-      DESTINATION_BRANCH: backplane-2.3
-    workflow: ocm-ci-fastforward
+    cluster_profile: aws
+    test:
+    - as: test
+      cli: latest
+      commands: |
+        KUBECTL=oc
+        EXAMPLE_IMAGE_NAME=${IMAGE_FORMAT//\/stable:\$\{component\}//pipeline:addon-framework}
+        export KUBECTL EXAMPLE_IMAGE_NAME
+        make test-e2e
+      from: src
+      resources:
+        requests:
+          cpu: 100m
+    workflow: ipi-aws
 zz_generated_metadata:
   branch: main
   org: stolostron

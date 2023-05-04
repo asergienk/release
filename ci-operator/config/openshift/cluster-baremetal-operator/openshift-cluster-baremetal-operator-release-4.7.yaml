@@ -1,26 +1,26 @@
 base_images:
   assisted-image-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-image-service
   assisted-installer:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer
   assisted-installer-agent:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-agent
   assisted-installer-controller:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-controller
   assisted-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-service
   assisted-test-infra:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-test-infra
   base:
@@ -93,7 +93,6 @@ tests:
     cluster_profile: azure4
     workflow: openshift-e2e-azure
 - as: e2e-metal-ipi
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -102,7 +101,6 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-upgrade
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -114,7 +112,6 @@ tests:
       TEST_TYPE: upgrade
     workflow: baremetalds-e2e-upgrade
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -123,7 +120,6 @@ tests:
         NETWORK_TYPE=OVNKubernetes
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-ovn-dualstack
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -132,7 +128,6 @@ tests:
         NETWORK_TYPE=OVNKubernetes
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-virtualmedia
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-virtualmedia

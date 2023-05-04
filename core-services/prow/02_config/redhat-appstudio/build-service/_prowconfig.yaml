@@ -1,6 +1,7 @@
 tide:
   queries:
   - labels:
+    - approved
     - lgtm
     missingLabels:
     - backports/unvalidated-commits
@@ -8,7 +9,6 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - jira/invalid-bug
     - needs-rebase
     repos:
     - redhat-appstudio/build-service

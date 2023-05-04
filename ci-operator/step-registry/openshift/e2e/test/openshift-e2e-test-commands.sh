@@ -40,14 +40,6 @@ fi
 
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
 
-function cleanup() {
-    echo "Requesting risk analysis for test failures in this job run from sippy:"
-    openshift-tests risk-analysis --junit-dir "${ARTIFACT_DIR}/junit" || true
-
-    echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_TEST_END"
-}
-trap cleanup EXIT
-
 mkdir -p "${HOME}"
 
 # Override the upstream docker.io registry due to issues with rate limiting
@@ -131,7 +123,7 @@ aws|aws-arm64)
     export TEST_PROVIDER="{\"type\":\"aws\",\"region\":\"${REGION}\",\"zone\":\"${ZONE}\",\"multizone\":true,\"multimaster\":true}"
     export KUBE_SSH_USER=core
     ;;
-azure4|azure-arm64) export TEST_PROVIDER=azure;;
+azure4) export TEST_PROVIDER=azure;;
 azurestack)
     export TEST_PROVIDER="none"
     export AZURE_AUTH_LOCATION=${SHARED_DIR}/osServicePrincipal.json
@@ -288,6 +280,7 @@ function suite() {
 }
 
 echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_TEST_START"
+trap 'echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_TEST_END"' EXIT
 
 oc -n openshift-config patch cm admin-acks --patch '{"data":{"ack-4.8-kube-1.22-api-removals-in-4.9":"true"}}' --type=merge || echo 'failed to ack the 4.9 Kube v1beta1 removals; possibly API-server issue, or a pre-4.8 release image'
 
@@ -395,48 +388,27 @@ oc wait clusteroperators --all --for=condition=Progressing=false --timeout=10m
 echo "$(date) - all clusteroperators are done progressing."
 
 # this works around a problem where tests fail because imagestreams aren't imported.  We see this happen for exec session.
-count=1
+echo "$(date) - waiting for non-samples imagesteams to import..."
+count=0
 while :
 do
-  echo "[$(date)] waiting for non-samples imagesteams to import..."
-  wait_count=1
-  while :
-  do
-    non_imported_imagestreams=$(oc -n openshift get imagestreams -o go-template='{{range .items}}{{$namespace := .metadata.namespace}}{{$name := .metadata.name}}{{range .status.tags}}{{if not .items}}{{$namespace}}/{{$name}}:{{.tag}}{{"\n"}}{{end}}{{end}}{{end}}')
-    if [ -z "${non_imported_imagestreams}" ]
-    then
-      break 2 # break from outer loop
-    fi
-    echo "[$(date)] The following image streams are yet to be imported (attempt #${wait_count}):"
-    echo "${non_imported_imagestreams}"
+  non_imported_imagestreams=$(oc -n openshift get imagestreams -o go-template='{{range .items}}{{$namespace := .metadata.namespace}}{{$name := .metadata.name}}{{range .status.tags}}{{if not .items}}{{$namespace}}/{{$name}}:{{.tag}}{{"\n"}}{{end}}{{end}}{{end}}' | (grep -v 'apicast\|jboss\|jenkins\|openjdk\|redhat-sso' || true))
+  if [ -z "${non_imported_imagestreams}" ]
+  then
+    break
+  fi
+  echo "The following image streams are yet to be imported (attempt #${count}):"
+  echo "${non_imported_imagestreams}"
 
-    wait_count=$((wait_count+1))
-    if (( wait_count > 10 )); then
-        break
-    fi
-
-    sleep 60
-  done
-
-  # Given up after 3 rounds of waiting 10 minutes
   count=$((count+1))
-  if (( count > 3 )); then
-      echo "[$(date)] Failed to import all image streams after 30 minutes"
-      echo $non_imported_imagestreams
-      exit 1
+  if (( count > 20 )); then
+    echo "Failed while waiting on imagestream import"
+    exit 1
   fi
 
-  # image streams won't retry by themselves https://issues.redhat.com/browse/RFE-3660
-  set +e
-  for imagestream in $non_imported_imagestreams
-  do
-      echo "[$(date)] Retrying image import $imagestream"
-      oc import-image -n "$(echo "$imagestream" | cut -d/ -f1)" "$(echo "$imagestream" | cut -d/ -f2)"
-  done
-  set -e
+  sleep 60
 done
-
-echo "[$(date)] All imagestreams are imported."
+echo "$(date) - all imagestreams are imported."
 
 case "${TEST_TYPE}" in
 upgrade-conformance)

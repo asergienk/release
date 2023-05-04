@@ -1,4 +1,0 @@
-chain:
-  as: openshift-microshift-infra-aws-post
-  steps:
-  - ref: aws-deprovision-stacks

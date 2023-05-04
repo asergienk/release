@@ -1,7 +1,0 @@
-branch-protection:
-  orgs:
-    maistra:
-      unmanaged: true
-tide:
-  merge_method:
-    maistra: squash

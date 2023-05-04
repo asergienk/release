@@ -1,9 +1,6 @@
 ref:
   as: workers-rhel-azure-provision
-  from_image:
-    namespace: ocp
-    name: "4.12"
-    tag: upi-installer
+  from: upi-installer
   commands: workers-rhel-azure-provision-commands.sh
   resources:
     requests:
@@ -11,7 +8,7 @@ ref:
       memory: 200Mi
   env:
   - name: RHEL_WORKER_COUNT
-    default: "3"
+    default: "2"
     documentation: |-
       The number of rhel worker to be created.
   - name: RHEL_VM_SIZE
@@ -23,7 +20,7 @@ ref:
     documentation: |-
       The os disk size in GB of the RHEL VM provisioned.
   - name: RHEL_IMAGE
-    default: "RedHat:RHEL:8-lvm-gen2:8.6.2022051814"
+    default: "RedHat:RHEL:8-lvm-gen2:8.5.2021121504"
     documentation: |-
       The Image used to provision the RHEL inatance.
   - name: RHEL_USER 

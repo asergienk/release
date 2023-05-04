@@ -3,14 +3,6 @@ kind: HiveConfig
 metadata:
   name: hive
 spec:
-  deploymentConfig:
-  - deploymentName: hive-controllers
-    resources:
-      requests:
-        cpu: 50m
-        memory: 1024Mi
+  exportMetrics: true
   logLevel: debug
-  metricsConfig:
-    additionalClusterDeploymentLabels:
-      owner: tp.openshift.io/owner
   targetNamespace: hive

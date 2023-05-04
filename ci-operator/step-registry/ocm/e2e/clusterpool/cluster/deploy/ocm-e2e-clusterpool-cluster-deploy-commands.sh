@@ -31,10 +31,12 @@ fi
 case "${PIPELINE_STAGE}" in
     dev)
         ;;
+    edge)
+        ;;
     integration)
         ;;
     *)
-        log "ERROR Invalid PIPELINE_STAGE $PIPELINE_STAGE must be dev or integration."
+        log "ERROR Invalid PIPELINE_STAGE $PIPELINE_STAGE must be dev, edge, or integration."
         exit 1
         ;;
 esac
@@ -176,7 +178,22 @@ fi
 # Trim "release-" prefix.
 release=${release#release-}
 
-PIPELINE_STAGE=${PIPELINE_STAGE:-"dev"}
+# Based on release, stomp on PIPELINE_STAGE since we changed defaults midstream in 2.5
+log "PIPELINE_STAGE=${PIPELINE_STAGE}"
+if [[ $release = "2.0" ]]; then
+  PIPELINE_STAGE="edge"
+elif [[ $release = "2.1" ]]; then
+  PIPELINE_STAGE="edge"
+elif [[ $release = "2.2" ]]; then
+  PIPELINE_STAGE="edge"
+elif [[ $release = "2.3" ]]; then
+  PIPELINE_STAGE="edge"
+elif [[ $release = "2.4" ]]; then
+  PIPELINE_STAGE="edge"
+else
+  PIPELINE_STAGE=${PIPELINE_STAGE:-"dev"}
+fi
+log "Based on release ${release}, setting your PIPELINE_STAGE to: $PIPELINE_STAGE"
 
 # Get pipeline branch.
 pipeline_branch="${release}-${PIPELINE_STAGE}"
@@ -351,7 +368,7 @@ deploy() {
             _elapsed=$(( _elapsed + _step ))
         fi
 
-        DEBUG="$ACM_DEPLOY_DEBUG" KUBECONFIG="$_kc" QUAY_TOKEN="$QUAY_TOKEN" ./start.sh --silent -t \
+        KUBECONFIG="$_kc" QUAY_TOKEN="$QUAY_TOKEN" ./start.sh --silent -t \
             > >(tee -a "$_log") 2>&1 && {
             logf "$_log" "Deploy $_cluster: start.sh generated YAML files after ${_elapsed}s"
             break

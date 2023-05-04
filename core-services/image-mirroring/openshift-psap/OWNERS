@@ -1,8 +1,10 @@
 approvers:
+- arangogutierrez
 - dagrayvid
 - kpouget
 options: {}
 reviewers:
+- arangogutierrez
 - jmencak
 - dagrayvid
 - kpouget

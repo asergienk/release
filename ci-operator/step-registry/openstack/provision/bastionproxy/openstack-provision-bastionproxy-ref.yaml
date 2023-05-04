@@ -35,14 +35,12 @@ ref:
                       require a proxy server to be deployed.
         * 'proxy' - Configure the install-config to use a pre-created restricted network (BYON) and
                    a Cluster Proxy.
+    - name: ZONES_COUNT
+      default: "0"
+      documentation: |-
+        The number of AZs to present in the cluster. Accepted values are 0 and 1.
     - name: NETWORK_TYPE
-      default: 'OVNKubernetes'
+      default: 'OpenShiftSDN'
       documentation: The Network type used during the installation
-    - name: PROXY_INTERFACE
-      default: "172.16.0.4"
-  credentials:
-  - namespace: test-credentials
-    name: shiftstack-bastionproxy
-    mount_path: /var/run/bastionproxy
   documentation: |-
     This step creates the bastion proxy when $CONFIG_TYPE is "proxy".

@@ -9,11 +9,13 @@ filters:
     approvers:
     - alanconway
     - jcantrill
+    - pmoogi-redhat
     - vimalk78
     reviewers:
     - alanconway
-    - cahartma
+    - eranra
     - jcantrill
+    - pmoogi-redhat
     - syedriko
     - vimalk78
     - vparfonov

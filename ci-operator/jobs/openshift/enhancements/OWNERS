@@ -15,7 +15,6 @@ approvers:
 - derekwaynecarr
 - dgoodwin
 - dhellmann
-- dmage
 - dtantsur
 - dustymabe
 - enxebre
@@ -39,7 +38,6 @@ approvers:
 - mfojtik
 - miciah
 - mrunalp
-- pacevedom
 - patrickdillon
 - runcom
 - russellb
@@ -71,7 +69,6 @@ reviewers:
 - derekwaynecarr
 - dgoodwin
 - dhellmann
-- dmage
 - dtantsur
 - dustymabe
 - enxebre
@@ -95,7 +92,6 @@ reviewers:
 - mfojtik
 - miciah
 - mrunalp
-- pacevedom
 - patrickdillon
 - runcom
 - russellb

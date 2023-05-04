@@ -5,14 +5,16 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- coreydaley
-- divyansh42
+- adambkaplan
+- akram
+- bparees
+- gabemontero
 - jkhelil
-- mbharatk
+- otaviof
+- sbose78
 options: {}
 reviewers:
-- apoorvajagtap
-- coreydaley
-- divyansh42
+- akram
 - jkhelil
-- mbharatk
+- otaviof
+- sbose78

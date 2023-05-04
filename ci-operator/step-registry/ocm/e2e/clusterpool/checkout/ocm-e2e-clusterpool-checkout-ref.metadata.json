@@ -2,6 +2,7 @@
 	"path": "ocm/e2e/clusterpool/checkout/ocm-e2e-clusterpool-checkout-ref.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"gurnben",
 			"kyl-bempah",
 			"mark-nc",

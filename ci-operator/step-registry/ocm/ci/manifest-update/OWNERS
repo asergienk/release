@@ -1,4 +1,5 @@
 approvers:
+- arewm
 - gurnben
 - Kyl-Bempah
 - schmidtd
@@ -8,6 +9,5 @@ approvers:
 - MacdonEm
 - lranjbar
 emeritus_approvers:
-- arewm
 - ray-harris
 - TheRealHaoLiu

@@ -3,15 +3,11 @@ label:
     openshift/builder:
     - allowed_users:
       - coreydaley
-      - divyansh42
-      - jkhelil
-      - otaviof
+      - akram
       label: backport-risk-assessed
     - allowed_users:
-      - coreydaley
-      - divyansh42
-      - jkhelil
-      - otaviof
+      - jitendar-singh
+      - prietyc123
       label: cherry-pick-approved
 plugins:
   openshift/builder:

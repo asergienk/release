@@ -4,9 +4,9 @@ label:
     - allowed_teams:
       - openshift-patch-managers
       allowed_users:
+      - creydr
       - cybertron
-      - dougsland
-      - mkowalski
+      - yboaron
       label: backport-risk-assessed
     - allowed_users:
       - amalykhi

@@ -8,14 +8,10 @@ filters:
   .*:
     approvers:
     - aglitke
-    - davidvossel
-    - nunnatsa
     - rgolangh
     - ydayagi
     reviewers:
     - aglitke
-    - davidvossel
-    - nunnatsa
     - rgolangh
     - ydayagi
 options: {}

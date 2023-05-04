@@ -13,7 +13,7 @@ curl -sL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > /t
 chmod ug+x /tmp/bin/jq
 
 # install newest oc
-curl -L --fail https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz | tar xvzf - -C /tmp/bin/ oc
+curl https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz | tar xvzf - -C /tmp/bin/ oc
 chmod ug+x /tmp/bin/oc
 
 
@@ -74,19 +74,12 @@ fi
 az version
 
 EXIT_CODE=0
-# This allows us to continue and try to gather other boot logs.
-set +o errexit
-set -o pipefail
-for VM_NAME in $(sort < "${TMPDIR}/azure-instance-names.txt" | uniq)
+cat "${TMPDIR}/azure-instance-names.txt" | sort | grep . | uniq | while read -r VM_NAME
 do
   echo "Gathering console logs for ${VM_NAME} in resource group ${RESOURCE_GROUP}"
-  # The echo wrapping causes the raw newlines and ANSI control sequences
-  # returned by `az` to be rendered, producing a more readable log.
-  # shellcheck disable=SC2116,SC2046
-  if ! LC_ALL=en_US.UTF-8 echo $(az vm boot-diagnostics get-boot-log --name "${VM_NAME}" --resource-group "${RESOURCE_GROUP}" --subscription "${SUBSCRIPTION_ID}") > "${ARTIFACT_DIR}/${VM_NAME}-boot.log"
-  then
-    EXIT_CODE="${?}"
-  fi
+  # || true at the end of this line ensures that if boot diagnostics aren't enabled, we don't exit the script.
+  # This allows us to continue and try to gather other boot logs.
+  LC_ALL=en_US.UTF-8 az vm boot-diagnostics get-boot-log --name "${VM_NAME}" --resource-group "${RESOURCE_GROUP}" --subscription "${SUBSCRIPTION_ID}" > "${ARTIFACT_DIR}/${VM_NAME}-boot.log" || EXIT_CODE="${?}"
 done
 
 echo "$(date -u --rfc-3339=seconds) - Gathering console logs complete"

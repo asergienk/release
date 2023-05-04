@@ -7,20 +7,21 @@ base_images:
     name: test
     namespace: ocp-kni
     tag: dev-scripts
-  ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+  ocp_builder_rhel-8-golang-1.17-openshift-4.11:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.12
+    tag: rhel-8-golang-1.17-openshift-4.11
 build_root:
   from_repository: true
 images:
 - from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+    ocp_builder_rhel-8-golang-1.17-openshift-4.11:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.12
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.17-openshift-4.11
   to: machine-image-customization-controller
 promotion:
+  disabled: true
   name: "4.12"
   namespace: ocp
 releases:
@@ -50,16 +51,12 @@ tests:
   commands: make lint
   container:
     from: src
-- as: e2e-metal-ipi-sdn-bm
-  cluster: build05
+- as: e2e-metal-ipi
   skip_if_only_changed: (^[A-Z]+\.md$)|((^|/)OWNERS$)
   steps:
     cluster_profile: equinix-ocp-metal
-    env:
-      CLUSTERTYPE: baremetal
     workflow: baremetalds-e2e-ipv4
 - as: e2e-metal-ipi-serial-ipv4
-  cluster: build05
   skip_if_only_changed: (^[A-Z]+\.md$)|((^|/)OWNERS$)
   steps:
     cluster_profile: equinix-ocp-metal

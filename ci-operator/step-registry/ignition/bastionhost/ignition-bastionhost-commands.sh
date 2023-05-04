@@ -6,6 +6,9 @@ set -o pipefail
 
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
 
+# TODO: move to image
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 workdir=`mktemp -d`
 
 CLUSTER_NAME="${NAMESPACE}-${JOB_NAME_HASH}"
@@ -93,7 +96,7 @@ http_port 3128
 EOF
 
 ## PROXY Service
-cat > ${workdir}/squid.service << EOF
+cat > ${workdir}/squid-proxy.service << EOF
 [Unit]
 Description=OpenShift QE Squid Proxy Server
 After=network.target syslog.target
@@ -125,7 +128,7 @@ EOF
 PROXY_CREDENTIAL_ARP1=$(< /var/run/vault/proxy/proxy_creds_encrypted_apr1)
 PROXY_CREDENTIAL_CONTENT="$(echo -e ${PROXY_CREDENTIAL_ARP1} | base64 -w0)"
 PROXY_CONFIG_CONTENT=$(cat ${workdir}/squid.conf | base64 -w0)
-PROXY_SERVICE_CONTENT=$(sed ':a;N;$!ba;s/\n/\\n/g' ${workdir}/squid.service | sed 's/\"/\\"/g')
+PROXY_SERVICE_CONTENT=$(sed ':a;N;$!ba;s/\n/\\n/g' ${workdir}/squid-proxy.service | sed 's/\"/\\"/g')
 
 # proxy ignition
 proxy_ignition_patch=$(mktemp)
@@ -171,7 +174,7 @@ cat > "${proxy_ignition_patch}" << EOF
       {
         "contents": "${PROXY_SERVICE_CONTENT}",
         "enabled": true,
-        "name": "squid.service"
+        "name": "squid-proxy.service"
       }
     ]
   }
@@ -181,73 +184,6 @@ EOF
 # patch proxy setting to ignition
 patch_ignition_file "${bastion_ignition_file}" "${proxy_ignition_patch}"
 rm -f "${proxy_ignition_patch}"
-
-# ----------------------------------------------------------------
-# RSYNCD ignition
-# /etc/rsyncd.conf
-# ----------------------------------------------------------------
-cat > ${workdir}/rsyncd.service << EOF
-[Unit]
-Description=rsyn daemon service
-After=syslog.target network.target
-ConditionPathExists=/etc/rsyncd.conf
-
-[Service]
-ExecStart=/usr/bin/rsync --daemon --no-detach
-Restart=always
-RestartSec=30
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-cat > ${workdir}/rsyncd.conf << EOF
-pid file = /var/run/rsyncd.pid
-lock file = /var/run/rsync.lock
-log file = /var/log/rsync.log
-port = 873
-
-[tmp]
-path = /tmp
-comment = RSYNC FILES
-read only = false
-timeout = 300
-EOF
-
-RSYNCD_CONFIG_CONTENT=$(cat ${workdir}/rsyncd.conf | base64 -w0)
-RSYNCD_SERVICE_CONTENT=$(sed ':a;N;$!ba;s/\n/\\n/g' ${workdir}/rsyncd.service | sed 's/\"/\\"/g')
-
-# rsync ignition
-rsyncd_ignition_patch=$(mktemp)
-cat > "${rsyncd_ignition_patch}" << EOF
-{
-  "storage": {
-    "files": [
-      {
-        "path": "/etc/rsyncd.conf",
-        "overwrite": true,
-        "contents": {
-          "source": "data:text/plain;base64,${RSYNCD_CONFIG_CONTENT}"
-        },
-        "mode": 420
-      }
-    ]
-  },
-  "systemd": {
-    "units": [
-      {
-        "contents": "${RSYNCD_SERVICE_CONTENT}",
-        "enabled": true,
-        "name": "rsyncd.service"
-      }
-    ]
-  }
-}
-EOF
-
-# patch rsync setting to ignition
-patch_ignition_file "${bastion_ignition_file}" "${rsyncd_ignition_patch}"
-rm -f "${rsyncd_ignition_patch}"
 
 
 ## ----------------------------------------------------------------
@@ -281,7 +217,7 @@ ExecStart=/usr/bin/podman run --name poc-registry-${port} \
 -v /opt/registry-${port}/auth:/auth \
 -v /opt/registry-${port}/certs:/certs:z \
 -v /opt/registry-${port}/config.yaml:/etc/docker/registry/config.yml \
-quay.io/openshifttest/registry:2
+registry:2
 
 ExecReload=-/usr/bin/podman stop "poc-registry-${port}"
 ExecReload=-/usr/bin/podman rm "poc-registry-${port}"
@@ -353,7 +289,7 @@ proxy:
   username: "${reg_quay_user}"
   password: "${reg_quay_password}"
 EOF
-yq-go m -x -i "${workdir}/registry_config_file_6001" "${patch_file}"
+/tmp/yq m -x -i "${workdir}/registry_config_file_6001" "${patch_file}"
 
 # patch proxy for 6002 brew.registry.redhat.io
 reg_brew_url=$(cat "/var/run/vault/mirror-registry/registry_brew.json" | jq -r '.url')
@@ -365,7 +301,7 @@ proxy:
   username: "${reg_brew_user}"
   password: "${reg_brew_password}"
 EOF
-yq-go m -x -i "${workdir}/registry_config_file_6002" "${patch_file}"
+/tmp/yq m -x -i "${workdir}/registry_config_file_6002" "${patch_file}"
 
 rm -f "${patch_file}"
 

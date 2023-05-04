@@ -8,7 +8,7 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.15
+    tag: golang-1.16
 promotion:
   name: "4.7"
   namespace: ocp
@@ -47,7 +47,7 @@ tests:
     - as: bin-test
       cli: latest
       commands: ./bin/extended-platform-tests run openshift/conformance/parallel --run
-        "High-32559"
+        "High-24829"
       from: bin
       resources:
         limits:
@@ -57,7 +57,7 @@ tests:
           memory: 600Mi
     workflow: ipi-aws
 - as: sanity
-  cron: 11 15 3,13 * *
+  cron: 0 */24 * * *
   steps:
     cluster_profile: aws
     test:

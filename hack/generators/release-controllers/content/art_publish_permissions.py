@@ -12,19 +12,6 @@ def add_art_publish(gendoc):
         }
     })
 
-    gendoc.append({
-        'apiVersion': 'v1',
-        'kind': 'Secret',
-        'metadata': {
-            'name': 'art-publish-secret',
-            'namespace': 'ocp',
-            'annotations': {
-                'kubernetes.io/service-account.name': 'art-publish'
-            }
-        },
-        'type': 'kubernetes.io/service-account-token'
-    }, comment='Long lived API token for art-publish')
-
     gendoc.append_all([{
         'apiVersion': 'authorization.openshift.io/v1',
         'kind': 'Role',
@@ -96,46 +83,6 @@ in 3.11).''')
         }]
     }, comment='Allow ART to mirror images to the ocp-private namespace so 4.x:base images can be pushed')
 
-    gendoc.append({
-        'apiVersion': 'authorization.openshift.io/v1',
-        'kind': 'Role',
-        'metadata': {
-            'name': 'art-publish-modify-release',
-            'namespace': 'ocp-private'
-        },
-        'rules': [
-            {
-                'apiGroups': ['image.openshift.io'],
-                'resources': ['imagestreams'],
-                'verbs': ['get', 'list', 'watch', 'update', 'patch']
-            },
-            {
-                'apiGroups': ['image.openshift.io'],
-                'resources': ['imagestreamtags'],
-                'verbs': ['get', 'list', 'watch', 'update', 'patch', 'delete']
-            }
-        ]
-    })
-
-    gendoc.append({
-        'apiVersion': 'rbac.authorization.k8s.io/v1',
-        'kind': 'RoleBinding',
-        'metadata': {
-            'name': 'art-publish-modify-release',
-            'namespace': 'ocp-private'
-        },
-        'roleRef': {
-            'apiGroup': 'rbac.authorization.k8s.io',
-            'kind': 'Role',
-            'name': 'art-publish-modify-release'
-        },
-        'subjects': [{
-            'kind': 'ServiceAccount',
-            'name': 'art-publish',
-            'namespace': 'ocp'
-        }]
-    })
-
     gendoc.append_all([{
         'apiVersion': 'authorization.openshift.io/v1',
         'kind': 'Role',
@@ -166,44 +113,6 @@ in 3.11).''')
             'namespace': 'ocp'
         }]
     }], comment='Allow ART to create prowjobs in the ci namespace for running upgrade tests')
-
-    gendoc.append_all([{
-        'apiVersion': 'authorization.openshift.io/v1',
-        'kind': 'ClusterRole',
-        'metadata': {
-            'name': 'art-publish-release-admin',
-            'namespace': 'ocp'
-        },
-        'rules': [
-            {
-                'apiGroups': ['config.openshift.io'],
-                'resources': ['clusterversions'],
-                'verbs': ['get', 'list', 'watch']
-            },
-            {
-                'apiGroups': ['release.openshift.io'],
-                'resources': ['releasepayloads'],
-                'verbs': ['get', 'list', 'patch', 'update', 'watch']
-            }
-        ]
-    }, {
-        'apiVersion': 'rbac.authorization.k8s.io/v1',
-        'kind': 'ClusterRoleBinding',
-        'metadata': {
-            'name': 'art-publish-release-admin-binding',
-            'namespace': 'ocp'
-        },
-        'roleRef': {
-            'apiGroup': 'rbac.authorization.k8s.io',
-            'kind': 'ClusterRole',
-            'name': 'art-publish-release-admin'
-        },
-        'subjects': [{
-            'kind': 'ServiceAccount',
-            'name': 'art-publish',
-            'namespace': 'ocp'
-        }]
-    }], comment='Allow ART to patch releases (accept/reject) in the ocp namespace')
 
     for private in (False, True):
         for arch in config.arches:

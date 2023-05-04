@@ -682,9 +682,12 @@ presubmits:
     spec:
       containers:
       - args:
-        - analyse-code
+        - code
+        - test
+        - --project-name=ci-tools
+        - --org=red-hat-org
         command:
-        - make
+        - /usr/local/bin/snyk
         env:
         - name: SNYK_TOKEN
           valueFrom:

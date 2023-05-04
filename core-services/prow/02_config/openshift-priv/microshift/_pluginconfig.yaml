@@ -1,4 +1,0 @@
-plugins:
-  openshift-priv/microshift:
-    plugins:
-    - approve

@@ -56,11 +56,6 @@ function check_pod_status() {
     done
 }
 
-if [[ ${OPENSTACK_DPDK_NETWORK} == "" ]]; then
-    echo "OPENSTACK_DPDK_NETWORK is not set, skipping the test"
-    exit 0
-fi
-
 CNF_NAMESPACE="example-cnf-dpdk"
 export OS_CLIENT_CONFIG_FILE="${SHARED_DIR}/clouds.yaml"
 
@@ -81,11 +76,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ${CNF_NAMESPACE}
-  labels:
-    security.openshift.io/scc.podSecurityLabelSync: "false"
-    pod-security.kubernetes.io/audit: "privileged"
-    pod-security.kubernetes.io/enforce: "privileged"
-    pod-security.kubernetes.io/warn: "privileged"
 EOF
 )
 echo "Created \"$CNF_NAMESPACE\" Namespace"

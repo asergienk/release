@@ -43,7 +43,7 @@ items:
   kind: ServiceMonitor
   metadata:
     name: pod-scaler-ui
-    namespace: ci
+    namespace: prow-monitoring
     labels:
       app: prow
       component: pod-scaler-ui
@@ -53,6 +53,9 @@ items:
     - interval: 30s
       port: metrics
       scheme: http
+    namespaceSelector:
+      matchNames:
+      - ci
     selector:
       matchLabels:
         app: prow
@@ -94,10 +97,9 @@ items:
         - name: pod-scaler-ui
           image: pod-scaler:latest
           args:
-          - --loglevel=debug
+          - --loglevel=info
           - --mode=consumer.ui
           - --ui-port=8080
-          - --profile-memory-usage=true
           - --cache-bucket=origin-ci-resource-usage-data
           - --gcs-credentials-file=/etc/gcs/service-account.json
           - --data-dir=/tmp
@@ -127,7 +129,7 @@ items:
             name: tmp
           resources:
             requests:
-              memory: "8Gi"
+              memory: "3Gi"
               cpu: "500m"
         volumes:
         - name: gcs-credentials

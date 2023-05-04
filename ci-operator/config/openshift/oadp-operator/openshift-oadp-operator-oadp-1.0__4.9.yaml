@@ -1,18 +1,23 @@
 base_images:
-  ocp_builder_1.19:
+  base:
+    name: "4.9"
+    namespace: ocp
+    tag: base
+  ocp_builder_rhel-8-golang-1.16-openshift-4.9:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.12
+    tag: rhel-8-golang-1.16-openshift-4.9
 build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.19
+    tag: golang-1.16
 images:
 - dockerfile_path: Dockerfile
+  from: base
   to: oadp-operator
 - dockerfile_path: build/ci-Dockerfile
-  from: ocp_builder_1.19
+  from: ocp_builder_rhel-8-golang-1.16-openshift-4.9
   to: test-oadp-operator
 operator:
   bundles:
@@ -23,7 +28,7 @@ operator:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.9"
 resources:
   '*':
@@ -55,7 +60,7 @@ tests:
           cpu: 100m
           memory: 200Mi
 - as: operator-unit-test-periodic
-  cron: 27 6 14,26 * *
+  cron: 0 4 * * *
   steps:
     test:
     - as: unit-periodic
@@ -71,7 +76,7 @@ tests:
     dependencies:
       OO_INDEX: ci-index
     env:
-      OO_CHANNEL: stable-1.0
+      OO_CHANNEL: stable
       OO_INSTALL_NAMESPACE: openshift-adp
       OO_PACKAGE: oadp-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -90,13 +95,13 @@ tests:
           memory: 512Mi
     workflow: optional-operators-ci-aws
 - as: operator-e2e-aws-periodic-slack
-  cron: 13 19 14,28 * *
+  cron: 0 4 * * *
   steps:
     cluster_profile: aws
     dependencies:
       OO_INDEX: ci-index
     env:
-      OO_CHANNEL: stable-1.0
+      OO_CHANNEL: stable
       OO_INSTALL_NAMESPACE: openshift-adp
       OO_PACKAGE: oadp-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -115,13 +120,13 @@ tests:
           memory: 512Mi
     workflow: optional-operators-ci-aws
 - as: operator-e2e-gcp-periodic-slack
-  cron: 10 7 1,28 * *
+  cron: 0 4 * * *
   steps:
     cluster_profile: gcp
     dependencies:
       OO_INDEX: ci-index
     env:
-      OO_CHANNEL: stable-1.0
+      OO_CHANNEL: stable
       OO_INSTALL_NAMESPACE: openshift-adp
       OO_PACKAGE: oadp-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -140,13 +145,13 @@ tests:
           memory: 512Mi
     workflow: optional-operators-ci-gcp
 - as: operator-e2e-azure-periodic-slack
-  cron: 12 1 7,17 * *
+  cron: 0 4 * * *
   steps:
     cluster_profile: azure4
     dependencies:
       OO_INDEX: ci-index
     env:
-      OO_CHANNEL: stable-1.0
+      OO_CHANNEL: stable
       OO_INSTALL_NAMESPACE: openshift-adp
       OO_PACKAGE: oadp-operator
       OO_TARGET_NAMESPACES: '!install'

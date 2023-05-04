@@ -5,14 +5,13 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- ajpantuso
+- aditya-konarde
 - apahim
 - erdii
 - thetechnick
 options: {}
 reviewers:
-- ajpantuso
+- aditya-konarde
 - apahim
 - erdii
-- nikhil-thomas
 - thetechnick

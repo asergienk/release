@@ -51,79 +51,11 @@ CONFIG="${SHARED_DIR}/install-config.yaml"
 
 # Populate install-config with Powervs Platform specifics
 # Note: we will visit this creation of install-config.yaml file section once the profile support is added to the powervs environment
-POWERVS_SHARED_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/.powervscred"
-CLUSTER_NAME="rdr-multiarch-${LEASED_RESOURCE}"
-POWERVS_RESOURCE_GROUP=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_RESOURCE_GROUP")
-POWERVS_USER_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_USER_ID")
-
-if [[ -z "${LEASED_RESOURCE}" ]]; then
-  echo "Failed to acquire lease"
-  exit 1
-fi
-
-CONFIG_PLATFORM="  platform: {}"
-POWERVS_ZONE=${LEASED_RESOURCE}
-case "${LEASED_RESOURCE}" in
-   "lon04")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_LON04")
-      POWERVS_REGION=lon
-      VPCREGION=eu-gb
-   ;;
-   "mon01")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_MON01")
-      POWERVS_REGION=mon
-      VPCREGION=ca-tor
-   ;;
-   "osa21")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_OSA21")
-      POWERVS_REGION=osa
-      VPCREGION=jp-osa
-      # https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html#ANSI_002dC-Quoting
-      CONFIG_PLATFORM=$'  platform:\n    powervs:\n      sysType: e980'
-   ;;
-   "sao01")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_SAO01")
-      POWERVS_REGION=sao
-      VPCREGION=br-sao
-   ;;
-   "syd04")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_SYD04")
-      POWERVS_REGION=syd
-      VPCREGION=au-syd
-   ;;
-   "syd05")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_SYD05")
-      POWERVS_REGION=syd
-      VPCREGION=au-syd
-   ;;
-   "tor01")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_TOR01")
-      POWERVS_REGION=tor
-      VPCREGION=ca-tor
-   ;;
-   "tok04")
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID_TOK04")
-      POWERVS_REGION=tok
-      VPCREGION=jp-tok
-   ;;
-   *)
-      # Default Region & Zone
-      POWERVS_SERVICE_INSTANCE_ID=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_SERVICE_INSTANCE_ID")
-      POWERVS_REGION=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/POWERVS_REGION")
-      VPCREGION=$(cat "/var/run/powervs-ipi-cicd-secrets/powervs-creds/VPCREGION")
-   ;;
-esac
-
-cat > "${SHARED_DIR}/powervs-conf.yaml" << EOF
-CLUSTER_NAME: ${CLUSTER_NAME}
-POWERVS_SERVICE_INSTANCE_ID: ${POWERVS_SERVICE_INSTANCE_ID}
-POWERVS_REGION: ${POWERVS_REGION}
-POWERVS_ZONE: ${POWERVS_ZONE}
-VPCREGION: ${VPCREGION}
-EOF
-
-export POWERVS_SHARED_CREDENTIALS_FILE
-
+export POWERVS_SERVICE_INSTANCE_ID=${POWERVS_SERVICE_INSTANCE_ID}
+export POWERVS_USER_ID=${POWERVS_USER_ID}
+export POWERVS_ZONE=${POWERVS_ZONE}
+export VPCREGION=${VPCREGION}
+export POWERVS_REGION=${POWERVS_REGION}
 cat > "${CONFIG}" << EOF
 apiVersion: v1
 baseDomain: ${BASE_DOMAIN}
@@ -133,26 +65,29 @@ compute:
 - architecture: ppc64le
   hyperthreading: Enabled
   name: worker
-${CONFIG_PLATFORM}
+  platform: {}
   replicas: 2
 controlPlane:
   architecture: ppc64le
   hyperthreading: Enabled
   name: master
-${CONFIG_PLATFORM}
+  platform: {}
   replicas: 3
+metadata:
+  creationTimestamp: null
+  name: powervs-ci
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14
     hostPrefix: 23
   machineNetwork:
-  - cidr: 192.168.124.0/24
-  networkType: OVNKubernetes
+  - cidr: 192.168.0.0/16
+  networkType: OpenShiftSDN
   serviceNetwork:
   - 172.30.0.0/16
 platform:
   powervs:
-    powervsResourceGroup: "${POWERVS_RESOURCE_GROUP}"
+    powervsResourceGroup: "ipi-cicd-resource-group"
     region: ${POWERVS_REGION}
     serviceInstanceID: "${POWERVS_SERVICE_INSTANCE_ID}"
     userID: ${POWERVS_USER_ID}

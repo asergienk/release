@@ -74,22 +74,22 @@ tests:
           cpu: 100m
           memory: 200Mi
     workflow: openshift-e2e-gcp-ovn
-- as: e2e-aws-ran-profile
+- as: e2e-gcp-ran-profile
   optional: true
   steps:
-    cluster_profile: aws
+    cluster_profile: gcp
     test:
-    - as: e2e-aws-ran-profile
+    - as: e2e-gcp-ran-profile
       commands: FEATURES_ENVIRONMENT=cn-ran-overlays FEATURES=ran-profile-gcp SKIP_TESTS="xt_u32
-        container-mount-namespace gatekeeper n3000 fec metallb sro" make validate-on-ci
+        container-mount-namespace gatekeeper n3000 fec metallb" make validate-on-ci
       from: src
       resources:
         requests:
           cpu: 100m
           memory: 200Mi
-    workflow: openshift-e2e-aws-ovn
+    workflow: openshift-e2e-gcp-ovn
 - as: e2e-gcp-ovn-periodic
-  cron: 49 15  * * 0
+  cron: 0 */8 * * *
   steps:
     cluster_profile: gcp
     env:

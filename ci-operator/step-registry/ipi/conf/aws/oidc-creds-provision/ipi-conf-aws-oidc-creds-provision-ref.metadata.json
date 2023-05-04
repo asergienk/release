@@ -2,10 +2,8 @@
 	"path": "ipi/conf/aws/oidc-creds-provision/ipi-conf-aws-oidc-creds-provision-ref.yaml",
 	"owners": {
 		"approvers": [
-			"abutcher",
-			"2uasimojo",
-			"suhanime",
-			"dlom"
+			"akhil-rane",
+			"joelddiaz"
 		]
 	}
 }

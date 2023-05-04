@@ -3,10 +3,10 @@ base_images:
     name: 4.13-priv
     namespace: ocp-private
     tag: base
-  ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+  ocp_builder_rhel-8-golang-1.18-openshift-4.12:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.13
+    tag: rhel-8-golang-1.18-openshift-4.12
 build_root:
   from_repository: true
 canonical_go_repository: github.com/openshift/cluster-monitoring-operator
@@ -14,9 +14,9 @@ images:
 - dockerfile_path: Dockerfile
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.12:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
   to: cluster-monitoring-operator
 - dockerfile_literal: |
     FROM src
@@ -78,11 +78,11 @@ tests:
   commands: make test-unit
   container:
     from: src
-- as: e2e-aws-ovn
+- as: e2e-agnostic
   steps:
     cluster_profile: aws
     workflow: openshift-e2e-aws
-- as: e2e-aws-ovn-single-node
+- as: e2e-aws-single-node
   optional: true
   steps:
     cluster_profile: aws
@@ -99,7 +99,7 @@ tests:
         requests:
           cpu: 100m
     workflow: ipi-aws
-- as: e2e-aws-ovn-upgrade
+- as: e2e-agnostic-upgrade
   steps:
     cluster_profile: aws
     workflow: openshift-upgrade-aws

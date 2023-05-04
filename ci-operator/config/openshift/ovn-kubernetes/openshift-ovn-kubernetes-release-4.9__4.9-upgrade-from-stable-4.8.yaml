@@ -26,7 +26,7 @@ images:
 releases:
   initial:
     release:
-      channel: fast
+      channel: stable
       version: "4.8"
   latest:
     integration:

@@ -9,7 +9,7 @@ items:
     namespace: azure
 
 - kind: BuildConfig
-  apiVersion: build.openshift.io/v1
+  apiVersion: v1
   metadata:
     name: test-base
     namespace: azure

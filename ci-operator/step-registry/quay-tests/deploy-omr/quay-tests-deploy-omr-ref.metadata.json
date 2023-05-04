@@ -1,9 +1,0 @@
-{
-	"path": "quay-tests/deploy-omr/quay-tests-deploy-omr-ref.yaml",
-	"owners": {
-		"approvers": [
-			"LiZhang19817",
-			"dongboyan77"
-		]
-	}
-}

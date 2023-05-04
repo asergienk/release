@@ -10,7 +10,7 @@ base_images:
   insights-operator-tests:
     name: insights-operator-tests
     namespace: ci
-    tag: "4.11"
+    tag: latest
   ocp_builder_rhel-8-golang-1.18-openshift-4.11:
     name: builder
     namespace: ocp
@@ -81,7 +81,6 @@ tests:
           cpu: 100m
     workflow: ipi-gcp
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv6

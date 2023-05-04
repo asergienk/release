@@ -47,7 +47,7 @@ promotion:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.5"
 resources:
   '*':

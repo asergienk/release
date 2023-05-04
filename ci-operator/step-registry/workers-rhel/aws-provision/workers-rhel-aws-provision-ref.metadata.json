@@ -2,9 +2,8 @@
 	"path": "workers-rhel/aws-provision/workers-rhel-aws-provision-ref.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

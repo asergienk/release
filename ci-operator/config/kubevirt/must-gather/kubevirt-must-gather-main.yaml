@@ -41,9 +41,7 @@ test_binary_build_commands: |-
 tests:
 - as: kubevirt-must-gather-e2e-azure
   steps:
-    cluster_profile: azure-virtualization
-    env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
+    cluster_profile: azure4
     test:
     - as: deploy
       cli: latest
@@ -70,7 +68,7 @@ tests:
     - as: test-targeted
       cli: latest
       commands: |
-        oc adm must-gather --image="${KMG_IMAGE}" --dest-dir=${ARTIFACT_DIR}/must-gather-output -- /usr/bin/gather --vms_details
+        oc adm must-gather --image="${KMG_IMAGE}" --dest-dir=${ARTIFACT_DIR}/must-gather-output -- gather_vms_details
         mkdir -p ${ARTIFACT_DIR}/junit
         (cd ${ARTIFACT_DIR}; KUBECONFIG=${KUBECONFIG} /go/bin/must-gather.test --ginkgo.label-filter=level:workloads --ginkgo.junit-report=${ARTIFACT_DIR}/junit/report.xml --ginkgo.v)
       dependencies:
@@ -83,9 +81,7 @@ tests:
     workflow: ipi-azure
 - as: kubevirt-must-gather-e2e-gcp
   steps:
-    cluster_profile: gcp-virtualization
-    env:
-      COMPUTE_NODE_TYPE: n2-standard-4
+    cluster_profile: gcp
     test:
     - as: deploy
       cli: latest
@@ -112,7 +108,7 @@ tests:
     - as: test-targeted
       cli: latest
       commands: |
-        oc adm must-gather --image="${KMG_IMAGE}" --dest-dir=${ARTIFACT_DIR}/must-gather-output -- /usr/bin/gather --vms_details
+        oc adm must-gather --image="${KMG_IMAGE}" --dest-dir=${ARTIFACT_DIR}/must-gather-output -- gather_vms_details
         mkdir -p ${ARTIFACT_DIR}/junit
         (cd ${ARTIFACT_DIR}; KUBECONFIG=${KUBECONFIG} /go/bin/must-gather.test --ginkgo.label-filter=level:workloads --ginkgo.junit-report=${ARTIFACT_DIR}/junit/report.xml --ginkgo.v)
       dependencies:

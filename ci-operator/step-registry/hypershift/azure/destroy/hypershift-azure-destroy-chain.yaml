@@ -4,22 +4,27 @@ chain:
   - as: destroy
     cli: latest
     env:
-    - name: HYPERSHIFT_AZURE_LOCATION
-      default: "eastus"
-      documentation: "The Azure location of the cluster."
+    - name: HYPERSHIFT_BASE_DOMAIN
+      default: "origin-ci-int-aws.dev.rhcloud.com"
+      documentation: "The cluster's FQDN will be a subdomain of the base domain."
+    - name: HYPERSHIFT_AWS_REGION
+      default: "us-east-1"
+      documentation: "The AWS region of the cluster."
     commands: |-
       set -exuo pipefail
 
-      CLUSTER_NAME="$(echo -n $PROW_JOB_ID|sha256sum|cut -c-20)"
+      CLUSTER_NAME="$(echo -n $PROW_JOB_ID|cut -d- -f-2)"
       echo "$(date) Deleting HyperShift cluster ${CLUSTER_NAME}"
       bin/hypershift destroy cluster azure \
         --azure-creds=${CLUSTER_PROFILE_DIR}/osServicePrincipal.json  \
         --name ${CLUSTER_NAME} \
-        --location ${HYPERSHIFT_AZURE_LOCATION} \
         --cluster-grace-period 40m
 
       echo "$(date) Finished deleting cluster"
-    from: hypershift-operator
+    from_image:
+      namespace: ocp
+      name: "4.12"
+      tag: hypershift-operator
     grace_period: 5m0s
     resources:
       requests:

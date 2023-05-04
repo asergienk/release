@@ -2,22 +2,22 @@
 	"path": "openshift/microshift/e2e/reboot-tests/openshift-microshift-e2e-reboot-tests-ref.yaml",
 	"owners": {
 		"approvers": [
-			"chiragkyal",
+			"cooktheryan",
 			"copejon",
-			"dhellmann",
-			"eggfoobar",
-			"ggiguash",
-			"pacevedom",
-			"pliurh",
-			"pmtk",
-			"zshi-redhat"
+			"fzdarsky",
+			"mangelajo",
+			"oglok",
+			"rootfs",
+			"sallyom"
 		],
 		"reviewers": [
+			"cooktheryan",
 			"copejon",
-			"dhellmann",
-			"ggiguash",
-			"pacevedom",
-			"pmtk"
+			"fzdarsky",
+			"mangelajo",
+			"oglok",
+			"rootfs",
+			"sallyom"
 		]
 	}
 }

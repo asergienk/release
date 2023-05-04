@@ -5,7 +5,8 @@ chain:
   - ref: ignition-bastionhost
   - ref: gcp-provision-bastionhost
   - ref: proxy-config-generate
-  - chain: ipi-conf-gcp
+  - ref: ipi-conf
+  - ref: ipi-conf-gcp
   - chain: ipi-install
   - ref: enable-qe-catalogsource
   env:

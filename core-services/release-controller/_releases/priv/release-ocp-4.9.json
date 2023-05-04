@@ -76,7 +76,7 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-release-master-nightly-4.9-e2e-aws-upi-priv"
+                "name": "release-openshift-ocp-installer-e2e-aws-upi-4.9-priv"
             }
         },
         "azure": {
@@ -113,6 +113,14 @@
             "prowJob": {
                 "name": "periodic-ci-openshift-release-master-ci-4.9-e2e-azure-techpreview-serial-priv"
             }
+        },
+        "azure-upgrade-single-node": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-release-master-ci-4.9-e2e-azure-upgrade-ovn-single-node-priv"
+            },
+            "upgrade": true
         },
         "cnv": {
             "disabled": true,
@@ -161,7 +169,14 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-release-master-nightly-4.9-e2e-gcp-serial-priv"
+                "name": "release-openshift-ocp-installer-e2e-gcp-serial-4.9-priv"
+            }
+        },
+        "metal": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "release-openshift-ocp-installer-e2e-metal-4.9-priv"
             }
         },
         "metal-ipi": {
@@ -214,6 +229,27 @@
             "optional": true,
             "prowJob": {
                 "name": "periodic-ci-openshift-release-master-nightly-4.9-e2e-metal-ipi-virtualmedia-priv"
+            }
+        },
+        "metal-serial": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "release-openshift-ocp-installer-e2e-metal-serial-4.9-priv"
+            }
+        },
+        "openshift-dedicated-aws": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "release-openshift-ocp-osd-aws-nightly-4.9-priv"
+            }
+        },
+        "openshift-dedicated-gcp": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "release-openshift-ocp-osd-gcp-nightly-4.9-priv"
             }
         },
         "ovirt": {

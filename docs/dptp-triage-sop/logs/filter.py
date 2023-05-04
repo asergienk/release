@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import json
 import sys
+import os
+import json
 
 data = {}
 
@@ -145,8 +146,6 @@ elif mode == "errors":
 
         # Dummy PRPQR errors, we will see it until DPTP-2577
         lambda message: matches(message, "prow-controller-manager", msg='error executing URL template: template: JobURL:1:287: executing "JobURL" at <.Spec.Refs.Repo>: nil pointer evaluating *v1.Refs.Repo'),
-
-        lambda message: matches(message, "pj-rehearse", msg="couldn't prepare candidate"),
         ]
 
 else:

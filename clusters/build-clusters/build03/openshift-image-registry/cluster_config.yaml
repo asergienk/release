@@ -7,7 +7,7 @@ spec:
   # we do not customize managementState
   # managementState is here to pass the validation
   managementState: Managed
-  replicas: 2
+  replicas: 5
   routes:
   - hostname: registry.build03.ci.openshift.org
     name: registry-build03-ci-openshift-org

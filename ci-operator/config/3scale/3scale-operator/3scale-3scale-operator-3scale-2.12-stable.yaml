@@ -7,7 +7,7 @@ build_root:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.8"
 resources:
   '*':

@@ -12,7 +12,7 @@ presubmits:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
-      ci-operator.openshift.io/cloud-cluster-profile: gcp-virtualization
+      ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kubevirt-tekton-tasks-operator-release-v0.3-e2e-functests
@@ -65,8 +65,12 @@ presubmits:
         secret:
           secretName: ci-pull-credentials
       - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-gcp-virtualization
+        projected:
+          sources:
+          - secret:
+              name: cluster-secrets-gcp
+          - configMap:
+              name: cluster-profile-gcp
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -79,7 +83,7 @@ presubmits:
     branches:
     - ^release-v0\.3$
     - ^release-v0\.3-
-    cluster: build02
+    cluster: build04
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -128,7 +132,7 @@ presubmits:
     branches:
     - ^release-v0\.3$
     - ^release-v0\.3-
-    cluster: build02
+    cluster: build04
     context: ci/prow/unittests
     decorate: true
     decoration_config:

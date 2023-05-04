@@ -2,11 +2,11 @@
 	"path": "openshift/e2e/aws/openshift-e2e-aws-workflow.yaml",
 	"owners": {
 		"approvers": [
-			"deads2k",
-			"dgoodwin",
-			"stbenjam",
+			"wking",
 			"vrutkovs",
-			"wking"
+			"abhinavdahiya",
+			"deads2k",
+			"staebler"
 		]
 	}
 }

@@ -3,9 +3,10 @@ workflow:
   steps:
     allow_best_effort_post_steps: true
     pre:
+    - ref: ipi-install-hosted-loki
     - chain: ipi-conf-azure
     - ref: sdn-conf
-    - chain: ipi-install-stableinitial
+    - chain: ipi-install
     - ref: ipi-azure-rbac
     test:
     - ref: openshift-e2e-test

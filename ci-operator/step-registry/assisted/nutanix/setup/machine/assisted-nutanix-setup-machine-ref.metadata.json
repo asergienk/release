@@ -1,8 +1,0 @@
-{
-	"path": "assisted/nutanix/setup/machine/assisted-nutanix-setup-machine-ref.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

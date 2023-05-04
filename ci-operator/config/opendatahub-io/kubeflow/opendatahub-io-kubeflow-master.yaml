@@ -32,7 +32,7 @@ releases:
   latest:
     release:
       architecture: amd64
-      channel: fast
+      channel: stable
       version: "4.10"
 resources:
   '*':
@@ -68,13 +68,6 @@ tests:
         requests:
           cpu: 100m
           memory: 200Mi
-- as: kf-notebook-controller-pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: kf-notebook-controller
-    env:
-      IMAGE_REPO: kubeflow-notebook-controller
-    workflow: opendatahub-io-ci-image-mirror
 - as: kf-notebook-controller-image-mirror
   postsubmit: true
   steps:
@@ -82,7 +75,7 @@ tests:
       SOURCE_IMAGE_REF: kf-notebook-controller
     env:
       IMAGE_REPO: kubeflow-notebook-controller
-      RELEASE_VERSION: master
+      RELEASE_VERSION: "1.6"
     workflow: opendatahub-io-ci-image-mirror
 - as: kf-notebook-controller-image-mirror-latest
   cron: 0 2 * * *
@@ -93,13 +86,6 @@ tests:
       IMAGE_REPO: kubeflow-notebook-controller
       IMAGE_TAG: latest
     workflow: opendatahub-io-ci-image-mirror
-- as: odh-notebook-controller-pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: odh-notebook-controller
-    env:
-      IMAGE_REPO: odh-notebook-controller
-    workflow: opendatahub-io-ci-image-mirror
 - as: odh-notebook-controller-image-mirror
   postsubmit: true
   steps:
@@ -107,7 +93,7 @@ tests:
       SOURCE_IMAGE_REF: odh-notebook-controller
     env:
       IMAGE_REPO: odh-notebook-controller
-      RELEASE_VERSION: master
+      RELEASE_VERSION: "1.6"
     workflow: opendatahub-io-ci-image-mirror
 - as: odh-notebook-controller-image-mirror-latest
   cron: 0 2 * * *
@@ -118,29 +104,6 @@ tests:
       IMAGE_REPO: odh-notebook-controller
       IMAGE_TAG: latest
     workflow: opendatahub-io-ci-image-mirror
-- as: odh-notebook-controller-e2e
-  steps:
-    cluster_profile: gcp
-    env:
-      COMPUTE_NODE_TYPE: n2-standard-8
-    test:
-    - as: e2e
-      cli: latest
-      commands: |
-        unset GOFLAGS
-        pushd components/odh-notebook-controller
-        make run-ci-e2e-tests
-      dependencies:
-      - env: ODH_NOTEBOOK_CONTROLLER_IMAGE
-        name: odh-notebook-controller
-      - env: KF_NOTEBOOK_CONTROLLER
-        name: kf-notebook-controller
-      from: src
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-    workflow: ipi-gcp
 zz_generated_metadata:
   branch: master
   org: opendatahub-io

@@ -2,9 +2,8 @@
 	"path": "workers-rhel/repos/workers-rhel-repos-ref.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

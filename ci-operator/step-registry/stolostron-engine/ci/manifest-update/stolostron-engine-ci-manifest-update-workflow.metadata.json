@@ -2,6 +2,7 @@
 	"path": "stolostron-engine/ci/manifest-update/stolostron-engine-ci-manifest-update-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"gurnben",
 			"kyl-bempah",
 			"mark-nc",

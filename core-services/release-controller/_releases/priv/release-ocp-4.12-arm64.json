@@ -9,6 +9,13 @@
     "referenceMode": "source",
     "to": "release-arm64-priv",
     "verify": {
+        "aws-arm64": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-arm64-priv"
+            }
+        },
         "aws-ovn-arm64": {
             "disabled": true,
             "optional": true,
@@ -20,56 +27,42 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-ovn-serial-aws-arm64-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.11-ocp-e2e-ovn-serial-aws-arm64-priv"
             }
         },
-        "aws-ovn-single-node-arm64": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-ovn-arm64-single-node-priv"
-            }
-        },
-        "aws-ovn-techpreview-arm64": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-ovn-arm64-techpreview-priv"
-            }
-        },
-        "aws-ovn-techpreview-serial-arm64": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-ovn-arm64-techpreview-serial-priv"
-            }
-        },
-        "aws-sdn-arm64": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-sdn-arm64-priv"
-            }
-        },
-        "aws-sdn-serial-arm64": {
+        "aws-serial-arm64": {
             "disabled": true,
             "maxRetries": 3,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-sdn-serial-aws-arm64-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-serial-aws-arm64-priv"
             }
         },
-        "azure-ovn-arm64": {
+        "aws-single-node-arm64": {
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-azure-ovn-arm64-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-arm64-single-node-priv"
             }
         },
-        "ovn-upgrade": {
+        "aws-techpreview-arm64": {
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-upgrade-aws-ovn-arm64-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-arm64-techpreview-priv"
+            }
+        },
+        "aws-techpreview-serial-arm64": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-arm64-techpreview-serial-priv"
+            }
+        },
+        "upgrade": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-upgrade-aws-arm64-priv"
             },
             "upgrade": true
         },
@@ -77,7 +70,7 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-upgrade-from-stable-4.11-ocp-e2e-aws-sdn-arm64-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-upgrade-from-stable-4.11-ocp-e2e-aws-arm64-priv"
             },
             "upgrade": true,
             "upgradeFrom": "PreviousMinor"

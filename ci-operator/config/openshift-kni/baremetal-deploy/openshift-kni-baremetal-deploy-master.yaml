@@ -6,7 +6,7 @@ base_images:
 build_root:
   project_image:
     context_dir: features/
-    dockerfile_path: Dockerfile.buildimage
+    dockerfile_path: Dockefile.buildimage
 releases:
   initial:
     integration:
@@ -58,7 +58,7 @@ tests:
     from: src
   run_if_changed: features/.*
 - as: e2e-aws
-  cron: 6 20 20 */12 *
+  cron: 0 */8 * * *
   steps:
     cluster_profile: aws
     test:

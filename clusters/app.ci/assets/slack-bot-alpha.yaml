@@ -6,7 +6,7 @@ items:
   metadata:
     name: slack-bot-alpha
     namespace: ci
-- apiVersion: route.openshift.io/v1
+- apiVersion: v1
   kind: Route
   metadata:
     namespace: ci

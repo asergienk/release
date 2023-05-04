@@ -5,37 +5,33 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- bmeng
+- blrm
 - bng0y
 - cblecker
+- dofinn
 - dustman9000
 - fahlmant
 - iamkirkbater
 - jewzaam
 - jharrington22
-- karthikperu7
 - mrbarge
 - nautilux
 - rafael-azevedo
 - rogbas
-- sam-nguyen7
-- tonytheleg
 - wanghaoran1988
 options: {}
 reviewers:
-- bmeng
+- blrm
 - bng0y
 - cblecker
+- dofinn
 - dustman9000
 - fahlmant
 - iamkirkbater
 - jewzaam
 - jharrington22
-- karthikperu7
 - mrbarge
 - nautilux
 - rafael-azevedo
 - rogbas
-- sam-nguyen7
-- tonytheleg
 - wanghaoran1988

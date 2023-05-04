@@ -6,8 +6,7 @@
 
 approvers:
 - cgwalters
-- cheesesashimi
-- jkyros
+- kikisdeliveryservice
 - sinnykumari
 - yuqi-zhang
 options: {}
@@ -15,5 +14,6 @@ reviewers:
 - cgwalters
 - cheesesashimi
 - jkyros
+- kikisdeliveryservice
 - sinnykumari
 - yuqi-zhang

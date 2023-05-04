@@ -1,11 +1,4 @@
 {
 	"path": "operatorhub/aws/operatorhub-aws-workflow.yaml",
-	"owners": {
-		"approvers": [
-			"technical-release-team-approvers"
-		],
-		"reviewers": [
-			"technical-release-team-reviewers"
-		]
-	}
+	"owners": {}
 }

@@ -5,9 +5,11 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build03
+    cluster: build01
     context: ci/prow/e2e-agnostic-cmo
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
@@ -77,16 +79,18 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
-    context: ci/prow/e2e-aws-ovn
+    cluster: build01
+    context: ci/prow/e2e-aws
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-prometheus-alertmanager-release-4.13-e2e-aws-ovn
-    rerun_command: /test e2e-aws-ovn
+    name: pull-ci-openshift-prometheus-alertmanager-release-4.13-e2e-aws
+    rerun_command: /test e2e-aws
     spec:
       containers:
       - args:
@@ -95,8 +99,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-aws-cluster-profile
+        - --target=e2e-aws
         command:
         - ci-operator
         image: ci-operator:latest
@@ -112,7 +116,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-aws-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -143,15 +147,17 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/e2e-aws-upgrade
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -221,9 +227,11 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build03
+    cluster: build01
     context: ci/prow/images
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
@@ -269,9 +277,11 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build03
+    cluster: build01
     context: ci/prow/test
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
@@ -316,9 +326,11 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build03
+    cluster: build01
     context: ci/prow/vendor
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"

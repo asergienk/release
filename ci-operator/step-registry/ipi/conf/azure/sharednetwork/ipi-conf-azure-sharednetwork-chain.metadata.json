@@ -2,9 +2,7 @@
 	"path": "ipi/conf/azure/sharednetwork/ipi-conf-azure-sharednetwork-chain.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"abhinavdahiya"
 		]
 	}
 }

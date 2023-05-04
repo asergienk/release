@@ -2,16 +2,10 @@
 	"path": "ipi/conf/ibmcloud/manual-creds/ipi-conf-ibmcloud-manual-creds-ref.yaml",
 	"owners": {
 		"approvers": [
-			"ibmcloud-approvers",
-			"jianlinliu",
-			"gpei",
-			"MayXuQQ"
+			"ibmcloud-approvers"
 		],
 		"reviewers": [
-			"ibmcloud-approvers",
-			"jianlinliu",
-			"gpei",
-			"MayXuQQ"
+			"ibmcloud-reviewers"
 		]
 	}
 }

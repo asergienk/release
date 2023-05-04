@@ -1,26 +1,26 @@
 base_images:
   assisted-image-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-image-service
   assisted-installer:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer
   assisted-installer-agent:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-agent
   assisted-installer-controller:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-controller
   assisted-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-service
   assisted-test-infra:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-test-infra
   base:
@@ -84,7 +84,7 @@ tests:
 - as: e2e-agnostic
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-agnostic-upgrade
   steps:
     cluster_profile: gcp
@@ -103,6 +103,17 @@ tests:
   optional: true
   steps:
     cluster_profile: gcp
+    workflow: openshift-e2e-gcp-disruption
+- as: e2e-gcp-disruptive-five-control-plane-replicas
+  optional: true
+  steps:
+    cluster_profile: gcp
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_REQUIRES_SSH: "yes"
+      TEST_SUITE: openshift/disruptive
+      TEST_TYPE: suite-conformance
+      TEST_UPGRADE_OPTIONS: ""
     workflow: openshift-e2e-gcp-disruption
 - as: e2e-gcp-disruptive-ovn
   optional: true
@@ -126,7 +137,7 @@ tests:
   optional: true
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-azure
   optional: true
   steps:
@@ -138,7 +149,6 @@ tests:
     cluster_profile: gcp
     workflow: openshift-e2e-gcp
 - as: e2e-metal-ipi
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -148,13 +158,11 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-serial-ipv4
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-serial-ipv4
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -181,6 +189,25 @@ tests:
   steps:
     cluster_profile: aws
     workflow: openshift-perfscale-e2e-configmap-scale
+- as: e2e-gcp-five-control-plane-replicas
+  optional: true
+  steps:
+    cluster_profile: gcp
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_SKIPS: 'In-tree Volumes \[Driver: gcepd\] \[Testpattern: Generic Ephemeral-volume
+        (default fs) (immediate-binding)\]'
+    workflow: openshift-e2e-gcp
+- as: e2e-gcp-upgrade-five-control-plane-replicas
+  optional: true
+  steps:
+    cluster_profile: gcp
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_SUITE: ""
+      TEST_TYPE: upgrade
+      TEST_UPGRADE_OPTIONS: ""
+    workflow: openshift-upgrade-gcp
 - as: e2e-aws-serial
   steps:
     cluster_profile: aws

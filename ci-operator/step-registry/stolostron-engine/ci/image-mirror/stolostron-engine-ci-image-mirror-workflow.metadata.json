@@ -2,6 +2,7 @@
 	"path": "stolostron-engine/ci/image-mirror/stolostron-engine-ci-image-mirror-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"gurnben",
 			"kyl-bempah",
 			"mark-nc",

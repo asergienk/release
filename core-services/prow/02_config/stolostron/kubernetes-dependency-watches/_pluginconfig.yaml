@@ -1,5 +1,0 @@
-plugins:
-  stolostron/kubernetes-dependency-watches:
-    plugins:
-    - dco
-    - blunderbuss

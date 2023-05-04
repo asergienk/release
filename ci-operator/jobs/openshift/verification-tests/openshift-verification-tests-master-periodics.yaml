@@ -1,82 +1,6 @@
 periodics:
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: alibabacloud
-    ci-operator.openshift.io/cloud-cluster-profile: alibabacloud-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.10
-    ci.openshift.io/generator: prowgen
-    job-release: "4.10"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.10-installer-rehearse-alibabacloud
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-alibabacloud-cluster-profile
-      - --target=installer-rehearse-alibabacloud
-      - --variant=installer-rehearse-4.10
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-alibabacloud-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-alibabacloud-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -84,6 +8,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: aws
     ci-operator.openshift.io/cloud-cluster-profile: aws-qe
@@ -150,8 +75,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -159,6 +83,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: aws-usgov
     ci-operator.openshift.io/cloud-cluster-profile: aws-usgov-qe
@@ -225,8 +150,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -234,6 +158,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: azure4
     ci-operator.openshift.io/cloud-cluster-profile: azure-qe
@@ -300,8 +225,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -309,81 +233,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: azure4
-    ci-operator.openshift.io/cloud-cluster-profile: azure-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.10
-    ci.openshift.io/generator: prowgen
-    job-release: "4.10"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.10-installer-rehearse-azure-aro
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-aro-cluster-profile
-      - --target=installer-rehearse-azure-aro
-      - --variant=installer-rehearse-4.10
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-aro-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-azure-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: azuremag
     ci-operator.openshift.io/cloud-cluster-profile: azuremag-qe
@@ -451,7 +301,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -459,81 +308,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.10
-    ci.openshift.io/generator: prowgen
-    job-release: "4.10"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.10-installer-rehearse-debug
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-debug-cluster-profile
-      - --target=installer-rehearse-debug
-      - --variant=installer-rehearse-4.10
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-debug-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: gcp
     ci-operator.openshift.io/cloud-cluster-profile: gcp-qe
@@ -601,7 +376,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: vsphere
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -609,6 +383,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere
@@ -676,7 +451,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: vsphere
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -684,6 +458,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere-discon
@@ -751,7 +526,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -759,6 +533,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: aws
     ci-operator.openshift.io/cloud-cluster-profile: aws-qe
@@ -825,8 +600,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -834,156 +608,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws-c2s
-    ci-operator.openshift.io/cloud-cluster-profile: aws-c2s-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.11-installer-rehearse-aws-c2s
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-c2s-cluster-profile
-      - --target=installer-rehearse-aws-c2s
-      - --variant=installer-rehearse-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-c2s-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-c2s-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws-sc2s
-    ci-operator.openshift.io/cloud-cluster-profile: aws-sc2s-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.11-installer-rehearse-aws-sc2s
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-sc2s-cluster-profile
-      - --target=installer-rehearse-aws-sc2s
-      - --variant=installer-rehearse-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-sc2s-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-sc2s-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: azure4
     ci-operator.openshift.io/cloud-cluster-profile: azure-qe
@@ -1051,7 +676,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1059,85 +683,10 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.11-installer-rehearse-debug
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-debug-cluster-profile
-      - --target=installer-rehearse-debug
-      - --variant=installer-rehearse-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-debug-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build05
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: gcp
     ci-operator.openshift.io/cloud-cluster-profile: gcp-qe
-    ci-operator.openshift.io/cluster: build05
     ci-operator.openshift.io/variant: installer-rehearse-4.11
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
@@ -1201,84 +750,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: nutanix-qe
-    ci-operator.openshift.io/cloud-cluster-profile: nutanix-qe
-    ci-operator.openshift.io/cluster: build01
-    ci-operator.openshift.io/variant: installer-rehearse-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.11-installer-rehearse-nutanix
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-nutanix-cluster-profile
-      - --target=installer-rehearse-nutanix
-      - --variant=installer-rehearse-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-nutanix-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-nutanix-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
   cluster: vsphere
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1286,6 +758,7 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 960h
   labels:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere
@@ -1352,8 +825,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1361,14 +833,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: alibabacloud
-    ci-operator.openshift.io/cloud-cluster-profile: alibabacloud-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud: aws
+    ci-operator.openshift.io/cloud-cluster-profile: aws-2
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-alibabacloud
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-aws-ipi
   spec:
     containers:
     - args:
@@ -1377,9 +849,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-alibabacloud-cluster-profile
-      - --target=installer-rehearse-alibabacloud
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/aws-ipi-cluster-profile
+      - --target=aws-ipi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1395,7 +867,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-alibabacloud-cluster-profile
+      - mountPath: /usr/local/aws-ipi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -1419,7 +891,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-alibabacloud-qe
+        secretName: cluster-secrets-aws-2
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -1428,7 +900,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1436,239 +907,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-aws
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-cluster-profile
-      - --target=installer-rehearse-aws
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build05
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-1-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-aws-1
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-1-cluster-profile
-      - --target=installer-rehearse-aws-1
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-1-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-1-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws-usgov
-    ci-operator.openshift.io/cloud-cluster-profile: aws-usgov-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-aws-usgov
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-usgov-cluster-profile
-      - --target=installer-rehearse-aws-usgov
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-usgov-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-usgov-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
+  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: azure4
-    ci-operator.openshift.io/cloud-cluster-profile: azure-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud-cluster-profile: azure-2
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-azure
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-azure-ipi
   spec:
     containers:
     - args:
@@ -1677,9 +923,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-cluster-profile
-      - --target=installer-rehearse-azure
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/azure-ipi-cluster-profile
+      - --target=azure-ipi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1695,7 +941,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-cluster-profile
+      - mountPath: /usr/local/azure-ipi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -1719,158 +965,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-azure-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: azuremag
-    ci-operator.openshift.io/cloud-cluster-profile: azuremag-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-azure-mag
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-mag-cluster-profile
-      - --target=installer-rehearse-azure-mag
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-mag-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-azuremag-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: azurestack
-    ci-operator.openshift.io/cloud-cluster-profile: azurestack-qe
-    ci-operator.openshift.io/cluster: build01
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-azure-stack
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-stack-cluster-profile
-      - --target=installer-rehearse-azure-stack
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-stack-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-azurestack-qe
+        secretName: cluster-secrets-azure-2
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -1879,7 +974,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1887,14 +981,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud: azure4
+    ci-operator.openshift.io/cloud-cluster-profile: azure4
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-debug
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-azure-upi
   spec:
     containers:
     - args:
@@ -1903,9 +997,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-debug-cluster-profile
-      - --target=installer-rehearse-debug
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/azure-upi-cluster-profile
+      - --target=azure-upi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1921,7 +1015,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-debug-cluster-profile
+      - mountPath: /usr/local/azure-upi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -1945,7 +1039,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-aws-qe
+        secretName: cluster-secrets-azure4
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -1953,8 +1047,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1962,14 +1055,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: gcp
-    ci-operator.openshift.io/cloud-cluster-profile: gcp-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud-cluster-profile: gcp
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-gcp
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-gcp-ipi
   spec:
     containers:
     - args:
@@ -1978,9 +1071,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-gcp-cluster-profile
-      - --target=installer-rehearse-gcp
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/gcp-ipi-cluster-profile
+      - --target=gcp-ipi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1996,7 +1089,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-gcp-cluster-profile
+      - mountPath: /usr/local/gcp-ipi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -2019,8 +1112,12 @@ periodics:
       secret:
         secretName: ci-pull-credentials
     - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-gcp-qe
+      projected:
+        sources:
+        - secret:
+            name: cluster-secrets-gcp
+        - configMap:
+            name: cluster-profile-gcp
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -2028,8 +1125,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2037,14 +1133,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: ibmcloud
-    ci-operator.openshift.io/cloud-cluster-profile: ibmcloud-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud: gcp
+    ci-operator.openshift.io/cloud-cluster-profile: gcp
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-ibmcloud
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-gcp-upi
   spec:
     containers:
     - args:
@@ -2053,9 +1149,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-ibmcloud-cluster-profile
-      - --target=installer-rehearse-ibmcloud
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/gcp-upi-cluster-profile
+      - --target=gcp-upi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -2071,7 +1167,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-ibmcloud-cluster-profile
+      - mountPath: /usr/local/gcp-upi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -2094,8 +1190,12 @@ periodics:
       secret:
         secretName: ci-pull-credentials
     - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-ibmcloud-qe
+      projected:
+        sources:
+        - secret:
+            name: cluster-secrets-gcp
+        - configMap:
+            name: cluster-profile-gcp
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -2103,8 +1203,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
-  cron: '@yearly'
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2112,15 +1211,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: nutanix-qe
-    ci-operator.openshift.io/cloud-cluster-profile: nutanix-qe
-    ci-operator.openshift.io/cluster: build01
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/cloud: openstack
+    ci-operator.openshift.io/cloud-cluster-profile: openstack
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-nutanix
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-openstack-ipi
   spec:
     containers:
     - args:
@@ -2129,9 +1227,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-nutanix-cluster-profile
-      - --target=installer-rehearse-nutanix
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/openstack-ipi-cluster-profile
+      - --target=openstack-ipi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -2147,7 +1245,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-nutanix-cluster-profile
+      - mountPath: /usr/local/openstack-ipi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -2171,7 +1269,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-nutanix-qe
+        secretName: cluster-secrets-openstack
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -2180,7 +1278,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: vsphere
-  cron: '@yearly'
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2188,14 +1285,14 @@ periodics:
   - base_ref: master
     org: openshift
     repo: verification-tests
+  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-vsphere
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-vsphere-ipi
   spec:
     containers:
     - args:
@@ -2204,9 +1301,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-cluster-profile
-      - --target=installer-rehearse-vsphere
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/vsphere-ipi-cluster-profile
+      - --target=vsphere-ipi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
       command:
       - ci-operator
       image: ci-operator:latest
@@ -2222,7 +1319,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-cluster-profile
+      - mountPath: /usr/local/vsphere-ipi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -2255,7 +1352,155 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: vsphere
-  cron: '@yearly'
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: verification-tests
+  interval: 48h
+  labels:
+    ci-operator.openshift.io/cloud: vsphere
+    ci-operator.openshift.io/cloud-cluster-profile: vsphere
+    ci-operator.openshift.io/variant: nightly-4.10-upgrade-from-eus-4.8
+    ci.openshift.io/generator: prowgen
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.10-upgrade-from-eus-4.8-vsphere-upi
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/vsphere-upi-cluster-profile
+      - --target=vsphere-upi
+      - --variant=nightly-4.10-upgrade-from-eus-4.8
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/vsphere-upi-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-vsphere
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  cron: 0 0 */7 * *
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: verification-tests
+  labels:
+    ci-operator.openshift.io/cloud: aws
+    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
+    ci-operator.openshift.io/variant: nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9
+    ci.openshift.io/generator: prowgen
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9-aws-ipi
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/aws-ipi-cluster-profile
+      - --target=aws-ipi
+      - --variant=nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/aws-ipi-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-aws-qe
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: vsphere
+  cron: 0 2 */7 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2266,11 +1511,10 @@ periodics:
   labels:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere-discon
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
+    ci-operator.openshift.io/variant: nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9
     ci.openshift.io/generator: prowgen
-    job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-vsphere-discon
+  name: periodic-ci-openshift-verification-tests-master-nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9-vsphere-ipi-disconnected
   spec:
     containers:
     - args:
@@ -2279,9 +1523,9 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-discon-cluster-profile
-      - --target=installer-rehearse-vsphere-discon
-      - --variant=installer-rehearse-4.12
+      - --secret-dir=/usr/local/vsphere-ipi-disconnected-cluster-profile
+      - --target=vsphere-ipi-disconnected
+      - --variant=nightly-4.11-upgrade-from-stable-4.10-from-stable-4.9
       command:
       - ci-operator
       image: ci-operator:latest
@@ -2297,984 +1541,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-discon-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: vsphere
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-multizone
-    ci-operator.openshift.io/variant: installer-rehearse-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.12-installer-rehearse-vsphere-multizone
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-multizone-cluster-profile
-      - --target=installer-rehearse-vsphere-multizone
-      - --variant=installer-rehearse-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-multizone-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: alibabacloud
-    ci-operator.openshift.io/cloud-cluster-profile: alibabacloud-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-alibabacloud
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-alibabacloud-cluster-profile
-      - --target=installer-rehearse-alibabacloud
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-alibabacloud-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-alibabacloud-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build05
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-aws
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-aws-cluster-profile
-      - --target=installer-rehearse-aws
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-aws-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: azure4
-    ci-operator.openshift.io/cloud-cluster-profile: azure-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-azure
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-cluster-profile
-      - --target=installer-rehearse-azure
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-azure-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: azurestack
-    ci-operator.openshift.io/cloud-cluster-profile: azurestack-qe
-    ci-operator.openshift.io/cluster: build01
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-azure-stack
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-azure-stack-cluster-profile
-      - --target=installer-rehearse-azure-stack
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-azure-stack-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-azurestack-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-8
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-debug
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-debug-cluster-profile
-      - --target=installer-rehearse-debug
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-debug-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: gcp
-    ci-operator.openshift.io/cloud-cluster-profile: gcp-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-gcp
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-gcp-cluster-profile
-      - --target=installer-rehearse-gcp
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-gcp-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-gcp-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build02
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: ibmcloud
-    ci-operator.openshift.io/cloud-cluster-profile: ibmcloud-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-ibmcloud
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-ibmcloud-cluster-profile
-      - --target=installer-rehearse-ibmcloud
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-ibmcloud-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-ibmcloud-qe
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: nutanix-qe-dis
-    ci-operator.openshift.io/cloud-cluster-profile: nutanix-qe-dis
-    ci-operator.openshift.io/cluster: build01
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-nutanix-dis
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-nutanix-dis-cluster-profile
-      - --target=installer-rehearse-nutanix-dis
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-nutanix-dis-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-nutanix-qe-dis
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: vsphere
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-8
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-vsphere-8
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-8-cluster-profile
-      - --target=installer-rehearse-vsphere-8
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-8-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: vsphere
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-connected
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-vsphere-connected
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-connected-cluster-profile
-      - --target=installer-rehearse-vsphere-connected
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-connected-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: vsphere
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-ibm-7
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-vsphere-ibm7
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-ibm7-cluster-profile
-      - --target=installer-rehearse-vsphere-ibm7
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-ibm7-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-vsphere
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: vsphere
-  cron: '@yearly'
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: master
-    org: openshift
-    repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: vsphere
-    ci-operator.openshift.io/cloud-cluster-profile: vsphere-multizone
-    ci-operator.openshift.io/variant: installer-rehearse-4.13
-    ci.openshift.io/generator: prowgen
-    job-release: "4.13"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.13-installer-rehearse-vsphere-multizone
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-vsphere-multizone-cluster-profile
-      - --target=installer-rehearse-vsphere-multizone
-      - --variant=installer-rehearse-4.13
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-vsphere-multizone-cluster-profile
+      - mountPath: /usr/local/vsphere-ipi-disconnected-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -3307,35 +1574,43 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build05
-  cron: '@yearly'
   decorate: true
-  decoration_config:
-    skip_cloning: true
   extra_refs:
   - base_ref: master
     org: openshift
     repo: verification-tests
-  labels:
-    ci-operator.openshift.io/cloud: aws
-    ci-operator.openshift.io/cloud-cluster-profile: aws-qe
-    ci-operator.openshift.io/variant: installer-rehearse-4.14
-    ci.openshift.io/generator: prowgen
-    job-release: "4.14"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-verification-tests-master-installer-rehearse-4.14-installer-rehearse-debug
+  interval: 24h
+  name: verification-tests-context
   spec:
     containers:
     - args:
       - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --git-ref=openshift/verification-tests@master
+      - --give-pr-author-access-to-namespace=true
       - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
       - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/installer-rehearse-debug-cluster-profile
-      - --target=installer-rehearse-debug
-      - --variant=installer-rehearse-4.14
+      - --repo=verification-tests
+      - --secret-dir=/usr/local/test-e2e-cluster-profile
+      - --target=test-e2e
+      - --template=/usr/local/test-e2e
       command:
       - ci-operator
+      env:
+      - name: BUSHSLICER_DEFAULT_ENVIRONMENT
+        value: ose
+      - name: CLUSTER_TYPE
+        value: aws
+      - name: JOB_NAME_SAFE
+        value: test-e2e
+      - name: OPENSHIFT_ENV_OSE_API_PORT
+        value: "6443"
+      - name: OPENSHIFT_ENV_OSE_HOSTS
+        value: master:etcd:node
+      - name: OPENSHIFT_ENV_OSE_USER_MANAGER_USERS
+        value: test1:test1
+      - name: TEST_COMMAND
+        value: /usr/bin/scl enable rh-git29 rh-ror50 -- cucumber --name "Could not
+          create any context in non-existent project"
       image: ci-operator:latest
       imagePullPolicy: Always
       name: ""
@@ -3346,19 +1621,16 @@ periodics:
       - mountPath: /etc/boskos
         name: boskos
         readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/installer-rehearse-debug-cluster-profile
+      - mountPath: /usr/local/test-e2e-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
         readOnly: true
+      - mountPath: /usr/local/test-e2e
+        name: job-definition
+        subPath: cluster-launch-installer-src.yaml
       - mountPath: /etc/pull-secret
         name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
         readOnly: true
     serviceAccountName: ci-operator
     volumes:
@@ -3368,15 +1640,14 @@ periodics:
         - key: credentials
           path: credentials
         secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
     - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-aws-qe
+      projected:
+        sources:
+        - secret:
+            name: cluster-secrets-aws
+    - configMap:
+        name: prow-job-cluster-launch-installer-src
+      name: job-definition
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator

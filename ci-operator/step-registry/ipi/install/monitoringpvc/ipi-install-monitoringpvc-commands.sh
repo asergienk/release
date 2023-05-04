@@ -4,15 +4,20 @@ set -o nounset
 set -o pipefail
 
 # Every cluster that can should have a PV for prometheus data so that data is preserved
-# across reschedules of pods.
+# across reschedules of pods. This may need to be conditionally disabled in the future
+# if certain instance types are used that cannot access persistent volumes.
 
-if test false = "${PERSISTENT_MONITORING}"
-then
-	echo "Nothing to do with PERSISTENT_MONITORING='${PERSISTENT_MONITORING}'"
-	exit
+# Use yq to create cluster monitoring config, as other steps may adjust it
+YQ_URI=https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64
+YQ_HASH=e70e482e7ddb9cf83b52f5e83b694a19e3aaf36acf6b82512cbe66e41d569201
+echo "${YQ_HASH} -" > /tmp/sum.txt
+if ! curl -Ls "${YQ_URI}" | tee /tmp/yq | sha256sum -c /tmp/sum.txt >/dev/null 2>/dev/null; then
+  echo "Expected file at ${YQ_URI} to have checksum ${YQ_HASH} but instead got $(sha256sum </tmp/yq | cut -d' ' -f1)"
+  strings /tmp/yq
+  exit 1
 fi
-
-yq-go --version
+echo "Downloaded yq; sha256 checksum matches expected ${YQ_HASH}."
+chmod +x /tmp/yq
 
 CONFIG="${SHARED_DIR}/manifest_cluster-monitoring-config.yaml"
 PATCH="${SHARED_DIR}/cluster-monitoring-config.yaml.patch"
@@ -26,7 +31,7 @@ else
   touch "${CONFIG}"
 fi
 
-CONFIG_CONTENTS="$(yq-go r ${CONFIG} 'data."config.yaml"')"
+CONFIG_CONTENTS="$(/tmp/yq r ${CONFIG} 'data."config.yaml"')"
 if [ -z "${CONFIG_CONTENTS}" ]; then
   cat >> "${CONFIG}" << EOF
 apiVersion: v1
@@ -60,6 +65,6 @@ prometheusK8s:
           storage: ${STORAGE}
 EOF
 
-CONFIG_CONTENTS="$(echo "${CONFIG_CONTENTS}" | yq-go m - "${PATCH}")"
-yq-go w --style folded -i "${CONFIG}" 'data."config.yaml"' "${CONFIG_CONTENTS}"
+CONFIG_CONTENTS="$(echo "${CONFIG_CONTENTS}" | /tmp/yq m - "${PATCH}")"
+/tmp/yq w --style folded -i "${CONFIG}" 'data."config.yaml"' "${CONFIG_CONTENTS}"
 cat "${CONFIG}"

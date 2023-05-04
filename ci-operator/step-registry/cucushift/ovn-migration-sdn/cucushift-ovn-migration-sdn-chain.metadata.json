@@ -1,9 +1,0 @@
-{
-	"path": "cucushift/ovn-migration-sdn/cucushift-ovn-migration-sdn-chain.yaml",
-	"owners": {
-		"approvers": [
-			"jhou1",
-			"liangxia"
-		]
-	}
-}

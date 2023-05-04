@@ -2,7 +2,9 @@
 	"path": "network/calico/network-calico-ref.yaml",
 	"owners": {
 		"approvers": [
+			"wking",
 			"vrutkovs",
+			"abhinavdahiya",
 			"deads2k"
 		]
 	}

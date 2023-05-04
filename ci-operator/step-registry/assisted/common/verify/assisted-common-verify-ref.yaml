@@ -1,16 +1,14 @@
 ref:
   as: assisted-common-verify
-  from: tests
-  cli: latest
+  from: assisted-test-infra-dev-script
   grace_period: 10m
   commands: assisted-common-verify-commands.sh
-  timeout: 8h
   resources:
     requests:
       cpu: "3"
       memory: 600Mi
     limits:
-      memory: 8Gi
+      memory: 2Gi
   credentials:
     - namespace: test-credentials
       name: vsphere-template-ssh-keys
@@ -21,11 +19,9 @@ ref:
     documentation: If the value is equal to "true", run only the upgrade tests
   - name: TEST_SUITE
     default: "full"
-    documentation: |
-      Selected test suite to be run. Can be one of 'none', 'minimal', 'conformance' or 'full'.
-      The default is 'full'.
+    documentation: Injects extended test list into e2e-metal-assisted.
   dependencies:
   - name: "release:latest"
     env: OPENSHIFT_UPGRADE_RELEASE_IMAGE
   documentation: |-
-    Executing conformance test suite or part of it if asked.
+    The Baremtal DS E2E assisted step executes the common end-to-end test suite.

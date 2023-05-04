@@ -1,8 +1,0 @@
-{
-	"path": "assisted/common/pre/assisted-common-pre-chain.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

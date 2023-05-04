@@ -10,6 +10,9 @@ if [ ! -f "${provisioned_rg_file}" ]; then
     exit 1
 fi
 
+# TODO: move to image
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 provisioned_rg=$(cat "${provisioned_rg_file}")
 echo "Using provisioned resource group: ${provisioned_rg}"
 
@@ -24,4 +27,4 @@ platform:
 EOF
 
 # apply patch to install-config
-yq-go m -x -i "${CONFIG}" "${PATCH}"
+/tmp/yq m -x -i "${CONFIG}" "${PATCH}"

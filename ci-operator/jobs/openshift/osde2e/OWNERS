@@ -5,21 +5,19 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- aweiteka
 - cblecker
+- clcollins
+- dofinn
 - dustman9000
-- jbpratt
+- jeremyeder
 - mrbarge
 - mrsantamaria
-- ritmun
-- ryankwilliams
 options: {}
 reviewers:
-- aweiteka
 - cblecker
+- clcollins
+- dofinn
 - dustman9000
-- jbpratt
+- jeremyeder
 - mrbarge
 - mrsantamaria
-- ritmun
-- ryankwilliams

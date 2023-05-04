@@ -7,7 +7,7 @@
 filters:
   .*:
     approvers:
-    - ffromani
+    - fromanirh
     - jlojosnegros
     - marioferh
     - marsik
@@ -15,7 +15,7 @@ filters:
     - tal-or
     - yanirq
     reviewers:
-    - ffromani
+    - fromanirh
     - jlojosnegros
     - marioferh
     - marsik

@@ -35,7 +35,7 @@ items:
           env:
           - name: GIT_SYNC_DEST
             value: release
-          image: registry.k8s.io/git-sync/git-sync:v3.6.2
+          image: gcr.io/google_containers/git-sync:v3.1.6
           volumeMounts:
           - name: release
             mountPath: /tmp/git-sync
@@ -51,19 +51,18 @@ items:
           env:
           - name: GIT_SYNC_DEST
             value: release
-          image: registry.k8s.io/git-sync/git-sync:v3.6.2
+          image: gcr.io/google_containers/git-sync:v3.1.6
           volumeMounts:
           - name: release
             mountPath: /tmp/git-sync
         - name: sinker
-          image: gcr.io/k8s-prow/sinker:v20230424-4981841b2f
+          image: gcr.io/k8s-prow/sinker:v20220719-54797060e1
           args:
           - --config-path=/var/repo/release/core-services/prow/02_config/_config.yaml
           - --supplemental-prow-config-dir=/var/repo/release/core-services/prow/02_config
           - --job-config-path=/var/repo/release/ci-operator/jobs
           - --projected-token-file=/var/sa-token/token
           - --kubeconfig-dir=/etc/build-farm-credentials
-          - --kubeconfig-suffix=config
           - --dry-run=false
           ports:
           - name: metrics
@@ -79,7 +78,7 @@ items:
             readOnly: true
           resources:
             requests:
-              memory: "4.5Gi"
+              memory: "1.8Gi"
               cpu: "50m"
         volumes:
         - name: release

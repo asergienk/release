@@ -1,11 +1,11 @@
 presubmits:
   cri-o/cri-o:
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-1\.24$
     - ^release-1\.24-
-    cluster: build03
+    cluster: build01
     context: ci/prow/e2e-agnostic
     decorate: true
     decoration_config:
@@ -17,7 +17,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-cri-o-cri-o-release-1.24-e2e-agnostic
     rerun_command: /test e2e-agnostic
-    skip_if_only_changed: ^(?:docs|tutorials|logo|\.github)/|\.md$|^(?:\.gitignore|OWNERS|SECURITY_CONTACTS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -76,11 +75,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-agnostic,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-1\.24$
     - ^release-1\.24-
-    cluster: build02
+    cluster: build01
     context: ci/prow/e2e-gcp
     decorate: true
     decoration_config:
@@ -92,7 +91,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-cri-o-cri-o-release-1.24-e2e-gcp
     rerun_command: /test e2e-gcp
-    skip_if_only_changed: ^(?:docs|tutorials|logo|\.github)/|\.md$|^(?:\.gitignore|OWNERS|SECURITY_CONTACTS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -155,11 +153,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-gcp,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-1\.24$
     - ^release-1\.24-
-    cluster: build04
+    cluster: build01
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -169,7 +167,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-cri-o-cri-o-release-1.24-images
     rerun_command: /test images
-    skip_if_only_changed: ^(?:docs|tutorials|logo|\.github)/|\.md$|^(?:\.gitignore|OWNERS|SECURITY_CONTACTS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:

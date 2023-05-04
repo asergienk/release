@@ -3,24 +3,27 @@ base_images:
     name: "4.12"
     namespace: ocp
     tag: base
-  ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+  ocp_builder_rhel-8-golang-1.17-openshift-4.10:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.12
+    tag: rhel-8-golang-1.17-openshift-4.10
 binary_build_commands: make build.image
 build_root:
-  from_repository: true
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: golang-1.17
 images:
 - dockerfile_path: Dockerfile.rhel8
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+    ocp_builder_rhel-8-golang-1.17-openshift-4.10:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.12
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.17-openshift-4.10
   to: node-observability-agent
 promotion:
-  name: node-observability-agent
-  namespace: node-observability-operator
+  name: "4.12"
+  namespace: ocp
 releases:
   initial:
     integration:

@@ -1,11 +1,4 @@
 {
 	"path": "operatorhub/subscribe/operatorhub-subscribe-ref.yaml",
-	"owners": {
-		"approvers": [
-			"technical-release-team-approvers"
-		],
-		"reviewers": [
-			"technical-release-team-reviewers"
-		]
-	}
+	"owners": {}
 }

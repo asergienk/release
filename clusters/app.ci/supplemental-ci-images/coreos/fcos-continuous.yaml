@@ -12,7 +12,7 @@ items:
       tags:
         - name: continuous
   - kind: BuildConfig
-    apiVersion: build.openshift.io/v1
+    apiVersion: v1
     metadata:
       namespace: coreos
       name: fcos-continuous

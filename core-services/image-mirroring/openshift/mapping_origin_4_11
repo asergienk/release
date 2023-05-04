@@ -43,6 +43,7 @@ registry.ci.openshift.org/origin/4.11:baremetal-operator quay.io/openshift/origi
 registry.ci.openshift.org/origin/4.11:baremetal-runtimecfg quay.io/openshift/origin-baremetal-runtimecfg:4.11 quay.io/openshift/origin-baremetal-runtimecfg:4.11.0
 registry.ci.openshift.org/origin/4.11:base quay.io/openshift/origin-base:4.11 quay.io/openshift/origin-base:4.11.0
 registry.ci.openshift.org/origin/4.11:cert-manager-operator quay.io/openshift/origin-cert-manager-operator:4.11 quay.io/openshift/origin-cert-manager-operator:4.11.0
+registry.ci.openshift.org/origin/4.11:cincinnati-graph-data-container quay.io/openshift/origin-cincinnati-graph-data-container:4.11 quay.io/openshift/origin-cincinnati-graph-data-container:4.11.0
 registry.ci.openshift.org/origin/4.11:cli quay.io/openshift/origin-cli:4.11 quay.io/openshift/origin-cli:4.11.0
 registry.ci.openshift.org/origin/4.11:cli-artifacts quay.io/openshift/origin-cli-artifacts:4.11 quay.io/openshift/origin-cli-artifacts:4.11.0
 registry.ci.openshift.org/origin/4.11:cloud-credential-operator quay.io/openshift/origin-cloud-credential-operator:4.11 quay.io/openshift/origin-cloud-credential-operator:4.11.0
@@ -129,6 +130,8 @@ registry.ci.openshift.org/origin/4.11:egress-http-proxy quay.io/openshift/origin
 registry.ci.openshift.org/origin/4.11:egress-router quay.io/openshift/origin-egress-router:4.11 quay.io/openshift/origin-egress-router:4.11.0
 registry.ci.openshift.org/origin/4.11:egress-router-cni quay.io/openshift/origin-egress-router-cni:4.11 quay.io/openshift/origin-egress-router-cni:4.11.0
 registry.ci.openshift.org/origin/4.11:etcd quay.io/openshift/origin-etcd:4.11 quay.io/openshift/origin-etcd:4.11.0
+registry.ci.openshift.org/origin/4.11:external-dns quay.io/openshift/origin-external-dns:4.11 quay.io/openshift/origin-external-dns:4.11.0
+registry.ci.openshift.org/origin/4.11:external-dns-operator quay.io/openshift/origin-external-dns-operator:4.11 quay.io/openshift/origin-external-dns-operator:4.11.0
 registry.ci.openshift.org/origin/4.11:f5-router quay.io/openshift/origin-f5-router:4.11 quay.io/openshift/origin-f5-router:4.11.0
 registry.ci.openshift.org/origin/4.11:federation-controller quay.io/openshift/origin-federation-controller:4.11 quay.io/openshift/origin-federation-controller:4.11.0
 registry.ci.openshift.org/origin/4.11:file-integrity-operator quay.io/openshift/origin-file-integrity-operator:4.11 quay.io/openshift/origin-file-integrity-operator:4.11.0
@@ -145,6 +148,7 @@ registry.ci.openshift.org/origin/4.11:hello-openshift quay.io/openshift/origin-h
 registry.ci.openshift.org/origin/4.11:helm-operator quay.io/openshift/origin-helm-operator:4.11 quay.io/openshift/origin-helm-operator:4.11.0
 registry.ci.openshift.org/origin/4.11:hyperkube quay.io/openshift/origin-hyperkube:4.11 quay.io/openshift/origin-hyperkube:4.11.0
 registry.ci.openshift.org/origin/4.11:hypershift quay.io/openshift/origin-hypershift:4.11 quay.io/openshift/origin-hypershift:4.11.0
+registry.ci.openshift.org/origin/4.11:hypershift-operator quay.io/openshift/origin-hypershift-operator:4.11 quay.io/openshift/origin-hypershift-operator:4.11.0
 registry.ci.openshift.org/origin/4.11:ibm-cloud-controller-manager quay.io/openshift/origin-ibm-cloud-controller-manager:4.11 quay.io/openshift/origin-ibm-cloud-controller-manager:4.11.0
 registry.ci.openshift.org/origin/4.11:ibm-vpc-block-csi-driver quay.io/openshift/origin-ibm-vpc-block-csi-driver:4.11 quay.io/openshift/origin-ibm-vpc-block-csi-driver:4.11.0
 registry.ci.openshift.org/origin/4.11:ibm-vpc-block-csi-driver-operator quay.io/openshift/origin-ibm-vpc-block-csi-driver-operator:4.11 quay.io/openshift/origin-ibm-vpc-block-csi-driver-operator:4.11.0
@@ -159,10 +163,6 @@ registry.ci.openshift.org/origin/4.11:ironic-agent quay.io/openshift/origin-iron
 registry.ci.openshift.org/origin/4.11:ironic-ipa-downloader quay.io/openshift/origin-ironic-ipa-downloader:4.11 quay.io/openshift/origin-ironic-ipa-downloader:4.11.0
 registry.ci.openshift.org/origin/4.11:ironic-machine-os-downloader quay.io/openshift/origin-ironic-machine-os-downloader:4.11 quay.io/openshift/origin-ironic-machine-os-downloader:4.11.0
 registry.ci.openshift.org/origin/4.11:ironic-static-ip-manager quay.io/openshift/origin-ironic-static-ip-manager:4.11 quay.io/openshift/origin-ironic-static-ip-manager:4.11.0
-registry.ci.openshift.org/origin/4.11:jenkins quay.io/openshift/origin-jenkins:4.11 quay.io/openshift/origin-jenkins:4.11.0
-registry.ci.openshift.org/origin/4.11:jenkins-agent-base quay.io/openshift/origin-jenkins-agent-base:4.11 quay.io/openshift/origin-jenkins-agent-base:4.11.0
-registry.ci.openshift.org/origin/4.11:jenkins-agent-maven quay.io/openshift/origin-jenkins-agent-maven:4.11 quay.io/openshift/origin-jenkins-agent-maven:4.11.0
-registry.ci.openshift.org/origin/4.11:jenkins-agent-nodejs quay.io/openshift/origin-jenkins-agent-nodejs:4.11 quay.io/openshift/origin-jenkins-agent-nodejs:4.11.0
 registry.ci.openshift.org/origin/4.11:jenkins-client-plugin-tests quay.io/openshift/origin-jenkins-client-plugin-tests:4.11 quay.io/openshift/origin-jenkins-client-plugin-tests:4.11.0
 registry.ci.openshift.org/origin/4.11:jenkins-sync-plugin-e2e quay.io/openshift/origin-jenkins-sync-plugin-e2e:4.11 quay.io/openshift/origin-jenkins-sync-plugin-e2e:4.11.0
 registry.ci.openshift.org/origin/4.11:k8s-prometheus-adapter quay.io/openshift/origin-k8s-prometheus-adapter:4.11 quay.io/openshift/origin-k8s-prometheus-adapter:4.11.0
@@ -216,6 +216,7 @@ registry.ci.openshift.org/origin/4.11:network-interface-bond-cni quay.io/openshi
 registry.ci.openshift.org/origin/4.11:network-metrics-daemon quay.io/openshift/origin-network-metrics-daemon:4.11 quay.io/openshift/origin-network-metrics-daemon:4.11.0
 registry.ci.openshift.org/origin/4.11:network-tools quay.io/openshift/origin-network-tools:4.11 quay.io/openshift/origin-network-tools:4.11.0
 registry.ci.openshift.org/origin/4.11:node-feature-discovery quay.io/openshift/origin-node-feature-discovery:4.11 quay.io/openshift/origin-node-feature-discovery:4.11.0
+registry.ci.openshift.org/origin/4.11:node-observability-agent quay.io/openshift/origin-node-observability-agent:4.11 quay.io/openshift/origin-node-observability-agent:4.11.0
 registry.ci.openshift.org/origin/4.11:node-observability-operator quay.io/openshift/origin-node-observability-operator:4.11 quay.io/openshift/origin-node-observability-operator:4.11.0
 registry.ci.openshift.org/origin/4.11:node-problem-detector quay.io/openshift/origin-node-problem-detector:4.11 quay.io/openshift/origin-node-problem-detector:4.11.0
 registry.ci.openshift.org/origin/4.11:node-problem-detector-operator quay.io/openshift/origin-node-problem-detector-operator:4.11 quay.io/openshift/origin-node-problem-detector-operator:4.11.0

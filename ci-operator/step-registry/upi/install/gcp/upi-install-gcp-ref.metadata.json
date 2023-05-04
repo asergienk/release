@@ -2,9 +2,9 @@
 	"path": "upi/install/gcp/upi-install-gcp-ref.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"abhinavdahiya",
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

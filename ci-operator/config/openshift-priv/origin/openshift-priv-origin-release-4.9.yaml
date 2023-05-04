@@ -91,11 +91,11 @@ tests:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-gcp
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
-    workflow: openshift-e2e-gcp
+    workflow: openshift-e2e-gcp-loki
 - as: e2e-aws-ovn
   optional: true
   steps:
@@ -226,25 +226,21 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-sdn-multi
 - as: e2e-metal-ipi
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ipv4
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv6
 - as: e2e-metal-ipi-ovn-dualstack
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-dualstack
 - as: e2e-metal-ipi-virtualmedia
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal

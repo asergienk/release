@@ -43,7 +43,7 @@ items:
   kind: ServiceMonitor
   metadata:
     name: result-aggregator
-    namespace: ci
+    namespace: prow-monitoring
     labels:
       app: prow
       component: result-aggregator
@@ -53,6 +53,9 @@ items:
     - interval: 30s
       port: metrics
       scheme: http
+    namespaceSelector:
+      matchNames:
+      - ci
     selector:
       matchLabels:
         app: prow

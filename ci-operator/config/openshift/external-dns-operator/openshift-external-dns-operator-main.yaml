@@ -1,16 +1,16 @@
 base_images:
   base:
-    name: "4.13"
+    name: "4.9"
     namespace: ocp
     tag: base
   kube-rbac-proxy:
-    name: "4.13"
+    name: "4.9"
     namespace: ocp
     tag: kube-rbac-proxy
-  ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+  ocp_builder_rhel-8-golang-1.17-openshift-4.10:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.12
+    tag: rhel-8-golang-1.17-openshift-4.10
   operator-index:
     name: redhat-operator-index
     namespace: ci
@@ -21,9 +21,9 @@ images:
 - dockerfile_path: Dockerfile.openshift
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+    ocp_builder_rhel-8-golang-1.17-openshift-4.10:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.12
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.17-openshift-4.10
   to: external-dns-operator
 operator:
   bundles:
@@ -35,15 +35,18 @@ operator:
     with: pipeline:external-dns-operator
   - pullspec: quay.io/openshift/origin-kube-rbac-proxy:latest
     with: pipeline:kube-rbac-proxy
+promotion:
+  name: "4.12"
+  namespace: ocp
 releases:
   initial:
     integration:
-      name: "4.13"
+      name: "4.12"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.13"
+      name: "4.12"
       namespace: ocp
 resources:
   '*':
@@ -69,7 +72,7 @@ tests:
     dependencies:
       OO_INDEX: ci-index-external-dns-operator-bundle
     env:
-      OO_CHANNEL: stable-v1
+      OO_CHANNEL: stable-v1.0
       OO_INSTALL_NAMESPACE: external-dns-operator
       OO_PACKAGE: external-dns-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -88,7 +91,7 @@ tests:
     dependencies:
       OO_INDEX: ci-index-external-dns-operator-bundle
     env:
-      OO_CHANNEL: stable-v1
+      OO_CHANNEL: stable-v1.0
       OO_INSTALL_NAMESPACE: external-dns-operator
       OO_PACKAGE: external-dns-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -107,7 +110,7 @@ tests:
     dependencies:
       OO_INDEX: ci-index-external-dns-operator-bundle
     env:
-      OO_CHANNEL: stable-v1
+      OO_CHANNEL: stable-v1.0
       OO_INSTALL_NAMESPACE: external-dns-operator
       OO_PACKAGE: external-dns-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -122,11 +125,11 @@ tests:
     workflow: optional-operators-ci-azure
 - as: e2e-infoblox-operator
   steps:
-    cluster_profile: azure4
+    cluster_profile: gcp
     dependencies:
       OO_INDEX: ci-index-external-dns-operator-bundle
     env:
-      OO_CHANNEL: stable-v1
+      OO_CHANNEL: stable-v1.0
       OO_INSTALL_NAMESPACE: external-dns-operator
       OO_PACKAGE: external-dns-operator
       OO_TARGET_NAMESPACES: '!install'
@@ -145,7 +148,7 @@ tests:
       resources:
         requests:
           cpu: 100m
-    workflow: optional-operators-ci-azure
+    workflow: optional-operators-ci-gcp
 zz_generated_metadata:
   branch: main
   org: openshift

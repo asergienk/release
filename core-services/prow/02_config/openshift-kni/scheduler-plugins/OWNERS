@@ -7,14 +7,15 @@
 filters:
   .*:
     approvers:
-    - ffromani
+    - fromanirh
     - marsik
     - swatisehgal
     - tal-or
     - yanirq
     reviewers:
-    - ffromani
+    - fromanirh
     - jlojosnegros
+    - marioferh
     - marsik
     - swatisehgal
     - tal-or

@@ -2,6 +2,7 @@
 	"path": "ipi/aws/pre/workers-rhel/ipi-aws-pre-workers-rhel-chain.yaml",
 	"owners": {
 		"approvers": [
+			"jstuever",
 			"patrickdillon"
 		]
 	}

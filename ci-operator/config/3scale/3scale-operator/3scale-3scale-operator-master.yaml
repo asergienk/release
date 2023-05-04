@@ -3,12 +3,12 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.17
+    tag: golang-1.13
 releases:
   latest:
     release:
-      channel: fast
-      version: "4.8"
+      channel: stable
+      version: "4.6"
 resources:
   '*':
     limits:

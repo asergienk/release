@@ -5,7 +5,7 @@
     name: verification-tests
     tag: latest
   grace_period: 10m
-  timeout: 16h
+  timeout: 8h
   commands: cucushift-e2e-commands.sh
   cli: latest
   resources:
@@ -26,7 +26,6 @@
           and not @destructive
           and not @flaky
           and not @inactive
-          and not @long-duration
           and not @prod-only
           and not @qeci
           and not @security

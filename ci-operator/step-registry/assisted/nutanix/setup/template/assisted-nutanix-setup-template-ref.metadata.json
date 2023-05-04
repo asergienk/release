@@ -1,8 +1,0 @@
-{
-	"path": "assisted/nutanix/setup/template/assisted-nutanix-setup-template-ref.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

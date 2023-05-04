@@ -1,8 +1,0 @@
-{
-	"path": "optional-operators/ci/generic-claim/optional-operators-ci-generic-claim-workflow.yaml",
-	"owners": {
-		"approvers": [
-			"dptp"
-		]
-	}
-}

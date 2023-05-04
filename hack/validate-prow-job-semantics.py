@@ -35,7 +35,7 @@ def main():
         validate_pod_name,
         validate_resources,
     )
-    validate = lambda funcs, *args: all(f(*args) for f in funcs)
+    validate = lambda funcs, *args: all([f(*args) for f in funcs])
     failed = False
     args = parse_args()
     logger.setLevel(getattr(logging, args.log_level.upper()))
@@ -55,7 +55,7 @@ def main():
             if not validate(PATH_CHECKS, path):
                 failed = True
                 continue
-            with open(path, encoding='utf-8') as f:
+            with open(path) as f:
                 data = yaml.load(f, Loader=yaml.SafeLoader)
             if not validate(CONTENT_CHECKS, path, data):
                 failed = True
@@ -63,15 +63,13 @@ def main():
     if failed:
         sys.exit(1)
 
-
 def parse_org_repo(path):
     return os.path.basename(os.path.dirname(os.path.dirname(path))), os.path.basename(os.path.dirname(path))
-
 
 def validate_filename(path):
     org_dir, repo_dir = parse_org_repo(path)
     base = os.path.basename(path)
-    if not base.startswith(f'{org_dir}-{repo_dir}-'):
+    if not base.startswith("{}-{}-".format(org_dir, repo_dir)):
         logger.error("%s: expected filename to start with %s-%s", path, org_dir, repo_dir)
         return False
 
@@ -81,19 +79,18 @@ def validate_filename(path):
         return False
 
     if job_type == "periodics":
-        branch = base[len(f'{org_dir}-{repo_dir}-'):-len(f'-{job_type}.yaml')]
+        branch = base[len("{}-{}-".format(org_dir, repo_dir)):-len("-{}.yaml".format(job_type))]
         if branch == "":
-            if base != f'{org_dir}-{repo_dir}-{job_type}.yaml':
+            if base != "{}-{}-{}.yaml".format(org_dir, repo_dir, job_type):
                 logger.error("%s: Invalid formatting in filename: expected filename format $org-$repo-periodics.yaml", path)
                 return False
     else:
-        branch = base[len(f'{org_dir}-{repo_dir}-'):-len(f'-{job_type}.yaml')]
+        branch = base[len("{}-{}-".format(org_dir, repo_dir)):-len("-{}.yaml".format(job_type))]
         if branch == "":
             logger.error("%s: Invalid formatting in filename: expected filename format org-repo-branch-(pre|post)submits.yaml", path)
             return False
 
     return True
-
 
 def validate_file_structure(path, data):
     if len(data) != 1:
@@ -108,22 +105,20 @@ def validate_file_structure(path, data):
 
     return True
 
-
 def validate_job_repo(path, data):
     org, repo = parse_org_repo(path)
     if "presubmits" in data:
         for org_repo in data["presubmits"]:
-            if org_repo != f'{org}/{repo}':
+            if org_repo != "{}/{}".format(org, repo):
                 logger.error("%s: file defines jobs for %s, but is only allowed to contain jobs for %s/%s", path, org_repo, org, repo)
                 return False
     if "postsubmits" in data:
         for org_repo in data["postsubmits"]:
-            if org_repo != f'{org}/{repo}':
+            if org_repo != "{}/{}".format(org, repo):
                 logger.error("%s: file defines jobs for %s, but is only allowed to contain jobs for %s/%s", path, org_repo, org, repo)
                 return False
 
     return True
-
 
 def validate_names(path, data):
     out = True
@@ -179,7 +174,7 @@ def validate_names(path, data):
                     if variant:
                         target = variant + "-" + target
                     for prefix in prefixes:
-                        name = f'{prefix}-ci-{repo.replace("/", "-")}-{branch}-{target}'
+                        name = "{}-ci-{}-{}-{}".format(prefix, repo.replace("/", "-"), branch, target)
                         valid_names[name] = target
 
                 if job["name"] not in valid_names:
@@ -189,29 +184,27 @@ def validate_names(path, data):
                 name_target = valid_names[job["name"]]
 
                 if job_type == "presubmits":
-                    valid_context = f'ci/prow/{name_target}'
+                    valid_context = "ci/prow/{}".format(name_target)
                     if job["context"] != valid_context:
                         logger.error("%s: ci-operator job %s should have context %s", path, job["name"], valid_context)
                         out = False
 
-                    valid_rerun_command = f'/test {name_target}'
+                    valid_rerun_command = "/test {}".format(name_target)
                     if job["rerun_command"] != valid_rerun_command:
                         logger.error("%s: ci-operator job %s should have rerun_command %s", path, job["name"], valid_rerun_command)
                         out = False
 
-                    valid_trigger = rf'(?m)^/test( | .* ){name_target},?($|\s.*)'
+                    valid_trigger = r"(?m)^/test( | .* ){},?($|\s.*)".format(name_target)
                     if job["trigger"] != valid_trigger:
                         logger.error("%s: ci-operator job %s should have trigger %s", path, job["name"], valid_trigger)
                         out = False
 
     return out
 
-
 def make_regex_filename_label(name):
     name = re.sub(r"[^\w\-\.]+", "", name)
     name = name.strip("-._")
     return name
-
 
 def validate_sharding(path, data):
     out = True
@@ -225,13 +218,12 @@ def validate_sharding(path, data):
                 if "branches" in job:
                     branch = make_regex_filename_label(job["branches"][0])
 
-                file_branch = os.path.basename(path)[len(f'{repo.replace("/", "-")}-'):-len(f'-{job_type}.yaml')]
+                file_branch = os.path.basename(path)[len("{}-".format(repo.replace("/", "-"))):-len("-{}.yaml".format(job_type))]
                 if file_branch != branch:
                     logger.error("%s: job %s runs on branch %s, not %s so it should be in file %s", path, job["name"], branch, file_branch, path.replace(file_branch, branch))
                     out = False
 
     return out
-
 
 def validate_pod_name(path, data):
     out = True
@@ -251,7 +243,6 @@ def validate_pod_name(path, data):
 
     return out
 
-
 def validate_image_pull(path, data):
     out = True
     for job_type in data:
@@ -269,7 +260,6 @@ def validate_image_pull(path, data):
                     continue
 
     return out
-
 
 def validate_resources(path, data):
     out = True
@@ -299,6 +289,5 @@ def validate_resources(path, data):
                     continue
 
     return out
-
 
 main()

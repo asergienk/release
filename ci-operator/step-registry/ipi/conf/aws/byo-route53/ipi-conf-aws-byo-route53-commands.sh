@@ -6,6 +6,8 @@ set -o pipefail
 
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
 
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+
 CONFIG="${SHARED_DIR}/install-config.yaml"
 
 
@@ -25,4 +27,4 @@ platform:
     hostedZone: $(cat "${HostedZoneId}")
 EOF
 
-yq-go m -x -i "${CONFIG}" "${CONFIG_ROUTE53_PRIVATE_HOSTEDZONE}"
+/tmp/yq m -x -i "${CONFIG}" "${CONFIG_ROUTE53_PRIVATE_HOSTEDZONE}"

@@ -5,18 +5,11 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- benluddy
 - deads2k
-- dgrisonnet
-- dinhxuanvu
 - mfojtik
-- sanchezl
 - sttts
-- tkashem
 options: {}
 reviewers:
-- benluddy
-- dgrisonnet
-- dinhxuanvu
-- sanchezl
-- tkashem
+- deads2k
+- mfojtik
+- sttts

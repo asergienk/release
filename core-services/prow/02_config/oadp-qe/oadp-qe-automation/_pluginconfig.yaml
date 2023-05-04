@@ -1,4 +1,0 @@
-plugins:
-  oadp-qe/oadp-qe-automation:
-    plugins:
-    - trigger

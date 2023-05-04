@@ -6,11 +6,9 @@
 
 approvers:
 - baude
-- cdoern
 - edsantiago
 - giuseppe
 - jwhonce
-- lsm5
 - mheon
 - rhatdan
 - tomsweeneyredhat
@@ -20,11 +18,9 @@ options: {}
 reviewers:
 - ashley-cui
 - baude
-- cdoern
 - edsantiago
 - giuseppe
 - jwhonce
-- lsm5
 - mheon
 - rhatdan
 - tomsweeneyredhat

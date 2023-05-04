@@ -1,17 +1,37 @@
 base_images:
-  base:
-    name: "4.3"
+  os:
+    name: ubi
     namespace: ocp
-    tag: base
+    tag: "8"
 build_root:
   image_stream_tag:
     name: release
     namespace: openshift
     tag: golang-1.12
 images:
-- dockerfile_literal: FROM src
-  from: base
+- dockerfile_path: Dockerfile.ocp
+  from: base-os
   to: ironic-ipa-downloader
+promotion:
+  name: "4.3"
+  namespace: ocp
+raw_steps:
+- pipeline_image_cache_step:
+    commands: |
+      rm -rf /etc/yum.repos.d/*
+      curl http://base-4-3-rhel8.ocp.svc > /etc/yum.repos.d/base-4-3-rhel8.repo
+    from: os
+    to: base-os
+releases:
+  initial:
+    integration:
+      name: "4.3"
+      namespace: ocp
+  latest:
+    integration:
+      include_built_images: true
+      name: "4.3"
+      namespace: ocp
 resources:
   '*':
     requests:

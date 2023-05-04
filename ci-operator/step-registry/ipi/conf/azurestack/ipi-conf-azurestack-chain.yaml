@@ -2,7 +2,6 @@ chain:
   as: ipi-conf-azurestack
   steps:
   - ref: ipi-conf
-  - ref: ipi-conf-telemetry
   - ref: ipi-conf-azurestack
   - ref: ipi-install-monitoringpvc
   documentation: |-

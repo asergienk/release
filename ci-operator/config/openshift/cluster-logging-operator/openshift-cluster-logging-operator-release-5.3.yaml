@@ -90,7 +90,7 @@ promotion:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.8"
 resources:
   '*':
@@ -140,7 +140,7 @@ tests:
         requests:
           cpu: 100m
       timeout: 3h0m0s
-    workflow: openshift-e2e-gcp
+    workflow: openshift-e2e-gcp-hosted-loki
 - as: functional
   steps:
     cluster_profile: gcp

@@ -99,9 +99,8 @@ tests:
 - as: hco-e2e-image-index-azure
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -131,9 +130,8 @@ tests:
   optional: true
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -163,11 +161,10 @@ tests:
   optional: true
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-prev-bundle
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.6.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -185,9 +182,8 @@ tests:
   optional: true
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: aws-virtualization
+    cluster_profile: aws
     env:
-      BASE_DOMAIN: cnv-ci.syseng.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -217,11 +213,10 @@ tests:
   optional: true
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: aws-virtualization
+    cluster_profile: aws
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-prev-bundle
     env:
-      BASE_DOMAIN: cnv-ci.syseng.devcluster.openshift.com
       OO_CHANNEL: 1.6.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -238,9 +233,8 @@ tests:
 - as: hco-e2e-kv-smoke-azure
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -259,9 +253,8 @@ tests:
 - as: hco-e2e-image-index-aws
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: aws-virtualization
+    cluster_profile: aws
     env:
-      BASE_DOMAIN: cnv-ci.syseng.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -290,9 +283,8 @@ tests:
 - as: hco-e2e-kv-smoke-gcp
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: gcp-virtualization
+    cluster_profile: gcp
     env:
-      COMPUTE_NODE_TYPE: n2-standard-4
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -311,11 +303,10 @@ tests:
 - as: hco-e2e-upgrade-index-aws
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: aws-virtualization
+    cluster_profile: aws
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-bundle
     env:
-      BASE_DOMAIN: cnv-ci.syseng.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -332,11 +323,10 @@ tests:
 - as: hco-e2e-upgrade-index-azure
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-bundle
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.7.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -353,11 +343,10 @@ tests:
 - as: hco-e2e-upgrade-prev-index-aws
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: aws-virtualization
+    cluster_profile: aws
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-prev-bundle
     env:
-      BASE_DOMAIN: cnv-ci.syseng.devcluster.openshift.com
       OO_CHANNEL: 1.6.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged
@@ -374,11 +363,10 @@ tests:
 - as: hco-e2e-upgrade-prev-index-azure
   run_if_changed: ^(api/.*|assets/.*|build/.*|ci-test-files/.*|config/.*|controllers/.*|cmd/.*|deploy/crds/.*|deploy/index-image/.*|hack/.*|pkg/.*|tests/.*|Makefile|go\.mod|go\.sum)$
   steps:
-    cluster_profile: azure-virtualization
+    cluster_profile: azure4
     dependencies:
       OO_INDEX: ci-index-hco-upgrade-prev-bundle
     env:
-      BASE_DOMAIN: cnv.azure.devcluster.openshift.com
       OO_CHANNEL: 1.6.0
       OO_INSTALL_NAMESPACE: kubevirt-hyperconverged
       OO_PACKAGE: community-kubevirt-hyperconverged

@@ -6,10 +6,6 @@ ref:
     requests:
       cpu: 1000m
       memory: 100Mi
-  credentials:
-  - namespace: test-credentials
-    name: cluster-secrets-openstack-nerc-dev
-    mount_path: /var/run/cluster-secrets/openstack
   env:
   - name: OS_CLOUD
     default: openstack
@@ -18,5 +14,4 @@ ref:
     documentation: |-
       This will override CLUSTER_TYPE in the `commands` file if set.
   documentation: |-
-    Collects metrics from the target cloud and uploads them to a well-known
-    Swift container.
+    Collects metrics from the target cloud and saves them to $SHARED_DIR

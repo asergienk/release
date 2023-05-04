@@ -1,15 +1,3 @@
-branch-protection:
-  orgs:
-    stolostron:
-      repos:
-        policy-collection:
-          branches:
-            main:
-              enforce_admins: true
-              protect: true
-              required_status_checks:
-                contexts:
-                - Validation tests
 tide:
   merge_method:
-    stolostron/policy-collection: rebase
+    stolostron/policy-collection: squash

@@ -8,7 +8,7 @@ filters:
   .*:
     approvers:
     - fedepaol
-    - ffromani
+    - fromanirh
     - marsik
     - schseba
     - swatisehgal
@@ -16,7 +16,7 @@ filters:
     - yanirq
     reviewers:
     - fedepaol
-    - ffromani
+    - fromanirh
     - jlojosnegros
     - marioferh
     - marsik

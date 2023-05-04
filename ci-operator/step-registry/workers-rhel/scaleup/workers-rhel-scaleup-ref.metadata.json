@@ -2,9 +2,8 @@
 	"path": "workers-rhel/scaleup/workers-rhel-scaleup-ref.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

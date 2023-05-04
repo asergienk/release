@@ -5,7 +5,7 @@
   "mirrorPrefix": "4.11",
   "expires":"72h",
   "maxUnreadyReleases": 1,
-  "minCreationIntervalSeconds": 21600,
+  "minCreationIntervalSeconds": 1800,
   "pullSecretName": "source",
   "publish":{
     "mirror-to-origin":{
@@ -14,8 +14,6 @@
         "name": "4.11",
         "excludeTags": [
           "machine-os-content",
-          "machine-config-operator",
-          "machine-config-operator-rpms",
           "installer",
           "installer-artifacts",
           "baremetal-installer",
@@ -48,10 +46,6 @@
     "aws-serial":{
       "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-e2e-aws-serial"}
     },
-    "credentials-request-freeze":{
-      "optional":true,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.11-credentials-request-freeze"}
-    },
     "upgrade":{
       "disabled":true,
       "upgrade":true,
@@ -71,27 +65,35 @@
       "optional":true,
       "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-upgrade-from-stable-4.10-e2e-aws-ovn-upgrade"}
     },
-    "aws-ovn-upgrade-4.11-micro":{
+    "aggregated-aws-ovn-upgrade-4.11-micro":{
       "upgrade":true,
-      "maxRetries": 3,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-e2e-aws-ovn-upgrade"}
+      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-e2e-aws-ovn-upgrade"},
+      "aggregatedProwJob": {
+        "analysisJobCount": 10
+      }
     },
-    "aws-ovn-upgrade-4.11-minor":{
+    "aggregated-aws-ovn-upgrade-4.11-minor":{
       "upgrade":true,
       "upgradeFrom": "PreviousMinor",
-      "maxRetries": 3,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-upgrade-from-stable-4.10-e2e-aws-ovn-upgrade"}
+      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-upgrade-from-stable-4.10-e2e-aws-ovn-upgrade"},
+      "aggregatedProwJob": {
+        "analysisJobCount": 10
+      }
     },
-    "azure-sdn-upgrade-4.11-minor": {
+    "aggregated-azure-sdn-upgrade-4.11-minor": {
       "upgrade":true,
       "upgradeFrom": "PreviousMinor",
-      "maxRetries": 3,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-upgrade-from-stable-4.10-e2e-azure-upgrade"}
+      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-upgrade-from-stable-4.10-e2e-azure-upgrade"},
+      "aggregatedProwJob": {
+        "analysisJobCount": 10
+      }
     },
-    "gcp-sdn-upgrade-4.11-micro": {
+    "aggregated-gcp-sdn-upgrade-4.11-micro": {
       "upgrade":true,
-      "maxRetries": 3,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-e2e-gcp-upgrade"}
+      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.11-e2e-gcp-upgrade"},
+      "aggregatedProwJob": {
+        "analysisJobCount": 10
+      }
     }
   }
 }

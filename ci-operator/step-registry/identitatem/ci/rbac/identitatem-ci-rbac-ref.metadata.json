@@ -2,6 +2,7 @@
 	"path": "identitatem/ci/rbac/identitatem-ci-rbac-ref.yaml",
 	"owners": {
 		"approvers": [
+			"arewm",
 			"cdoan1",
 			"chrisahl",
 			"gurnben",

@@ -1,7 +1,6 @@
 ref:
   as: ipi-conf-nutanix-manual-creds
-  from: cloud-credential-operator
-  cli: latest
+  from: tools
   commands: ipi-conf-nutanix-manual-creds-commands.sh
   resources:
     requests:

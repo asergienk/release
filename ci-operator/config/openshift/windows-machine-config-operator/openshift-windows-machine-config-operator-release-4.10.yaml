@@ -25,6 +25,10 @@ promotion:
   name: "4.10"
   namespace: ocp
 releases:
+  initial:
+    integration:
+      name: "4.10"
+      namespace: ocp
   latest:
     integration:
       include_built_images: true
@@ -54,54 +58,54 @@ tests:
   commands: make lint
   container:
     from: src
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
 - as: build
   commands: make build
   container:
     from: src
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
 - as: unit
   commands: make unit
   container:
     from: src
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
 - as: aws-e2e-ccm-install
-  cron: 0 9 * * 1
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: aws
     test:
     - ref: windows-e2e-operator-test
     workflow: openshift-e2e-aws-ccm-ovn-hybrid-install
 - as: aws-e2e-operator
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: aws
     test:
     - ref: windows-e2e-operator-test
     workflow: ipi-aws-ovn-hybrid
 - as: azure-e2e-operator
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: azure4
     test:
     - ref: windows-e2e-operator-test
     workflow: ipi-azure-ovn-hybrid
 - as: azure-e2e-ccm-install
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  optional: true
   steps:
     cluster_profile: azure4
     test:
     - ref: windows-e2e-operator-test
     workflow: openshift-e2e-azure-ccm-ovn-hybrid-install
 - as: vsphere-e2e-operator
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: vsphere
     test:
     - ref: windows-e2e-operator-test-with-custom-vxlan-port
     workflow: ipi-vsphere-ovn-hybrid-custom-vxlan-port
 - as: aws-e2e-upgrade
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: aws
     env:
@@ -111,7 +115,6 @@ tests:
       OO_TARGET_NAMESPACES: '!install'
     test:
     - as: e2e-aws-upgrade
-      cli: latest
       commands: |-
         #!/bin/bash
         set -euo pipefail
@@ -130,8 +133,14 @@ tests:
           cpu: 1000m
           memory: 400Mi
     workflow: optional-operators-ci-aws-ovn-hybrid
+- as: vsphere-e2e-periodic
+  cron: 0 */8 * * *
+  steps:
+    cluster_profile: vsphere
+    test:
+    - ref: windows-e2e-operator-test-with-custom-vxlan-port
+    workflow: ipi-vsphere-ovn-hybrid-custom-vxlan-port
 - as: platform-none-vsphere-e2e-operator
-  skip_if_only_changed: ^(?:docs|\.github)/|\.md$|^(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
   steps:
     cluster_profile: vsphere-platform-none
     test:

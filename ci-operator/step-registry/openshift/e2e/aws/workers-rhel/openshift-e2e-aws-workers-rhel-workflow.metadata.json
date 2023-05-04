@@ -2,6 +2,7 @@
 	"path": "openshift/e2e/aws/workers-rhel/openshift-e2e-aws-workers-rhel-workflow.yaml",
 	"owners": {
 		"approvers": [
+			"jstuever",
 			"patrickdillon"
 		]
 	}

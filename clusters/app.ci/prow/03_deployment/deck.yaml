@@ -86,7 +86,7 @@ objects:
         serviceAccountName: deck
         containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20230424-4981841b2f
+          image: gcr.io/k8s-prow/deck:v20220719-54797060e1
           args:
           - --config-path=/etc/config/config.yaml
           - --supplemental-prow-config-dir=/etc/config
@@ -107,7 +107,6 @@ objects:
           - --plugin-config=/etc/plugins/plugins.yaml
           - --supplemental-plugin-config-dir=/etc/plugins
           - --kubeconfig-dir=/etc/build-farm-credentials
-          - --kubeconfig-suffix=config
           env:
           - name: GITHUB_APP_ID
             valueFrom:
@@ -199,13 +198,7 @@ objects:
             - configMap:
                 name: job-config-master-presubmits
             - configMap:
-                name: job-config-1.x
-            - configMap:
-                name: job-config-2.x
-            - configMap:
                 name: job-config-3.x
-            - configMap:
-                name: job-config-4.0
             - configMap:
                 name: job-config-4.1
             - configMap:
@@ -232,10 +225,6 @@ objects:
                 name: job-config-4.12
             - configMap:
                 name: job-config-4.13
-            - configMap:
-                name: job-config-4.14
-            - configMap:
-                name: job-config-4.15
         - name: build-farm-credentials
           secret:
             secretName: deck
@@ -327,7 +316,7 @@ objects:
           - mountPath: /etc/proxy/secrets
             name: session-secret
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20230424-4981841b2f
+          image: gcr.io/k8s-prow/deck:v20220719-54797060e1
           args:
           - --github-oauth-config-file=/etc/oauth/config.json
           - --github-app-id=$(GITHUB_APP_ID)
@@ -350,7 +339,6 @@ objects:
           - --plugin-config=/etc/plugins/plugins.yaml
           - --supplemental-plugin-config-dir=/etc/plugins
           - --kubeconfig-dir=/etc/build-farm-credentials
-          - --kubeconfig-suffix=config
           env:
           - name: GITHUB_APP_ID
             valueFrom:
@@ -360,21 +348,6 @@ objects:
           ports:
             - name: http
               containerPort: 8080
-            - name: metrics
-              containerPort: 9090
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /healthz/ready
-              port: 8081
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 600
           volumeMounts:
           - name: github-app-credentials
             mountPath: /etc/github
@@ -406,8 +379,8 @@ objects:
             readOnly: true
           resources:
             requests:
-              memory: "5Gi"
-              cpu: "500m"
+              memory: "3Gi"
+              cpu: "600m"
         volumes:
         - name: github-app-credentials
           secret:
@@ -450,10 +423,6 @@ objects:
             - configMap:
                 name: job-config-master-presubmits
             - configMap:
-                name: job-config-1.x
-            - configMap:
-                name: job-config-2.x
-            - configMap:
                 name: job-config-3.x
             - configMap:
                 name: job-config-4.1
@@ -481,10 +450,6 @@ objects:
                 name: job-config-4.12
             - configMap:
                 name: job-config-4.13
-            - configMap:
-                name: job-config-4.14
-            - configMap:
-                name: job-config-4.15
         - name: build-farm-credentials
           secret:
             secretName: deck

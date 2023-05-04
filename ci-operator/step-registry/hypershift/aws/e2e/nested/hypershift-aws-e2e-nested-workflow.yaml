@@ -31,4 +31,4 @@ workflow:
     pre:
     - ref: ipi-install-rbac
     - chain: hypershift-aws-setup-nested-management-cluster
-    - ref: hypershift-install
+    - chain: hypershift-install-private

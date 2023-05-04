@@ -36,8 +36,9 @@ case "${SIZE_VARIANT}" in
 esac
 
 # Select zone(s) based on REGION and ZONE_COUNT
-REGION="${LEASED_RESOURCE}"
-echo "ibmcloud region: ${REGION}"
+# TODO(cjschaef): Set the REGION from LEASED_RESOURCE, if possible
+#REGION="${LEASED_RESOURCE}"
+REGION=eu-gb
 ZONES_COUNT=${ZONES_COUNT:-1}
 R_ZONES=("${REGION}-1" "${REGION}-2" "${REGION}-3")
 ZONES="${R_ZONES[*]:0:${ZONES_COUNT}}"

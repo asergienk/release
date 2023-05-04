@@ -6,14 +6,19 @@
 
 approvers:
 - bthurber
-- enriquebelarte
+- dagrayvid
+- pacevedom
+- pmtk
 - qbarrand
 - ybettan
 - yevgeny-shnaidman
 options: {}
 reviewers:
 - bthurber
-- enriquebelarte
+- dagrayvid
+- kpouget
+- pacevedom
+- pmtk
 - qbarrand
 - ybettan
 - yevgeny-shnaidman

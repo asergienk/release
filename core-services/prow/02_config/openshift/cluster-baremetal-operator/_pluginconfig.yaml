@@ -9,16 +9,16 @@ label:
     - allowed_teams:
       - openshift-patch-managers
       allowed_users:
-      - andfasano
-      - bfournie
-      - dtantsur
-      - honza
       - sadasu
+      - andfasano
       - zaneb
+      - ardaguclu
+      - bfournie
       label: backport-risk-assessed
     - allowed_users:
-      - pamoedom
-      - jadhaj
+      - lshilin-r
+      - omichaeli
+      - rbartal
       label: cherry-pick-approved
 plugins:
   openshift/cluster-baremetal-operator:

@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-agent-compact
     decorate: true
     decoration_config:
@@ -13,7 +13,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-agent-compact
@@ -81,96 +80,18 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
-    context: ci/prow/e2e-agent-sno-ipv6
+    cluster: build03
+    context: ci/prow/e2e-metal-ipi
     decorate: true
     decoration_config:
       skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-metal3-dev-scripts-master-e2e-agent-sno-ipv6
-    optional: true
-    rerun_command: /test e2e-agent-sno-ipv6
-    skip_if_only_changed: (^docs|.github/)|^config_example.sh$|\.md$|^(DCO|LICENSE)$|((^|/)OWNERS$)
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-agent-sno-ipv6-cluster-profile
-        - --target=e2e-agent-sno-ipv6
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-agent-sno-ipv6-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-equinix-ocp-metal
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-agent-sno-ipv6,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build05
-    context: ci/prow/e2e-metal-ipi-bm
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/cloud: equinix-ocp-metal
-      ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-bm
-    rerun_command: /test e2e-metal-ipi-bm
+    name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi
+    rerun_command: /test e2e-metal-ipi
     skip_if_only_changed: (^(agent|docs|.github)/)|^config_example.sh$|\.md$|^(DCO|LICENSE)$|((^|/)OWNERS$)
     spec:
       containers:
@@ -180,8 +101,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-ipi-bm-cluster-profile
-        - --target=e2e-metal-ipi-bm
+        - --secret-dir=/usr/local/e2e-metal-ipi-cluster-profile
+        - --target=e2e-metal-ipi
         command:
         - ci-operator
         image: ci-operator:latest
@@ -197,7 +118,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-metal-ipi-bm-cluster-profile
+        - mountPath: /usr/local/e2e-metal-ipi-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -228,90 +149,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-metal-ipi-bm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-metal-ipi,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^master$
     - ^master-
-    cluster: build05
-    context: ci/prow/e2e-metal-ipi-bm-bond
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/cloud: equinix-ocp-metal
-      ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-bm-bond
-    optional: true
-    rerun_command: /test e2e-metal-ipi-bm-bond
-    skip_if_only_changed: (^(agent|docs|.github)/)|^config_example.sh$|\.md$|^(DCO|LICENSE)$|((^|/)OWNERS$)
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-ipi-bm-bond-cluster-profile
-        - --target=e2e-metal-ipi-bm-bond
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-metal-ipi-bm-bond-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-equinix-ocp-metal
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-metal-ipi-bm-bond,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-ovn-dualstack
     decorate: true
     decoration_config:
@@ -319,7 +163,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-ovn-dualstack
@@ -388,7 +231,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-ovn-ipv6
     decorate: true
     decoration_config:
@@ -396,7 +239,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-ovn-ipv6
@@ -464,7 +306,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-serial-ipv4
     decorate: true
     decoration_config:
@@ -472,7 +314,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-serial-ipv4
@@ -540,7 +381,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-serial-ovn-ipv6
     decorate: true
     decoration_config:
@@ -548,7 +389,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-serial-ovn-ipv6
@@ -617,7 +457,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-upgrade
     decorate: true
     decoration_config:
@@ -625,7 +465,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-upgrade
@@ -693,7 +532,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-upgrade-ovn-ipv6
     decorate: true
     decoration_config:
@@ -701,7 +540,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-upgrade-ovn-ipv6
@@ -769,7 +607,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/e2e-metal-ipi-virtualmedia
     decorate: true
     decoration_config:
@@ -777,7 +615,6 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-metal3-dev-scripts-master-e2e-metal-ipi-virtualmedia
@@ -846,7 +683,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build02
+    cluster: build03
     context: ci/prow/images
     decorate: true
     decoration_config:

@@ -2,8 +2,4 @@ plugins:
   stolostron/policy-collection:
     plugins:
     - dco
-triggers:
-- repos:
-  - stolostron/policy-collection
-  trusted_apps:
-  - magic-mirror-bot
+    - blunderbuss

@@ -3,10 +3,10 @@ base_images:
     name: 4.13-priv
     namespace: ocp-private
     tag: base
-  ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+  ocp_builder_rhel-8-golang-1.18-openshift-4.12:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.13
+    tag: rhel-8-golang-1.18-openshift-4.12
 build_root:
   from_repository: true
 canonical_go_repository: sigs.k8s.io/gcp-compute-persistent-disk-csi-driver
@@ -14,9 +14,9 @@ images:
 - dockerfile_path: Dockerfile.openshift
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.12:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
   to: gcp-pd-csi-driver
 promotion:
   name: 4.13-priv
@@ -39,13 +39,11 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
-- always_run: false
-  as: test
+- as: test
   commands: |
     make test-sanity
   container:
     from: src
-  optional: true
 - as: e2e-gcp
   steps:
     cluster_profile: gcp
@@ -54,10 +52,11 @@ tests:
   steps:
     cluster_profile: gcp
     workflow: openshift-e2e-gcp-csi
-- as: verify-deps
+- as: e2e-gcp-csi-migration
+  optional: true
   steps:
-    test:
-    - ref: go-verify-deps
+    cluster_profile: gcp
+    workflow: openshift-e2e-gcp-csi-migration
 zz_generated_metadata:
   branch: release-4.13
   org: openshift-priv

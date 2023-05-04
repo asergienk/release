@@ -1,0 +1,11 @@
+plugins:
+  redhat-et/microshift:
+    plugins:
+    - lgtm
+    - wip
+    - hold
+    - approve
+    - blunderbuss
+    - trigger
+    - assign
+    - verify-owners

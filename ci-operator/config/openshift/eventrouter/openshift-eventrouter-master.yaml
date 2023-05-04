@@ -7,7 +7,7 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.18
+    tag: golang-1.15
 images:
 - dockerfile_path: Dockerfile.rhel8
   from: base
@@ -18,7 +18,7 @@ promotion:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.8"
 resources:
   '*':

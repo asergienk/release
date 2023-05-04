@@ -2,9 +2,3 @@ plugins:
   stolostron/multicloud-operators-subscription:
     plugins:
     - dco
-    - blunderbuss
-triggers:
-- repos:
-  - stolostron/multicloud-operators-subscription
-  trusted_apps:
-  - magic-mirror-bot

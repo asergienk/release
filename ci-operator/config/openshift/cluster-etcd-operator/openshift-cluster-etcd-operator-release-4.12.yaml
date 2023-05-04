@@ -1,26 +1,26 @@
 base_images:
   assisted-image-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-image-service
   assisted-installer:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer
   assisted-installer-agent:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-agent
   assisted-installer-controller:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-installer-controller
   assisted-service:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-service
   assisted-test-infra:
-    name: ocm-2.8
+    name: ocm-2.6
     namespace: edge-infrastructure
     tag: assisted-test-infra
   base:
@@ -31,10 +31,10 @@ base_images:
     name: test
     namespace: ocp-kni
     tag: dev-scripts
-  ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+  ocp_builder_rhel-8-golang-1.18-openshift-4.12:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.12
+    tag: rhel-8-golang-1.18-openshift-4.12
 binary_build_commands: make build --warn-undefined-variables
 build_root:
   from_repository: true
@@ -42,11 +42,12 @@ images:
 - dockerfile_path: Dockerfile.rhel7
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.12:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.12
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
   to: cluster-etcd-operator
 promotion:
+  disabled: true
   name: "4.12"
   namespace: ocp
 releases:
@@ -81,11 +82,11 @@ tests:
     make test-unit JUNITFILE=${ARTIFACT_DIR}/junit_report.xml --warn-undefined-variables
   container:
     from: test-bin
-- as: e2e-agnostic-ovn
+- as: e2e-agnostic
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
-- as: e2e-agnostic-ovn-upgrade
+    workflow: openshift-e2e-aws-loki
+- as: e2e-agnostic-upgrade
   steps:
     cluster_profile: gcp
     workflow: openshift-upgrade-gcp
@@ -103,6 +104,17 @@ tests:
   optional: true
   steps:
     cluster_profile: gcp
+    workflow: openshift-e2e-gcp-disruption
+- as: e2e-gcp-disruptive-five-control-plane-replicas
+  optional: true
+  steps:
+    cluster_profile: gcp
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_REQUIRES_SSH: "yes"
+      TEST_SUITE: openshift/disruptive
+      TEST_TYPE: suite-conformance
+      TEST_UPGRADE_OPTIONS: ""
     workflow: openshift-e2e-gcp-disruption
 - as: e2e-gcp-disruptive-ovn
   optional: true
@@ -126,7 +138,7 @@ tests:
   optional: true
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-azure
   optional: true
   steps:
@@ -138,7 +150,6 @@ tests:
     cluster_profile: gcp
     workflow: openshift-e2e-gcp
 - as: e2e-metal-ipi
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -148,13 +159,11 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
     workflow: baremetalds-e2e
 - as: e2e-metal-ipi-serial-ipv4
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-serial-ipv4
 - as: e2e-metal-ipi-ovn-ipv6
-  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
@@ -168,7 +177,7 @@ tests:
   steps:
     cluster_profile: packet-assisted
     workflow: assisted-baremetal
-- as: e2e-aws-ovn-single-node
+- as: e2e-aws-single-node
   steps:
     cluster_profile: aws
     workflow: openshift-e2e-aws-single-node
@@ -181,29 +190,29 @@ tests:
   steps:
     cluster_profile: aws
     workflow: openshift-perfscale-e2e-configmap-scale
-- as: e2e-aws-ovn-serial
-  steps:
-    cluster_profile: aws
-    workflow: openshift-e2e-aws-serial
-- as: e2e-aws-ovn-etcd-scaling
-  steps:
-    cluster_profile: aws
-    workflow: openshift-e2e-aws-etcd-scaling
-- as: e2e-gcp-ovn-etcd-scaling
+- as: e2e-gcp-five-control-plane-replicas
   optional: true
   steps:
     cluster_profile: gcp
-    workflow: openshift-e2e-gcp-etcd-scaling
-- as: e2e-azure-ovn-etcd-scaling
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_SKIPS: 'In-tree Volumes \[Driver: gcepd\] \[Testpattern: Generic Ephemeral-volume
+        (default fs) (immediate-binding)\]'
+    workflow: openshift-e2e-gcp
+- as: e2e-gcp-upgrade-five-control-plane-replicas
   optional: true
   steps:
-    cluster_profile: azure4
-    workflow: openshift-e2e-azure-etcd-scaling
-- as: e2e-vsphere-ovn-etcd-scaling
-  optional: true
+    cluster_profile: gcp
+    env:
+      CONTROL_PLANE_REPLICAS: "5"
+      TEST_SUITE: ""
+      TEST_TYPE: upgrade
+      TEST_UPGRADE_OPTIONS: ""
+    workflow: openshift-upgrade-gcp
+- as: e2e-aws-serial
   steps:
-    cluster_profile: vsphere
-    workflow: openshift-e2e-vsphere-etcd-scaling
+    cluster_profile: aws
+    workflow: openshift-e2e-aws-serial
 zz_generated_metadata:
   branch: release-4.12
   org: openshift

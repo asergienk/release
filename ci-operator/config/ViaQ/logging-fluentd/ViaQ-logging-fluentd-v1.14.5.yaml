@@ -66,8 +66,8 @@ promotion:
 releases:
   latest:
     release:
-      channel: fast
-      version: "4.10"
+      channel: stable
+      version: "4.9"
 resources:
   '*':
     requests:

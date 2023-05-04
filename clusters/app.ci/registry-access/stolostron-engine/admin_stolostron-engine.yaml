@@ -35,6 +35,7 @@ rules:
 - apiGroups:
   - ""
   - image.openshift.io
+  attributeRestrictions: null
   resources:
   - imagestreamtags
   - imagestreams

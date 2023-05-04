@@ -6,18 +6,18 @@
 
 approvers:
 - bkhizgiy
-- darth-mera
 - dobsonj
 - engelmi
 - eslutsky
+- janosdebugs
 - jsafrane
 - mmartinv
 options: {}
 reviewers:
 - bkhizgiy
-- darth-mera
 - dobsonj
 - engelmi
 - eslutsky
+- janosdebugs
 - jsafrane
 - mmartinv

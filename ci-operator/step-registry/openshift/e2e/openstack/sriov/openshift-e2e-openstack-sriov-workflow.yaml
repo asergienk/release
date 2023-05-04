@@ -11,7 +11,6 @@ workflow:
       - ref: optional-operators-subscribe
       - ref: openstack-provision-sriov-networknodepolicy
     test:
-      - ref: openstack-test-dpdk
       - ref: openstack-test-sriov
     post:
       - chain: ipi-openstack-post
@@ -28,4 +27,4 @@ workflow:
       WORKER_REPLICAS: 0
   documentation: |-
     The openshift-e2e-openstack-sriov workflow executes an installation of
-    OpenShift on OpenStack in NFV environment and run DPDK and SR-IOV tests.
+    OpenShift on OpenStack in NFV environment and run SR-IOV tests.

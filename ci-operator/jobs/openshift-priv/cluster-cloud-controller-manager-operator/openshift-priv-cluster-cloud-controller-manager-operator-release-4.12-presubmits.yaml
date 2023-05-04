@@ -5,8 +5,8 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn
+    cluster: build01
+    context: ci/prow/e2e-aws
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -18,9 +18,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ovn
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-aws-ovn
+    rerun_command: /test e2e-aws
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -31,8 +31,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-aws-cluster-profile
+        - --target=e2e-aws
         command:
         - ci-operator
         image: ci-operator:latest
@@ -48,7 +48,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-aws-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -82,14 +82,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn-ccm
+    cluster: build01
+    context: ci/prow/e2e-aws-ccm
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -101,9 +101,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ovn-ccm
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ccm
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-aws-ovn-ccm
+    rerun_command: /test e2e-aws-ccm
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -114,8 +114,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-ccm-cluster-profile
-        - --target=e2e-aws-ovn-ccm
+        - --secret-dir=/usr/local/e2e-aws-ccm-cluster-profile
+        - --target=e2e-aws-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -131,7 +131,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-ccm-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -165,14 +165,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-ccm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn-ccm-install
+    cluster: build01
+    context: ci/prow/e2e-aws-ccm-install
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -184,10 +184,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ovn-ccm-install
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ccm-install
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-aws-ovn-ccm-install
+    rerun_command: /test e2e-aws-ccm-install
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -198,8 +198,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-ccm-install-cluster-profile
-        - --target=e2e-aws-ovn-ccm-install
+        - --secret-dir=/usr/local/e2e-aws-ccm-install-cluster-profile
+        - --target=e2e-aws-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -215,7 +215,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-ccm-install-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -249,14 +249,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-ccm-install,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ccm-install,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn-upgrade
+    cluster: build01
+    context: ci/prow/e2e-aws-upgrade
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -268,9 +268,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-ovn-upgrade
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-aws-upgrade
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-aws-ovn-upgrade
+    rerun_command: /test e2e-aws-upgrade
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -281,8 +281,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-upgrade-cluster-profile
-        - --target=e2e-aws-ovn-upgrade
+        - --secret-dir=/usr/local/e2e-aws-upgrade-cluster-profile
+        - --target=e2e-aws-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -298,7 +298,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-aws-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -332,14 +332,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-azure-ovn
+    cluster: build01
+    context: ci/prow/e2e-azure
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -351,10 +351,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ovn
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-azure-ovn
+    rerun_command: /test e2e-azure
     spec:
       containers:
       - args:
@@ -364,8 +364,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ovn-cluster-profile
-        - --target=e2e-azure-ovn
+        - --secret-dir=/usr/local/e2e-azure-cluster-profile
+        - --target=e2e-azure
         command:
         - ci-operator
         image: ci-operator:latest
@@ -381,7 +381,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-azure-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -415,14 +415,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-azure-ovn-ccm
+    cluster: build01
+    context: ci/prow/e2e-azure-ccm
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -434,10 +434,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ovn-ccm
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ccm
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-azure-ovn-ccm
+    rerun_command: /test e2e-azure-ccm
     spec:
       containers:
       - args:
@@ -447,8 +447,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ovn-ccm-cluster-profile
-        - --target=e2e-azure-ovn-ccm
+        - --secret-dir=/usr/local/e2e-azure-ccm-cluster-profile
+        - --target=e2e-azure-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -464,7 +464,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ovn-ccm-cluster-profile
+        - mountPath: /usr/local/e2e-azure-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -498,14 +498,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ovn-ccm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-azure-ovn-ccm-install
+    cluster: build01
+    context: ci/prow/e2e-azure-ccm-install
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -517,10 +517,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ovn-ccm-install
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ccm-install
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-azure-ovn-ccm-install
+    rerun_command: /test e2e-azure-ccm-install
     spec:
       containers:
       - args:
@@ -530,8 +530,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ovn-ccm-install-cluster-profile
-        - --target=e2e-azure-ovn-ccm-install
+        - --secret-dir=/usr/local/e2e-azure-ccm-install-cluster-profile
+        - --target=e2e-azure-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -547,7 +547,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ovn-ccm-install-cluster-profile
+        - mountPath: /usr/local/e2e-azure-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -581,14 +581,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ovn-ccm-install,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-ccm-install,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-azure-ovn-upgrade
+    cluster: build01
+    context: ci/prow/e2e-azure-upgrade
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -600,10 +600,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-ovn-upgrade
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-azure-upgrade
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-azure-ovn-upgrade
+    rerun_command: /test e2e-azure-upgrade
     spec:
       containers:
       - args:
@@ -613,8 +613,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ovn-upgrade-cluster-profile
-        - --target=e2e-azure-ovn-upgrade
+        - --secret-dir=/usr/local/e2e-azure-upgrade-cluster-profile
+        - --target=e2e-azure-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -630,7 +630,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ovn-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-azure-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -664,14 +664,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ovn-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build04
-    context: ci/prow/e2e-gcp-ovn-ccm
+    cluster: build01
+    context: ci/prow/e2e-gcp-ccm
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -683,10 +683,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-gcp-ovn-ccm
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-gcp-ccm
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-gcp-ovn-ccm
+    rerun_command: /test e2e-gcp-ccm
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -697,8 +697,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-gcp-ovn-ccm-cluster-profile
-        - --target=e2e-gcp-ovn-ccm
+        - --secret-dir=/usr/local/e2e-gcp-ccm-cluster-profile
+        - --target=e2e-gcp-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -714,7 +714,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-gcp-ovn-ccm-cluster-profile
+        - mountPath: /usr/local/e2e-gcp-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -752,14 +752,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-gcp-ovn-ccm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-gcp-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build04
-    context: ci/prow/e2e-gcp-ovn-ccm-install
+    cluster: build01
+    context: ci/prow/e2e-gcp-ccm-install
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -771,10 +771,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-gcp-ovn-ccm-install
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-gcp-ccm-install
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-gcp-ovn-ccm-install
+    rerun_command: /test e2e-gcp-ccm-install
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -785,8 +785,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-gcp-ovn-ccm-install-cluster-profile
-        - --target=e2e-gcp-ovn-ccm-install
+        - --secret-dir=/usr/local/e2e-gcp-ccm-install-cluster-profile
+        - --target=e2e-gcp-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -802,7 +802,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-gcp-ovn-ccm-install-cluster-profile
+        - mountPath: /usr/local/e2e-gcp-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -840,14 +840,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-gcp-ovn-ccm-install,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-gcp-ccm-install,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-openstack-ovn
+    cluster: build01
+    context: ci/prow/e2e-openstack-ccm
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -859,10 +859,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-openstack-ovn
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-openstack-ccm
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-openstack-ovn
+    rerun_command: /test e2e-openstack-ccm
     spec:
       containers:
       - args:
@@ -872,8 +872,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-openstack-ovn-cluster-profile
-        - --target=e2e-openstack-ovn
+        - --secret-dir=/usr/local/e2e-openstack-ccm-cluster-profile
+        - --target=e2e-openstack-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -889,7 +889,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-openstack-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-openstack-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -923,14 +923,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-openstack-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-openstack-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
     cluster: vsphere
-    context: ci/prow/e2e-vsphere-ovn-ccm
+    context: ci/prow/e2e-vsphere-ccm
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -942,10 +942,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-vsphere-ovn-ccm
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-vsphere-ccm
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-vsphere-ovn-ccm
+    rerun_command: /test e2e-vsphere-ccm
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -956,8 +956,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-vsphere-ovn-ccm-cluster-profile
-        - --target=e2e-vsphere-ovn-ccm
+        - --secret-dir=/usr/local/e2e-vsphere-ccm-cluster-profile
+        - --target=e2e-vsphere-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -973,7 +973,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-vsphere-ovn-ccm-cluster-profile
+        - mountPath: /usr/local/e2e-vsphere-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -1007,14 +1007,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-vsphere-ovn-ccm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-vsphere-ccm,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
     cluster: vsphere
-    context: ci/prow/e2e-vsphere-ovn-ccm-install
+    context: ci/prow/e2e-vsphere-ccm-install
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -1026,10 +1026,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-vsphere-ovn-ccm-install
+    name: pull-ci-openshift-priv-cluster-cloud-controller-manager-operator-release-4.12-e2e-vsphere-ccm-install
     optional: true
     path_alias: github.com/openshift/cluster-cloud-controller-manager-operator
-    rerun_command: /test e2e-vsphere-ovn-ccm-install
+    rerun_command: /test e2e-vsphere-ccm-install
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -1040,8 +1040,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-vsphere-ovn-ccm-install-cluster-profile
-        - --target=e2e-vsphere-ovn-ccm-install
+        - --secret-dir=/usr/local/e2e-vsphere-ccm-install-cluster-profile
+        - --target=e2e-vsphere-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -1057,7 +1057,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-vsphere-ovn-ccm-install-cluster-profile
+        - mountPath: /usr/local/e2e-vsphere-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -1091,13 +1091,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-vsphere-ovn-ccm-install,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-vsphere-ccm-install,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/fmt
     decorate: true
     decoration_config:
@@ -1154,7 +1154,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -1211,7 +1211,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/lint
     decorate: true
     decoration_config:
@@ -1268,7 +1268,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/unit
     decorate: true
     decoration_config:
@@ -1325,7 +1325,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/vendor
     decorate: true
     decoration_config:
@@ -1382,7 +1382,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/vet
     decorate: true
     decoration_config:

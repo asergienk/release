@@ -15,7 +15,7 @@ label:
       - bertinatto
       label: backport-risk-assessed
     - allowed_users:
-      - radeore
+      - jhou1
       - chao007
       - duanwei33
       - ropatil010

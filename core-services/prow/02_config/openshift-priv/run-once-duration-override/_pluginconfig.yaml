@@ -1,4 +1,0 @@
-plugins:
-  openshift-priv/run-once-duration-override:
-    plugins:
-    - approve

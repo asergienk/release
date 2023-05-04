@@ -5,17 +5,17 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn
+    cluster: build04
+    context: ci/prow/e2e-aws
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-coredns-release-4.12-e2e-aws-ovn
+    name: pull-ci-openshift-coredns-release-4.12-e2e-aws
     path_alias: github.com/coredns/coredns
-    rerun_command: /test e2e-aws-ovn
+    rerun_command: /test e2e-aws
     spec:
       containers:
       - args:
@@ -24,8 +24,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-aws-cluster-profile
+        - --target=e2e-aws
         command:
         - ci-operator
         image: ci-operator:latest
@@ -41,7 +41,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-aws-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -72,23 +72,23 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
-    context: ci/prow/e2e-aws-ovn-upgrade
+    cluster: build04
+    context: ci/prow/e2e-aws-upgrade
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-coredns-release-4.12-e2e-aws-ovn-upgrade
+    name: pull-ci-openshift-coredns-release-4.12-e2e-aws-upgrade
     path_alias: github.com/coredns/coredns
-    rerun_command: /test e2e-aws-ovn-upgrade
+    rerun_command: /test e2e-aws-upgrade
     spec:
       containers:
       - args:
@@ -97,8 +97,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-upgrade-cluster-profile
-        - --target=e2e-aws-ovn-upgrade
+        - --secret-dir=/usr/local/e2e-aws-upgrade-cluster-profile
+        - --target=e2e-aws-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -114,7 +114,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-aws-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -145,23 +145,23 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build02
-    context: ci/prow/e2e-gcp-sdn-serial
+    cluster: build04
+    context: ci/prow/e2e-gcp-serial
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: gcp
       ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-coredns-release-4.12-e2e-gcp-sdn-serial
+    name: pull-ci-openshift-coredns-release-4.12-e2e-gcp-serial
     path_alias: github.com/coredns/coredns
-    rerun_command: /test e2e-gcp-sdn-serial
+    rerun_command: /test e2e-gcp-serial
     spec:
       containers:
       - args:
@@ -170,8 +170,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-gcp-sdn-serial-cluster-profile
-        - --target=e2e-gcp-sdn-serial
+        - --secret-dir=/usr/local/e2e-gcp-serial-cluster-profile
+        - --target=e2e-gcp-serial
         command:
         - ci-operator
         image: ci-operator:latest
@@ -187,7 +187,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-gcp-sdn-serial-cluster-profile
+        - mountPath: /usr/local/e2e-gcp-serial-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -222,25 +222,24 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-gcp-sdn-serial,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-gcp-serial,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
-    context: ci/prow/e2e-metal-ipi-ovn
+    cluster: build04
+    context: ci/prow/e2e-metal-ipi
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-coredns-release-4.12-e2e-metal-ipi-ovn
+    name: pull-ci-openshift-coredns-release-4.12-e2e-metal-ipi
     optional: true
     path_alias: github.com/coredns/coredns
-    rerun_command: /test e2e-metal-ipi-ovn
+    rerun_command: /test e2e-metal-ipi
     spec:
       containers:
       - args:
@@ -249,8 +248,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-ipi-ovn-cluster-profile
-        - --target=e2e-metal-ipi-ovn
+        - --secret-dir=/usr/local/e2e-metal-ipi-cluster-profile
+        - --target=e2e-metal-ipi
         command:
         - ci-operator
         image: ci-operator:latest
@@ -266,7 +265,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-metal-ipi-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-metal-ipi-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -297,25 +296,24 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-metal-ipi-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-metal-ipi,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
-    context: ci/prow/e2e-metal-ipi-ovn-dualstack
+    cluster: build04
+    context: ci/prow/e2e-metal-ipi-dualstack
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-coredns-release-4.12-e2e-metal-ipi-ovn-dualstack
+    name: pull-ci-openshift-coredns-release-4.12-e2e-metal-ipi-dualstack
     optional: true
     path_alias: github.com/coredns/coredns
-    rerun_command: /test e2e-metal-ipi-ovn-dualstack
+    rerun_command: /test e2e-metal-ipi-dualstack
     spec:
       containers:
       - args:
@@ -324,8 +322,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-ipi-ovn-dualstack-cluster-profile
-        - --target=e2e-metal-ipi-ovn-dualstack
+        - --secret-dir=/usr/local/e2e-metal-ipi-dualstack-cluster-profile
+        - --target=e2e-metal-ipi-dualstack
         command:
         - ci-operator
         image: ci-operator:latest
@@ -341,7 +339,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-metal-ipi-ovn-dualstack-cluster-profile
+        - mountPath: /usr/local/e2e-metal-ipi-dualstack-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -372,7 +370,7 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-metal-ipi-ovn-dualstack,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-metal-ipi-dualstack,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
@@ -394,7 +392,6 @@ presubmits:
         - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
         - --report-credentials-file=/etc/report/credentials
         - --target=[images]
-        - --target=[release:latest]
         command:
         - ci-operator
         image: ci-operator:latest

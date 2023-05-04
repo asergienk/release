@@ -18,8 +18,6 @@ fi
 upuser1=$(echo "${USERS}" | cut -d ',' -f 30)
 upuser2=$(echo "${USERS}" | cut -d ',' -f 29)
 export BUSHSLICER_CONFIG="
-global:
-  browser: chrome
 environments:
   ocp4:
     static_users_map:
@@ -34,13 +32,9 @@ if [ -z "${UPGRADE_SKIP_TAGS}" ] ; then
 else
     export UPGRADE_SKIP_TAGS="${UPGRADE_SKIP_TAGS} and not @customer and not @security"
 fi
-UPGRADE_SKIP_TAGS_CLOUD="${UPGRADE_SKIP_TAGS/and not @destructive/}"
 
 cd verification-tests
-set -x
 cucumber --tags "${UPGRADE_CHECK_RUN_TAGS} and ${UPGRADE_SKIP_TAGS}" -p junit || true
-cucumber --tags "${UPGRADE_CHECK_RUN_TAGS} and ${UPGRADE_SKIP_TAGS_CLOUD} and @cloud and @destructive" -p junit || true
-set +x
 
 echo "Summarizing test result..."
 failures=$(grep '<testsuite failures="[1-9].*"' "${ARTIFACT_DIR}" -r | wc -l || true)

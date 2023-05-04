@@ -10,13 +10,13 @@ label:
       - openshift-patch-managers
       allowed_users:
       - zaneb
-      - dtantsur
-      - honza
-      - hardys
+      - andfasano
+      - sadasu
       label: backport-risk-assessed
     - allowed_users:
-      - pamoedom
-      - jadhaj
+      - lshilin-r
+      - omichaeli
+      - rbartal
       label: cherry-pick-approved
 plugins:
   openshift/cluster-api-provider-baremetal:

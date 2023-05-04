@@ -1,6 +1,6 @@
 ref:
   as: assisted-common-test
-  from: dev-scripts
+  from: assisted-test-infra-dev-script
   commands: assisted-common-test-commands.sh
   resources:
     requests:

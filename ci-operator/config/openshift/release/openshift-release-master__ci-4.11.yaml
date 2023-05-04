@@ -17,7 +17,7 @@ resources:
       memory: 200Mi
 tests:
 - as: e2e-aws
-  cron: 53 0 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
@@ -30,22 +30,32 @@ tests:
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-techpreview
+- as: e2e-aws-no-capabilities
+  interval: 48h
+  steps:
+    cluster_profile: aws-2
+    env:
+      BASE_DOMAIN: aws-2.ci.openshift.org
+      BASELINE_CAPABILITY_SET: None
+      TEST_SKIPS: check registry.redhat.io is available and samples operator can import
+        sample imagestreams
+    workflow: openshift-e2e-aws
 - as: e2e-aws-ovn
-  cron: 24 16 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-ovn
 - as: e2e-aws-serial
-  cron: 30 8 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-serial
 - as: e2e-aws-ovn-serial
-  cron: 17 8 */1 * 1-5
+  interval: 8h
   steps:
     cluster_profile: aws-2
     env:
@@ -67,7 +77,7 @@ tests:
     workflow: openshift-e2e-aws-sdn-multi
 - as: e2e-aws-upgrade
   cluster: build01
-  cron: 31 21 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
@@ -76,7 +86,7 @@ tests:
     workflow: openshift-upgrade-aws
 - as: e2e-aws-ovn-upgrade
   cluster: build01
-  cron: 34 19 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
@@ -100,7 +110,7 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws
 - as: e2e-azure
-  cron: 43 20 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: azure-2
     env:
@@ -114,7 +124,7 @@ tests:
       BASE_DOMAIN: ci2.azure.devcluster.openshift.com
     workflow: openshift-e2e-azure-techpreview
 - as: e2e-azure-serial
-  cron: 39 13 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: azure-2
     env:
@@ -128,7 +138,7 @@ tests:
       BASE_DOMAIN: ci2.azure.devcluster.openshift.com
     workflow: openshift-e2e-azure-techpreview-serial
 - as: e2e-azure-upgrade
-  cron: 9 8 */1 * 1-5
+  interval: 4h
   steps:
     cluster_profile: azure-2
     env:
@@ -136,12 +146,11 @@ tests:
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-azure
 - as: e2e-azure-ovn-upgrade
-  cron: 44 11 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: azure-2
     env:
       BASE_DOMAIN: ci2.azure.devcluster.openshift.com
-      FAIL_ON_CORE_DUMP: "true"
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-azure-ovn
 - as: e2e-azure-cilium
@@ -152,15 +161,14 @@ tests:
       BASE_DOMAIN: ci2.azure.devcluster.openshift.com
     workflow: openshift-e2e-azure-cilium
 - as: e2e-azure-ovn
-  cron: 14 9 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: azure-2
     env:
       BASE_DOMAIN: ci2.azure.devcluster.openshift.com
-      FAIL_ON_CORE_DUMP: "true"
     workflow: openshift-e2e-azure-ovn
 - as: e2e-gcp
-  cron: 46 20 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-e2e-gcp
@@ -170,12 +178,15 @@ tests:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-e2e-gcp-techpreview
 - as: e2e-gcp-ovn
-  cron: 25 19 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
-    env:
-      FAIL_ON_CORE_DUMP: "true"
     workflow: openshift-e2e-gcp-ovn
+- as: e2e-gcp-serial
+  interval: 24h
+  steps:
+    cluster_profile: gcp-openshift-gce-devel-ci-2
+    workflow: openshift-e2e-gcp-serial
 - as: e2e-gcp-techpreview-serial
   interval: 48h
   steps:
@@ -183,7 +194,7 @@ tests:
     workflow: openshift-e2e-gcp-techpreview-serial
 - as: e2e-gcp-upgrade
   cluster: build02
-  cron: 30 23 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     env:
@@ -204,22 +215,30 @@ tests:
       TEST_UPGRADE_OPTIONS: abort-at=random
     workflow: openshift-upgrade-aws
 - as: e2e-aws-upgrade-ovn-single-node
-  cron: 46 20 */1 * 1-5
+  interval: 24h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-aws-single-node
+- as: e2e-azure-upgrade-ovn-single-node
+  interval: 24h
+  steps:
+    cluster_profile: azure-2
+    env:
+      BASE_DOMAIN: ci2.azure.devcluster.openshift.com
+      TEST_TYPE: upgrade-conformance
+    workflow: openshift-upgrade-azure-single-node
 - as: e2e-network-migration
   interval: 48h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
-      TEST_SKIPS: Alerts shouldn't report any unexpected alerts in firing or pending
-        state\| Prometheus \[apigroup:image.openshift.io\] when installed on the cluster
-        shouldn't report any alerts in firing state apart from Watchdog and AlertmanagerReceiversNotConfigured
+      TEST_SKIPS: Alerts shouldn't report any alerts in firing or pending state\|
+        Prometheus when installed on the cluster shouldn't report any alerts in firing
+        state apart from Watchdog and AlertmanagerReceiversNotConfigured
     test:
     - ref: ovn-sdn-migration
     - ref: openshift-e2e-test
@@ -230,23 +249,23 @@ tests:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
-      TEST_SKIPS: Alerts shouldn't report any unexpected alerts in firing or pending
-        state\| Prometheus \[apigroup:image.openshift.io\] when installed on the cluster
-        shouldn't report any alerts in firing state apart from Watchdog and AlertmanagerReceiversNotConfigured
+      TEST_SKIPS: Alerts shouldn't report any alerts in firing or pending state\|
+        Prometheus when installed on the cluster shouldn't report any alerts in firing
+        state apart from Watchdog and AlertmanagerReceiversNotConfigured
     test:
     - ref: ovn-sdn-migration
     - ref: ovn-sdn-migration-rollback
     - ref: openshift-e2e-test
     workflow: openshift-e2e-aws
 - as: e2e-aws-cgroupsv2
-  cron: 17 12 */1 * 1-5
+  interval: 3h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-cgroupsv2
 - as: e2e-aws-crun
-  cron: 53 20 */1 * 1-5
+  interval: 3h
   steps:
     cluster_profile: aws-2
     env:

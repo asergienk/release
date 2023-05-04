@@ -2,11 +2,7 @@
 	"path": "ipi/gcp/ipi-gcp-workflow.yaml",
 	"owners": {
 		"approvers": [
-			"jianlinliu",
-			"patrickdillon",
-			"technical-release-team-approvers",
-			"vrutkovs",
-			"yunjiang29"
+			"abhinavdahiya"
 		]
 	}
 }

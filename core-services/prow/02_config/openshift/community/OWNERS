@@ -9,7 +9,6 @@ approvers:
 - lorbuschris
 options: {}
 reviewers:
-- conan-kudo
 - dmueller2001
 - dustymabe
 - lorbuschris

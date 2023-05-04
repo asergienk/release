@@ -12,11 +12,8 @@ branch-protection:
                 required_approving_review_count: 1
               required_status_checks:
                 contexts:
-                - KinD tests (latest, true)
-                - KinD tests (latest, false)
-                - KinD tests (minimum, true)
-                - KinD tests (minimum, false)
-                - Linting and Unit tests
+                - KinD tests (1.18, v1.19.16)
+                - KinD tests (1.18, latest)
 tide:
   merge_method:
     open-cluster-management-io/governance-policy-addon-controller: rebase

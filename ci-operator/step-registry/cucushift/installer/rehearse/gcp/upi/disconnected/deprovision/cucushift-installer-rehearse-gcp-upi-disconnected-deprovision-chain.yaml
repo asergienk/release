@@ -1,8 +1,8 @@
 chain:
   as: cucushift-installer-rehearse-gcp-upi-disconnected-deprovision
   steps: 
-  - ref: gather-mirror-registry
-  - chain: cucushift-installer-rehearse-gcp-upi-deprovision
+  - chain: ipi-deprovision
+  - ref: upi-deprovision-gcp
   - ref: gcp-deprovision-bastionhost
   - ref: gcp-deprovision-vpc
   documentation: |-

@@ -1,17 +1,22 @@
+external_plugins:
+  openshift/ocp-release-operator-sdk:
+  - endpoint: http://jira-lifecycle-plugin
+    events:
+    - issue_comment
+    - pull_request
+    name: jira-lifecycle-plugin
 label:
   restricted_labels:
     openshift/ocp-release-operator-sdk:
     - allowed_users:
       - emmajiafan
-      - KeenonLee
-      - bandrade
-      assign_on:
-      - label: backport-risk-assessed
+      - cuipinghuo
+      - Xia-Zhao-rh
       label: cherry-pick-approved
     - allowed_teams:
       - openshift-patch-managers
       allowed_users:
-      - oceanc80
+      - jmrodri
       - fabianvf
       - joelanford
       label: backport-risk-assessed

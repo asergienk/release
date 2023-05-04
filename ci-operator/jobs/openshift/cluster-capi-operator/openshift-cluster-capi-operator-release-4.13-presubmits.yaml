@@ -1,26 +1,31 @@
 presubmits:
   openshift/cluster-capi-operator:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
-    context: ci/prow/assets
+    cluster: build01
+    context: ci/prow/e2e-aws
     decorate: true
     labels:
+      ci-operator.openshift.io/cloud: aws
+      ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-assets
-    optional: true
-    rerun_command: /test assets
+    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws
+    rerun_command: /test e2e-aws
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
         - --gcs-upload-secret=/secrets/gcs/service-account.json
         - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
-        - --target=assets
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-aws-cluster-profile
+        - --target=e2e-aws
         command:
         - ci-operator
         image: ci-operator:latest
@@ -30,6 +35,14 @@ presubmits:
           requests:
             cpu: 10m
         volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-aws-cluster-profile
+          name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
           readOnly: true
@@ -41,15 +54,27 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-aws
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )assets,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
@@ -63,7 +88,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-capi-techpreview
     rerun_command: /test e2e-aws-capi-techpreview
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -127,15 +151,15 @@ presubmits:
     - ^release-4\.13$
     - ^release-4\.13-
     cluster: build01
-    context: ci/prow/e2e-aws-ovn
+    context: ci/prow/e2e-aws-serial
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-ovn
-    rerun_command: /test e2e-aws-ovn
+    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-serial
+    rerun_command: /test e2e-aws-serial
     skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
@@ -145,8 +169,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-aws-serial-cluster-profile
+        - --target=e2e-aws-serial
         command:
         - ci-operator
         image: ci-operator:latest
@@ -162,7 +186,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-aws-serial-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -193,95 +217,22 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^release-4\.13$
-    - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-aws-ovn-serial
-    decorate: true
-    labels:
-      ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-ovn-serial
-    rerun_command: /test e2e-aws-ovn-serial
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-serial-cluster-profile
-        - --target=e2e-aws-ovn-serial
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-serial-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-aws
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-serial,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-serial,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
     cluster: build01
-    context: ci/prow/e2e-aws-ovn-techpreview
+    context: ci/prow/e2e-aws-techpreview
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-ovn-techpreview
-    rerun_command: /test e2e-aws-ovn-techpreview
+    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-aws-techpreview
+    rerun_command: /test e2e-aws-techpreview
     spec:
       containers:
       - args:
@@ -290,8 +241,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-techpreview-cluster-profile
-        - --target=e2e-aws-ovn-techpreview
+        - --secret-dir=/usr/local/e2e-aws-techpreview-cluster-profile
+        - --target=e2e-aws-techpreview
         command:
         - ci-operator
         image: ci-operator:latest
@@ -307,7 +258,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-techpreview-cluster-profile
+        - mountPath: /usr/local/e2e-aws-techpreview-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -338,24 +289,22 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-techpreview,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-techpreview,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
-    context: ci/prow/e2e-azure-ovn-techpreview
+    cluster: build01
+    context: ci/prow/e2e-azure-techpreview
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-azure-ovn-techpreview
-    optional: true
-    rerun_command: /test e2e-azure-ovn-techpreview
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-azure-techpreview
+    rerun_command: /test e2e-azure-techpreview
     spec:
       containers:
       - args:
@@ -364,8 +313,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ovn-techpreview-cluster-profile
-        - --target=e2e-azure-ovn-techpreview
+        - --secret-dir=/usr/local/e2e-azure-techpreview-cluster-profile
+        - --target=e2e-azure-techpreview
         command:
         - ci-operator
         image: ci-operator:latest
@@ -381,7 +330,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ovn-techpreview-cluster-profile
+        - mountPath: /usr/local/e2e-azure-techpreview-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -412,13 +361,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ovn-techpreview,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-techpreview,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build02
+    cluster: build01
     context: ci/prow/e2e-gcp-capi-techpreview
     decorate: true
     labels:
@@ -428,7 +377,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-gcp-capi-techpreview
     rerun_command: /test e2e-gcp-capi-techpreview
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -491,22 +439,20 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-gcp-capi-techpreview,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build02
-    context: ci/prow/e2e-gcp-ovn-techpreview
+    cluster: build01
+    context: ci/prow/e2e-gcp-techpreview
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: gcp
       ci-operator.openshift.io/cloud-cluster-profile: gcp
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-gcp-ovn-techpreview
-    optional: true
-    rerun_command: /test e2e-gcp-ovn-techpreview
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+    name: pull-ci-openshift-cluster-capi-operator-release-4.13-e2e-gcp-techpreview
+    rerun_command: /test e2e-gcp-techpreview
     spec:
       containers:
       - args:
@@ -515,8 +461,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-gcp-ovn-techpreview-cluster-profile
-        - --target=e2e-gcp-ovn-techpreview
+        - --secret-dir=/usr/local/e2e-gcp-techpreview-cluster-profile
+        - --target=e2e-gcp-techpreview
         command:
         - ci-operator
         image: ci-operator:latest
@@ -532,7 +478,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-gcp-ovn-techpreview-cluster-profile
+        - mountPath: /usr/local/e2e-gcp-techpreview-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -567,13 +513,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-gcp-ovn-techpreview,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-gcp-techpreview,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
+    cluster: build01
     context: ci/prow/images
     decorate: true
     labels:
@@ -621,7 +567,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
+    cluster: build01
     context: ci/prow/lint
     decorate: true
     labels:
@@ -668,7 +614,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
+    cluster: build01
     context: ci/prow/unit
     decorate: true
     labels:
@@ -715,7 +661,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build04
+    cluster: build01
     context: ci/prow/vendor
     decorate: true
     labels:

@@ -2,9 +2,9 @@
 	"path": "upi/gcp/xpn/upi-gcp-xpn-workflow.yaml",
 	"owners": {
 		"approvers": [
-			"patrickdillon",
-			"jianlinliu",
-			"yunjiang29"
+			"abhinavdahiya",
+			"jstuever",
+			"patrickdillon"
 		]
 	}
 }

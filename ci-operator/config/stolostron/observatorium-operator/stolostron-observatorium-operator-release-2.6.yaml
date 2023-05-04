@@ -1,21 +1,22 @@
 base_images:
-  stolostron_builder_go1.18-linux:
+  stolostron_builder_go1.17-linux:
     name: builder
     namespace: stolostron
-    tag: go1.18-linux
+    tag: go1.17-linux
 build_root:
   image_stream_tag:
     name: builder
     namespace: stolostron
-    tag: go1.18-linux
+    tag: go1.17-linux
 images:
 - dockerfile_path: Dockerfile
   inputs:
-    stolostron_builder_go1.18-linux:
+    stolostron_builder_go1.17-linux:
       as:
-      - registry.ci.openshift.org/stolostron/builder:go1.18-linux
+      - registry.ci.openshift.org/stolostron/builder:go1.17-linux
   to: observatorium-operator
 promotion:
+  disabled: true
   name: "2.6"
   namespace: stolostron
 releases:
@@ -37,18 +38,10 @@ resources:
       memory: 1Gi
 test_binary_build_commands: "true"
 tests:
-- as: pr-image-mirror
-  steps:
-    dependencies:
-      SOURCE_IMAGE_REF: observatorium-operator
-    env:
-      IMAGE_REPO: observatorium-operator
-      REGISTRY_ORG: stolostron
-    workflow: ocm-ci-image-mirror
 - as: e2e-kind
   steps:
     env:
-      AWS_CREDENTIALS_SECRET: ocm-obs-usa-aws-kind
+      AWS_CREDENTIALS_SECRET: ocm-obs-china-aws-kind
       AWS_INSTANCE_TYPE: t3.small
     post:
     - ref: ocm-e2e-kind-destroy
@@ -69,25 +62,6 @@ tests:
           cpu: 100m
           memory: 200Mi
     workflow: ocm-e2e-kind
-- as: sonar-pre-submit
-  commands: |
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
-  container:
-    from: src
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
-- as: sonar-post-submit
-  commands: |
-    export SELF="make -f /opt/build-harness/Makefile.prow"
-    make -f /opt/build-harness/Makefile.prow sonar/go/prow
-  container:
-    from: src
-  postsubmit: true
-  secrets:
-  - mount_path: /etc/sonarcloud/
-    name: acm-sonarcloud-token
 - as: publish
   postsubmit: true
   steps:
@@ -99,6 +73,7 @@ tests:
     test:
     - as: publish
       commands: |-
+        export OSCI_IMAGE_REMOTE_REPO_SRC="registry.ci.openshift.org/stolostron"
         export SELF="make -f /opt/build-harness/Makefile.prow"
         export OSCI_PUBLISH_DELAY="0"
         export OSCI_COMPONENT_NAME="observatorium-operator"

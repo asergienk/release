@@ -8,6 +8,7 @@ approvers:
 - bardielle
 - chenyosef
 - eloycoto
+- jakub-dzon
 - jordigilh
 - machacekondra
 - masayag
@@ -15,4 +16,5 @@ approvers:
 - ydayagi
 options: {}
 reviewers:
+- arielireni
 - rgolangh

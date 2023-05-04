@@ -8,7 +8,7 @@ images:
 - dockerfile_path: Dockerfile
   to: search-e2e
 promotion:
-  name: "2.8"
+  name: "2.6"
   namespace: stolostron
 resources:
   '*':
@@ -16,28 +16,27 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
-- as: git-fast-forward
+- as: backplane-fast-forward
   postsubmit: true
   steps:
     env:
-      DESTINATION_BRANCH: release-2.8
+      DESTINATION_BRANCH: release-2.6
     workflow: ocm-ci-fastforward
-- as: deploy-and-run-e2e
+- as: e2e
   skip_if_only_changed: ^docs/|\.(md|adoc)$|^(README|LICENSE|OWNERS)$
   steps:
     dependencies:
       COMPONENT_IMAGE_REF: search-e2e
     env:
-      ACM_RELEASE_VERSION: release-2.8
       CLUSTERPOOL_CHECKOUT_TIMEOUT_MINUTES: "15"
       CLUSTERPOOL_GROUP_NAME: Search
       CLUSTERPOOL_HOST_NAMESPACE: acm-observability-usa
       CLUSTERPOOL_HOST_PROW_KUBE_SECRET: ocm-obs-usa-clusterpool
-      CLUSTERPOOL_LIFETIME: 2h
-      CLUSTERPOOL_LIST_INCLUSION_FILTER: sno-41
+      CLUSTERPOOL_LIFETIME: 4h
+      CLUSTERPOOL_LIST_INCLUSION_FILTER: prow
       CLUSTERPOOL_MANAGED_COUNT: "1"
       DEPLOY_TIMEOUT: "2700"
-      PIPELINE_STAGE: integration
+      PIPELINE_STAGE: dev
     test:
     - as: import
       commands: |

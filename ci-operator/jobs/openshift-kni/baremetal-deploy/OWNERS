@@ -11,7 +11,7 @@ filters:
     - iranzo
     - rlopez133
     reviewers:
-    - derekhiggins
+    - iranzo
   ^ansible-ipi-install/.*:
     labels:
     - kind/installer
@@ -28,6 +28,7 @@ filters:
     - davidvossel
     - derekhiggins
     - fedepaol
+    - fromanirh
     - iranzo
     - jlojosnegros
     - karmab

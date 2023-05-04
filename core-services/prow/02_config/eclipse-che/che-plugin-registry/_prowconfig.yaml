@@ -3,4 +3,7 @@ branch-protection:
     eclipse-che:
       repos:
         che-plugin-registry:
-          unmanaged: true
+          branches:
+            main:
+              protect: true
+          protect: false

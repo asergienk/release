@@ -6,7 +6,7 @@ base_images:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.7"
 resources:
   '*':

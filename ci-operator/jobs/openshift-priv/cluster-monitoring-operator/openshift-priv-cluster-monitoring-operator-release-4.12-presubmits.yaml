@@ -5,7 +5,89 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
+    cluster: build01
+    context: ci/prow/e2e-agnostic
+    decorate: true
+    decoration_config:
+      oauth_token_secret:
+        key: oauth
+        name: github-credentials-openshift-ci-robot-private-git-cloner
+    hidden: true
+    labels:
+      ci-operator.openshift.io/cloud: aws
+      ci-operator.openshift.io/cloud-cluster-profile: aws
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-agnostic
+    path_alias: github.com/openshift/cluster-monitoring-operator
+    rerun_command: /test e2e-agnostic
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --oauth-token-path=/usr/local/github-credentials/oauth
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-agnostic-cluster-profile
+        - --target=e2e-agnostic
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-agnostic-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /usr/local/github-credentials
+          name: github-credentials-openshift-ci-robot-private-git-cloner
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-aws
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-agnostic,?($|\s.*)
+  - agent: kubernetes
+    always_run: true
+    branches:
+    - ^release-4\.12$
+    - ^release-4\.12-
+    cluster: build01
     context: ci/prow/e2e-agnostic-operator
     decorate: true
     decoration_config:
@@ -87,8 +169,8 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
-    context: ci/prow/e2e-aws-ovn
+    cluster: build01
+    context: ci/prow/e2e-agnostic-upgrade
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -100,9 +182,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-aws-ovn
+    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-agnostic-upgrade
     path_alias: github.com/openshift/cluster-monitoring-operator
-    rerun_command: /test e2e-aws-ovn
+    rerun_command: /test e2e-agnostic-upgrade
     spec:
       containers:
       - args:
@@ -112,8 +194,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
-        - --target=e2e-aws-ovn
+        - --secret-dir=/usr/local/e2e-agnostic-upgrade-cluster-profile
+        - --target=e2e-agnostic-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -129,7 +211,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
+        - mountPath: /usr/local/e2e-agnostic-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -163,14 +245,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-agnostic-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
-    context: ci/prow/e2e-aws-ovn-single-node
+    cluster: build01
+    context: ci/prow/e2e-aws-single-node
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -182,10 +264,10 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-aws-ovn-single-node
+    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-aws-single-node
     optional: true
     path_alias: github.com/openshift/cluster-monitoring-operator
-    rerun_command: /test e2e-aws-ovn-single-node
+    rerun_command: /test e2e-aws-single-node
     spec:
       containers:
       - args:
@@ -195,8 +277,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-single-node-cluster-profile
-        - --target=e2e-aws-ovn-single-node
+        - --secret-dir=/usr/local/e2e-aws-single-node-cluster-profile
+        - --target=e2e-aws-single-node
         command:
         - ci-operator
         image: ci-operator:latest
@@ -212,7 +294,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-single-node-cluster-profile
+        - mountPath: /usr/local/e2e-aws-single-node-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -246,95 +328,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-single-node,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-single-node,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build05
-    context: ci/prow/e2e-aws-ovn-upgrade
-    decorate: true
-    decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
-    hidden: true
-    labels:
-      ci-operator.openshift.io/cloud: aws
-      ci-operator.openshift.io/cloud-cluster-profile: aws
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-cluster-monitoring-operator-release-4.12-e2e-aws-ovn-upgrade
-    path_alias: github.com/openshift/cluster-monitoring-operator
-    rerun_command: /test e2e-aws-ovn-upgrade
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --oauth-token-path=/usr/local/github-credentials/oauth
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-ovn-upgrade-cluster-profile
-        - --target=e2e-aws-ovn-upgrade
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-aws-ovn-upgrade-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /usr/local/github-credentials
-          name: github-credentials-openshift-ci-robot-private-git-cloner
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-aws
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-ovn-upgrade,?($|\s.*)
-  - agent: kubernetes
-    always_run: true
-    branches:
-    - ^release-4\.12$
-    - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/generate
     decorate: true
     decoration_config:
@@ -391,7 +391,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/go-fmt
     decorate: true
     decoration_config:
@@ -448,7 +448,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -505,7 +505,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/jsonnet-fmt
     decorate: true
     decoration_config:
@@ -562,7 +562,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/rules
     decorate: true
     decoration_config:
@@ -619,7 +619,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/shellcheck
     decorate: true
     decoration_config:
@@ -676,7 +676,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/unit
     decorate: true
     decoration_config:
@@ -733,7 +733,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/vendor
     decorate: true
     decoration_config:
@@ -790,7 +790,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/verify
     decorate: true
     decoration_config:
@@ -847,7 +847,7 @@ presubmits:
     branches:
     - ^release-4\.12$
     - ^release-4\.12-
-    cluster: build03
+    cluster: build01
     context: ci/prow/versions
     decorate: true
     decoration_config:

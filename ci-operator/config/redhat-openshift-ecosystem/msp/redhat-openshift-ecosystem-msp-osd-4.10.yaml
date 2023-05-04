@@ -14,7 +14,7 @@ base_images:
 releases:
   latest:
     release:
-      channel: fast
+      channel: stable
       version: "4.10"
 resources:
   '*':
@@ -33,7 +33,6 @@ tests:
       OO_INDEX: brew.registry.redhat.io/rh-osbs-stage/iib:40523
     env:
       CLUSTER_DURATION: "10800"
-      CLUSTER_DURATION_AFTER_FAILURE: "86400"
       CLUSTER_VERSION: "4.10"
       COMPUTE_NODES: "3"
       CUSTOM_SCORECARD_TESTCASE: ""
@@ -61,7 +60,6 @@ tests:
     pre:
     - ref: ipi-install-rbac
     - ref: osd-create-create
-    - ref: osd-grant-cluster-editor
     - ref: optional-operators-configure-proxy-registry
     - ref: optional-operators-cvp-common-apply-secrets
     - ref: optional-operators-subscribe

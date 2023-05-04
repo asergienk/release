@@ -52,9 +52,18 @@ promotion:
   name: ocm-2.5
   namespace: edge-infrastructure
 releases:
+  candidate:
+    release:
+      channel: candidate
+      version: "4.8"
+  initial:
+    integration:
+      name: "4.9"
+      namespace: ocp
   latest:
     integration:
-      name: "4.10"
+      include_built_images: true
+      name: "4.9"
       namespace: ocp
 resources:
   '*':
@@ -118,7 +127,7 @@ tests:
     env:
       ASSISTED_CONFIG: |
         SERVICE_BASE_REF=release-ocm-2.5
-        MAKEFILE_TARGET="deploy_nodes"
+        MAKEFILE_TARGET="setup run deploy_nodes"
     workflow: assisted-baremetal
 - as: e2e-metal-assisted
   optional: true

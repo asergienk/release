@@ -7,7 +7,6 @@
 approvers:
 - alanfx
 - aliok
-- creydr
 - lberk
 - matzew
 - mgencur
@@ -15,7 +14,6 @@ approvers:
 options: {}
 reviewers:
 - aliok
-- creydr
 - lberk
 - matzew
 - pierdipi

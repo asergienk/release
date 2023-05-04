@@ -1,4 +1,0 @@
-plugins:
-  amq-streams-qe/strimzi-kafka-operator:
-    plugins:
-    - trigger

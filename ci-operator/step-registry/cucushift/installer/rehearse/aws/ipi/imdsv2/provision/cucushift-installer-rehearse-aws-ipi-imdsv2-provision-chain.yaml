@@ -1,7 +1,9 @@
 chain:
   as: cucushift-installer-rehearse-aws-ipi-imdsv2-provision
   steps:
-  - chain: cucushift-installer-rehearse-aws-ipi-provision
+  - chain: ipi-conf-aws
+  - chain: ipi-install
+  - ref: enable-qe-catalogsource
   env:
   - name: AWS_METADATA_SERVICE_AUTH
     default: "Required"

@@ -9,6 +9,7 @@ approvers:
 - kpouget
 options: {}
 reviewers:
+- arangogutierrez
 - dagrayvid
 - jmencak
 - kpouget

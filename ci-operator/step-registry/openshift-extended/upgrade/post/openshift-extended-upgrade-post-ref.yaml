@@ -6,7 +6,7 @@ ref:
   cli: target
   timeout: 4h0m0s
   env:
-  - name: TEST_SCENARIOS_POSTUPG
+  - name: TEST_SCENRAIOS_POSTUPG
     default: |
         MCO|ETCD|PSAP|SDN|STORAGE|API_Server|Authentication|Cluster_Operator
         Cluster_Infrastructure|OLM|Network_Edge|Operator_SDK
@@ -17,15 +17,11 @@ ref:
   - name: TEST_ADDITIONAL_POSTUPG
     default: ""
     documentation: |
-      It is additional scenario to combine the TEST_SCENARIOS_PREUPG to make final scenarios.
+      It is additional scenario to combine the TEST_SCENRAIOS_PREUPG to make final scenarios.
   - name: TEST_FILTERS
-    default: "~DisconnectedOnly&;~HyperShiftMGMT&;~MicroShiftOnly&"
+    default: "~DisconnectedOnly&"
     documentation: |
       It is filters to select case based on some case attribution which is in case title.
-  - name: FILTERS_ADDITIONAL
-    default: ""
-    documentation: |
-      It is additional filters to combine the TEST_FILTERS to make final filters.
   - name: TEST_FILTERS_POSTUPG
     default: ""
     documentation: |
@@ -39,9 +35,6 @@ ref:
   - name: TEST_PARALLEL
     default: "5"
     documentation: it means the number of case execution in parallel.
-  - name: TEST_ROSA_LOGIN_ENV
-    default: "staging"
-    documentation: The environment for rosa login. The supported values are [production, staging].
   - name: FORCE_SUCCESS_EXIT
     default: "yes"
     documentation: |-

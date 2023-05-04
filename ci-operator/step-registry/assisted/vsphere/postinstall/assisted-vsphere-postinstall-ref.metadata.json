@@ -1,8 +1,0 @@
-{
-	"path": "assisted/vsphere/postinstall/assisted-vsphere-postinstall-ref.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

@@ -1,8 +1,0 @@
-{
-	"path": "assisted/nutanix/teardown/machine/assisted-nutanix-teardown-machine-ref.yaml",
-	"owners": {
-		"approvers": [
-			"assisted-cicd"
-		]
-	}
-}

@@ -9,15 +9,18 @@ approvers:
 - danwinship
 - dcbw
 - knobunc
-- kyrtapz
+- rcarrillocruz
 - trozet
 options: {}
 reviewers:
 - abhat
-- andreaskaris
+- astoycos
+- danielmellado
 - danwinship
 - dcbw
 - jluhrsen
-- kyrtapz
+- juanluisvaladas
+- rcarrillocruz
 - trozet
 - tssurya
+- vpickard

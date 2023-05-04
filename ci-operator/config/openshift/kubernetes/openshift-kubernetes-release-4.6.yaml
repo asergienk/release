@@ -204,11 +204,11 @@ tests:
 - as: e2e-aws
   steps:
     cluster_profile: aws
-    workflow: openshift-e2e-aws
+    workflow: openshift-e2e-aws-loki
 - as: e2e-gcp
   steps:
     cluster_profile: gcp
-    workflow: openshift-e2e-gcp
+    workflow: openshift-e2e-gcp-loki
 - as: e2e-aws-ovn
   steps:
     cluster_profile: aws

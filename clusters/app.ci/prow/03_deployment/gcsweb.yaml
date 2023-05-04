@@ -20,7 +20,7 @@ items:
           component: gcsweb
       spec:
         containers:
-        - image: gcr.io/k8s-prow/gcsweb:v20230424-4981841b2f
+        - image: gcr.io/k8s-prow/gcsweb:v20220719-54797060e1
           name: gcsweb
           args:
           - "-b"
@@ -58,7 +58,7 @@ items:
     type: ClusterIP
     sessionAffinity: None
 - kind: Route
-  apiVersion: route.openshift.io/v1
+  apiVersion: v1
   metadata:
     annotations:
       haproxy.router.openshift.io/timeout: 1h

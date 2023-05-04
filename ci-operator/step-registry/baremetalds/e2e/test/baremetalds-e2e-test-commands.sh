@@ -8,18 +8,13 @@ function mirror_test_images() {
         echo "### Mirroring test images"
 
         DEVSCRIPTS_TEST_IMAGE_REPO=${DS_REGISTRY}/localimages/local-test-image
-
+        
         openshift-tests images --to-repository ${DEVSCRIPTS_TEST_IMAGE_REPO} > /tmp/mirror
         scp "${SSHOPTS[@]}" /tmp/mirror "root@${IP}:/tmp/mirror"
 
         # shellcheck disable=SC2087
         ssh "${SSHOPTS[@]}" "root@${IP}" bash - << EOF
 oc image mirror -f /tmp/mirror --registry-config ${DS_WORKING_DIR}/pull_secret.json
-# "registry.k8s.io/pause:3.8" is excluded from the output of the "openshift-tests images" command as some of the layers arn't compressed and this isn't supported by quay.io
-# So we need to mirror it from source bypassing quay.io
-# TODO: remove when registry.k8s.io/pause:3.8 is contained in /tmp/mirror
-# https://issues.redhat.com/browse/OCPBUGS-3016
-oc image mirror --registry-config ${DS_WORKING_DIR}/pull_secret.json --filter-by-os="linux/${ARCHITECTURE}.*" registry.k8s.io/pause:3.8  $DEVSCRIPTS_TEST_IMAGE_REPO:e2e-28-registry-k8s-io-pause-3-8-aP7uYsw5XCmoDy5W 
 EOF
         TEST_ARGS="--from-repository ${DEVSCRIPTS_TEST_IMAGE_REPO}"
 }
@@ -225,7 +220,7 @@ do
     break
   fi
 
-  non_imported_imagestreams=$(oc -n openshift get imagestreams -o go-template='{{range .items}}{{$namespace := .metadata.namespace}}{{$name := .metadata.name}}{{range .status.tags}}{{if not .items}}{{$namespace}}/{{$name}}:{{.tag}}{{"\n"}}{{end}}{{end}}{{end}}')
+  non_imported_imagestreams=$(oc -n openshift get imagestreams -o go-template='{{range .items}}{{$namespace := .metadata.namespace}}{{$name := .metadata.name}}{{range .status.tags}}{{if not .items}}{{$namespace}}/{{$name}}:{{.tag}}{{"\n"}}{{end}}{{end}}{{end}}' | (grep -v 'apicast\|jboss\|jenkins\|openjdk\|redhat-sso' || true))
   if [ -z "${non_imported_imagestreams}" ]
   then
     break
@@ -234,7 +229,7 @@ do
   echo "${non_imported_imagestreams}"
 
   count=$((count+1))
-  if (( count > 30 )); then
+  if (( count > 20 )); then
     echo "Failed while waiting on imagestream import"
     exit 1
   fi

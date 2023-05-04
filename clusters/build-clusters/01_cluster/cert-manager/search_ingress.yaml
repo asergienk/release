@@ -7,7 +7,6 @@ metadata:
   name: search
   namespace: ci-search
 spec:
-  ingressClassName: openshift-default
   tls:
     - secretName: search-tls
       hosts:

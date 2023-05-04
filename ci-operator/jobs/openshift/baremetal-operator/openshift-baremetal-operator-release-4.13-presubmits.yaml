@@ -1,23 +1,22 @@
 presubmits:
   openshift/baremetal-operator:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
-    context: ci/prow/e2e-metal-ipi-bm
+    cluster: build01
+    context: ci/prow/e2e-metal-ipi
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi-bm
+    name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi
     optional: true
     path_alias: github.com/metal3-io/baremetal-operator
-    rerun_command: /test e2e-metal-ipi-bm
+    rerun_command: /test e2e-metal-ipi
     spec:
       containers:
       - args:
@@ -26,8 +25,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-ipi-bm-cluster-profile
-        - --target=e2e-metal-ipi-bm
+        - --secret-dir=/usr/local/e2e-metal-ipi-cluster-profile
+        - --target=e2e-metal-ipi
         command:
         - ci-operator
         image: ci-operator:latest
@@ -43,7 +42,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-metal-ipi-bm-cluster-profile
+        - mountPath: /usr/local/e2e-metal-ipi-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -74,19 +73,18 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-metal-ipi-bm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-metal-ipi,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/e2e-metal-ipi-ovn-dualstack
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi-ovn-dualstack
@@ -155,13 +153,12 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/e2e-metal-ipi-ovn-ipv6
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi-ovn-ipv6
@@ -230,13 +227,12 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/e2e-metal-ipi-serial-ipv4
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi-serial-ipv4
@@ -305,13 +301,12 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/e2e-metal-ipi-virtualmedia
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
-      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-baremetal-operator-release-4.13-e2e-metal-ipi-virtualmedia
@@ -379,7 +374,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/images
     decorate: true
     labels:
@@ -428,7 +423,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/lint
     decorate: true
     labels:
@@ -477,7 +472,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/unit
     decorate: true
     labels:
@@ -526,7 +521,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build05
+    cluster: build01
     context: ci/prow/vendor
     decorate: true
     labels:

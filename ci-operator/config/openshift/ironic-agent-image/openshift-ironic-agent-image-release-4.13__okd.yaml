@@ -1,8 +1,8 @@
 base_images:
   centos:
-    name: stream9
+    name: stream8
     namespace: coreos
-    tag: "9"
+    tag: "8"
 build_root:
   from_repository: true
 images:

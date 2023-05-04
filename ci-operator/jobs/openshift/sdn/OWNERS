@@ -9,12 +9,10 @@ approvers:
 - danwinship
 - dcbw
 - knobunc
-- trozet
 options: {}
 reviewers:
 - abhat
 - danwinship
 - dcbw
 - jacobtanenbaum
-- trozet
 - tssurya

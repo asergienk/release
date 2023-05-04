@@ -6,30 +6,33 @@ set -o pipefail
 
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
 
-CONFIG="${SHARED_DIR}/install-config.yaml"
-subnet_ids_file="${SHARED_DIR}/subnet_ids"
-az_file="${SHARED_DIR}/availability_zones"
+curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
 
-if [ ! -f "${subnet_ids_file}" ] || [ ! -f "${az_file}" ]; then
-  echo "File ${subnet_ids_file} or ${az_file} does not exist."
-  exit 1
+CONFIG="${SHARED_DIR}/install-config.yaml"
+
+# subnet and AZs
+all_subnet_ids="${SHARED_DIR}/all_subnet_ids"
+availability_zones="${SHARED_DIR}/availability_zones"
+if [ ! -f "${all_subnet_ids}" ] || [ ! -f "${availability_zones}" ]; then
+    echo "File ${all_subnet_ids} or ${availability_zones} does not exist."
+    exit 1
 fi
 
-echo -e "subnets: $(cat ${subnet_ids_file})"
-echo -e "AZs: $(cat ${az_file})"
+echo -e "subnets: $(cat ${all_subnet_ids})"
+echo -e "AZs: $(cat ${availability_zones})"
 
 CONFIG_PATCH="${SHARED_DIR}/install-config-subnet-azs.yaml.patch"
 cat > "${CONFIG_PATCH}" << EOF
 platform:
   aws:
-    subnets: $(cat "${subnet_ids_file}")
+    subnets: $(cat "${all_subnet_ids}")
 controlPlane:
   platform:
     aws:
-      zones: $(cat "${az_file}")
+      zones: $(cat "${availability_zones}")
 compute:
 - platform:
     aws:
-      zones: $(cat "${az_file}")
+      zones: $(cat "${availability_zones}")
 EOF
-yq-go m -x -i "${CONFIG}" "${CONFIG_PATCH}"
+/tmp/yq m -x -i "${CONFIG}" "${CONFIG_PATCH}"

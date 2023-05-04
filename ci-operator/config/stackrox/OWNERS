@@ -1,8 +1,6 @@
 approvers:
-- BradLugo
-- davdhacs
-- dcaravel
 - gavin-stackrox
+- house-d
 - janisz
 - JoukoVirtanen
 - jvdm
@@ -10,14 +8,12 @@ approvers:
 - porridge
 - robbycochran
 - RTann
-- tommartensen
+- sbostick
 - viswajithiii
 - vjwilson
 reviewers:
-- BradLugo
-- davdhacs
-- dcaravel
 - gavin-stackrox
+- house-d
 - janisz
 - JoukoVirtanen
 - jvdm
@@ -25,6 +21,6 @@ reviewers:
 - porridge
 - robbycochran
 - RTann
-- tommartensen
+- sbostick
 - viswajithiii
 - vjwilson

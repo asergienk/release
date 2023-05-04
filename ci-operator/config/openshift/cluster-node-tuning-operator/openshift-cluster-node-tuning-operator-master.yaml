@@ -1,50 +1,41 @@
 base_images:
-  base:
-    name: "4.14"
-    namespace: ocp
-    tag: base
-  ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+  ocp_4.9_base:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.19-openshift-4.13
-  openshift_release_golang-1.19:
-    name: release
-    namespace: openshift
-    tag: golang-1.19
+    tag: rhel-8-base-openshift-4.9
+  ocp_builder_rhel-8-base-openshift-4.12:
+    name: builder
+    namespace: ocp
+    tag: rhel-8-base-openshift-4.12
+  ocp_builder_rhel-8-golang-1.18-openshift-4.12:
+    name: builder
+    namespace: ocp
+    tag: rhel-8-golang-1.18-openshift-4.12
 build_root:
   from_repository: true
 images:
-- dockerfile_path: Dockerfile
-  from: base
-  inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
-      as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
-    openshift_release_golang-1.19:
-      as:
-      - registry.ci.openshift.org/openshift/release:golang-1.19
-  to: cluster-node-tuning-operator-us-tuned
 - dockerfile_path: Dockerfile.rhel8
-  from: base
+  from: ocp_4.9_base
   inputs:
-    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
+    ocp_builder_rhel-8-base-openshift-4.12:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+      - registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.12
+    ocp_builder_rhel-8-golang-1.18-openshift-4.12:
+      as:
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
   to: cluster-node-tuning-operator
 promotion:
-  excluded_images:
-  - cluster-node-tuning-operator-us-tuned
-  name: "4.14"
+  name: "4.12"
   namespace: ocp
 releases:
   initial:
     integration:
-      name: "4.14"
+      name: "4.12"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.14"
+      name: "4.12"
       namespace: ocp
 resources:
   '*':
@@ -60,28 +51,10 @@ tests:
   commands: make verify
   container:
     from: src
-- as: vet
-  commands: make vet
-  container:
-    from: src
-- as: e2e-aws-ovn
+- as: e2e-aws
   steps:
     cluster_profile: aws
     workflow: openshift-e2e-aws
-- as: e2e-nightly
-  cron: 0 23 * * *
-  steps:
-    cluster_profile: aws
-    test:
-    - as: nightly
-      cli: latest
-      commands: make test-e2e
-      from: src
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-    workflow: ipi-aws
 - as: e2e-aws-operator
   steps:
     cluster_profile: aws
@@ -95,7 +68,6 @@ tests:
           cpu: 100m
     workflow: ipi-aws
 - as: e2e-gcp-pao
-  cluster: build03
   steps:
     cluster_profile: gcp
     test:
@@ -107,24 +79,7 @@ tests:
         requests:
           cpu: 100m
           memory: 200Mi
-      timeout: 2h0m0s
     workflow: ipi-gcp
-- as: e2e-gcp-pao-updating-profile
-  cluster: build03
-  steps:
-    cluster_profile: gcp
-    test:
-    - as: test
-      cli: latest
-      commands: CLUSTER=mcp-only make cluster-deploy-pao && make pao-functests-updating-profile
-      from: src
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-      timeout: 4h0m0s
-    workflow: ipi-gcp
-  timeout: 5h0m0s
 - as: e2e-upgrade
   steps:
     cluster_profile: aws

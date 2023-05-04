@@ -1,7 +1,7 @@
 releases:
   initial:
     release:
-      channel: candidate
+      channel: fast
       version: "4.9"
   intermediate:
     candidate:

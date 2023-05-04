@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build01
     context: ci/prow/e2e
     decorate: true
     decoration_config:
@@ -84,7 +84,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build01
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -134,7 +134,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build01
     context: ci/prow/lint
     decorate: true
     decoration_config:
@@ -143,6 +143,7 @@ presubmits:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-operator-framework-rukpak-main-lint
+    optional: true
     rerun_command: /test lint
     spec:
       containers:
@@ -183,7 +184,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build01
     context: ci/prow/unit
     decorate: true
     decoration_config:
@@ -192,6 +193,7 @@ presubmits:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-operator-framework-rukpak-main-unit
+    optional: true
     rerun_command: /test unit
     spec:
       containers:
@@ -232,7 +234,7 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build01
     context: ci/prow/verify
     decorate: true
     decoration_config:
@@ -241,6 +243,7 @@ presubmits:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-operator-framework-rukpak-main-verify
+    optional: true
     rerun_command: /test verify
     spec:
       containers:

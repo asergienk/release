@@ -6,8 +6,10 @@ base_images:
 binary_build_commands: unset GOFLAGS && make build COMPILE_TARGET="./build/_output/bin/cloud-resource-operator"
   GO111MODULE=on
 build_root:
-  project_image:
-    dockerfile_path: openshift-ci/Dockerfile.tools
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: golang-1.18
 images:
 - dockerfile_path: build/Dockerfile
   from: os
@@ -23,12 +25,12 @@ promotion:
 releases:
   initial:
     integration:
-      name: "4.12"
+      name: "4.10"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.12"
+      name: "4.10"
       namespace: ocp
 resources:
   '*':
@@ -55,15 +57,12 @@ tests:
     owner: openshift-ci
     product: ocp
     timeout: 1h0m0s
-    version: "4.12"
+    version: "4.10"
   steps:
     test:
     - as: test
       cli: latest
       commands: unset GOFLAGS && make test/e2e/prow
-      dependencies:
-      - env: IMAGE_FORMAT
-        name: cloud-resource-operator
       from: src
       resources:
         requests:
@@ -88,10 +87,6 @@ tests:
   secret:
     mount_path: /tmp/secret
     name: cloud-resource-operator-codecov-token
-- as: gosec
-  commands: make gosec
-  container:
-    from: src
 zz_generated_metadata:
   branch: master
   org: integr8ly

@@ -11,8 +11,9 @@ filters:
     - jcantrill
     reviewers:
     - alanconway
-    - cahartma
+    - eranra
     - jcantrill
+    - pmoogi-redhat
     - syedriko
     - vimalk78
     - vparfonov

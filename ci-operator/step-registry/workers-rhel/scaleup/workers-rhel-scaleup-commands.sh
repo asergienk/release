@@ -16,12 +16,11 @@ if ! whoami &> /dev/null; then
     fi
 fi
 
+# Install an updated version of the client
+mkdir -p /tmp/client
+curl https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz | tar --directory=/tmp/client -xzf -
+PATH=/tmp/client:$PATH
 oc version --client
-
-if [ -f "${SHARED_DIR}/proxy-conf.sh" ] ; then
-    echo "Setting proxy"
-    source "${SHARED_DIR}/proxy-conf.sh"
-fi
 
 echo "$(date -u --rfc-3339=seconds) - Validating parsed Ansible inventory"
 ansible-inventory -i "${SHARED_DIR}/ansible-hosts" --list --yaml
@@ -35,7 +34,6 @@ if [[ "${REMOVE_RHCOS_WORKER}" == "no" ]]; then
 fi
 
 export KUBECONFIG=${SHARED_DIR}/kubeconfig
-#cp ${SHARED_DIR}/kubeconfig "${ARTIFACT_DIR}"
 
 # Remove CoreOS machine sets
 echo "$(date -u --rfc-3339=seconds) - Deleting CoreOS machinesets"
@@ -48,21 +46,21 @@ fi
 echo "$(date -u --rfc-3339=seconds) - Waiting for CoreOS nodes to be removed"
 oc wait node \
     --for=delete \
-    --timeout=40m \
+    --timeout=10m \
     --selector node.openshift.io/os_id=rhcos,node-role.kubernetes.io/worker \
     || true
 
 echo "$(date -u --rfc-3339=seconds) - Waiting for worker machineconfigpool to update"
 oc wait machineconfigpool/worker \
     --for=condition=Updated=True \
-    --timeout=20m
+    --timeout=10m
 
 echo "$(date -u --rfc-3339=seconds) - Waiting for clusteroperators to complete"
 oc wait clusteroperator.config.openshift.io \
     --for=condition=Available=True \
     --for=condition=Progressing=False \
     --for=condition=Degraded=False \
-    --timeout=20m \
+    --timeout=10m \
     --all
 
 echo "$(date -u --rfc-3339=seconds) - RHEL worker scaleup complete"

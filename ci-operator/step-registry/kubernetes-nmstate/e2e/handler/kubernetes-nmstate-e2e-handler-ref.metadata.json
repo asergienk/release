@@ -2,12 +2,14 @@
 	"path": "kubernetes-nmstate/e2e/handler/kubernetes-nmstate-e2e-handler-ref.yaml",
 	"owners": {
 		"approvers": [
+			"creydr",
 			"cybertron",
 			"phoracek",
 			"qinqon",
 			"rhrazdil"
 		],
 		"reviewers": [
+			"creydr",
 			"cybertron",
 			"phoracek",
 			"qinqon",

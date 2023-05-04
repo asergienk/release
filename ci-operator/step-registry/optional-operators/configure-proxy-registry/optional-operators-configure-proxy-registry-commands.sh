@@ -9,8 +9,7 @@ set -o pipefail
 # mirroring the pull secrets
 
 # add brew pull secret 
-BREW_DOCKERCONFIGJSON=${BREW_DOCKERCONFIGJSON:-'/var/run/brew-pullsecret/.dockerconfigjson'}
-oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=$BREW_DOCKERCONFIGJSON
+oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=/var/run/brew-pullsecret/.dockerconfigjson
 
 # 1. Apply the ICSP to the cluster 
 echo "Creating new proxy registry record on cluster"

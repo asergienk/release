@@ -29,9 +29,14 @@ promotion:
   name: ocm-2.5
   namespace: edge-infrastructure
 releases:
+  initial:
+    integration:
+      name: "4.9"
+      namespace: ocp
   latest:
     integration:
-      name: "4.10"
+      include_built_images: true
+      name: "4.9"
       namespace: ocp
 resources:
   '*':

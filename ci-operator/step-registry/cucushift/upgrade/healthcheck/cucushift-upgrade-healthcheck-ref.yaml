@@ -11,5 +11,5 @@
     limits:
       cpu: "1"
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 350m
+      memory: 1Gi

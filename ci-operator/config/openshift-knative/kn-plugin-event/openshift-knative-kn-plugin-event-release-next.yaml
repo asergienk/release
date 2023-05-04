@@ -41,8 +41,8 @@ promotion:
 releases:
   latest:
     release:
-      channel: fast
-      version: "4.11"
+      channel: stable
+      version: "4.10"
 resources:
   '*':
     limits:
@@ -57,14 +57,14 @@ tests:
     ./mage test
   container:
     from: src
-- as: e2e-aws-ocp-411
+- as: e2e-aws-ocp-410
   cluster_claim:
     architecture: amd64
     cloud: aws
     owner: openshift-ci
     product: ocp
     timeout: 1h30m0s
-    version: "4.11"
+    version: "4.10"
   steps:
     test:
     - as: test

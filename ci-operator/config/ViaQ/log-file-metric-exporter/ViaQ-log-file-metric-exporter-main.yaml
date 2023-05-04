@@ -2,7 +2,7 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: rhel-9-release-golang-1.19-openshift-4.13
+    tag: golang-1.17
 images:
 - dockerfile_path: Dockerfile
   to: log-file-metric-exporter
@@ -11,10 +11,10 @@ promotion:
   namespace: logging
 releases:
   latest:
-    candidate:
-      product: ocp
-      stream: ci
-      version: "4.14"
+    release:
+      architecture: amd64
+      channel: stable
+      version: "4.9"
 resources:
   '*':
     limits:
@@ -27,7 +27,6 @@ tests:
   commands: make test
   container:
     from: src
-  timeout: 5m0s
 zz_generated_metadata:
   branch: main
   org: ViaQ

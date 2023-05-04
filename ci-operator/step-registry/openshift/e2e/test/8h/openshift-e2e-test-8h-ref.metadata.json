@@ -2,11 +2,11 @@
 	"path": "openshift/e2e/test/8h/openshift-e2e-test-8h-ref.yaml",
 	"owners": {
 		"approvers": [
-			"deads2k",
-			"dgoodwin",
-			"stbenjam",
+			"wking",
 			"vrutkovs",
-			"wking"
+			"abhinavdahiya",
+			"deads2k",
+			"staebler"
 		]
 	}
 }

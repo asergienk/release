@@ -5,13 +5,11 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build02
     context: ci/prow/ci-index-node-observability-operator-bundle
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -50,6 +48,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -62,13 +63,11 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build02
     context: ci/prow/e2e-gcp
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci-operator.openshift.io/cloud: gcp
@@ -136,6 +135,9 @@ presubmits:
               name: cluster-secrets-gcp
           - configMap:
               name: cluster-profile-gcp
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -148,13 +150,11 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build02
     context: ci/prow/images
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -193,6 +193,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -205,13 +208,11 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build02
     context: ci/prow/unit
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -250,6 +251,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials
@@ -262,13 +266,11 @@ presubmits:
     branches:
     - ^main$
     - ^main-
-    cluster: build04
+    cluster: build02
     context: ci/prow/verify
     decorate: true
     decoration_config:
-      oauth_token_secret:
-        key: oauth
-        name: github-credentials-openshift-ci-robot-private-git-cloner
+      skip_cloning: true
     hidden: true
     labels:
       ci.openshift.io/generator: prowgen
@@ -307,6 +309,9 @@ presubmits:
           readOnly: true
       serviceAccountName: ci-operator
       volumes:
+      - name: github-credentials-openshift-ci-robot-private-git-cloner
+        secret:
+          secretName: github-credentials-openshift-ci-robot-private-git-cloner
       - name: pull-secret
         secret:
           secretName: registry-pull-credentials

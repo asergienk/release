@@ -1,11 +1,11 @@
 presubmits:
   openshift/cluster-autoscaler-operator:
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build03
     context: ci/prow/e2e-aws
     decorate: true
     labels:
@@ -15,7 +15,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-autoscaler-operator-master-e2e-aws
     rerun_command: /test e2e-aws
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -74,11 +73,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build03
     context: ci/prow/e2e-aws-operator
     decorate: true
     labels:
@@ -88,7 +87,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-autoscaler-operator-master-e2e-aws-operator
     rerun_command: /test e2e-aws-operator
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$|_test\.go$
     spec:
       containers:
       - args:
@@ -147,11 +145,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-aws-operator,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build03
     context: ci/prow/e2e-upgrade
     decorate: true
     labels:
@@ -161,7 +159,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-autoscaler-operator-master-e2e-upgrade
     rerun_command: /test e2e-upgrade
-    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -224,7 +221,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/generate
     decorate: true
     labels:
@@ -271,7 +268,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/goimports
     decorate: true
     labels:
@@ -318,7 +315,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/golint
     decorate: true
     labels:
@@ -365,7 +362,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/govet
     decorate: true
     labels:
@@ -412,7 +409,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/images
     decorate: true
     labels:
@@ -460,7 +457,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build05
+    cluster: build03
     context: ci/prow/unit
     decorate: true
     labels:

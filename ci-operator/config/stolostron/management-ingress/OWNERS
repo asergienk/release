@@ -5,13 +5,13 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- bjoydeep
+- clyang82
 - dislbenn
+- haoqing0110
 - marcolan018
+- morvencao
 - subbarao-meduri
 options: {}
 reviewers:
-- clyang82
-- haoqing0110
-- morvencao
+- bjoydeep
 - songleo

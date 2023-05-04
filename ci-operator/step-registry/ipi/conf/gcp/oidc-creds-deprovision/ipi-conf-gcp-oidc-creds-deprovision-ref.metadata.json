@@ -2,10 +2,8 @@
 	"path": "ipi/conf/gcp/oidc-creds-deprovision/ipi-conf-gcp-oidc-creds-deprovision-ref.yaml",
 	"owners": {
 		"approvers": [
-			"abutcher",
-			"2uasimojo",
-			"suhanime",
-			"dlom"
+			"akhil-rane",
+			"joelddiaz"
 		]
 	}
 }
