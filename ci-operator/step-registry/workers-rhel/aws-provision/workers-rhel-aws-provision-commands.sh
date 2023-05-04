@@ -5,6 +5,11 @@ set -o errexit
 set -o pipefail
 set -x
 
+if [ -f "${SHARED_DIR}/proxy-conf.sh" ] ; then
+    echo "Setting proxy"
+    source "${SHARED_DIR}/proxy-conf.sh"
+fi
+
 export KUBECONFIG=${SHARED_DIR}/kubeconfig
 export AWS_SHARED_CREDENTIALS_FILE=${CLUSTER_PROFILE_DIR}/.awscred
 AWS_REGION="$(oc get -o jsonpath='{.status.platformStatus.aws.region}' infrastructure cluster)"
@@ -26,6 +31,22 @@ if ! whoami &> /dev/null; then
     fi
 fi
 
+if [ -f "${SHARED_DIR}/bastion_public_address" ]; then
+  BASTION_SSH_USER=$(cat "${SHARED_DIR}/bastion_ssh_user")
+  BASTION_PUBLIC_ADDRESS=$(cat "${SHARED_DIR}/bastion_public_address")
+else
+  BASTION_SSH_USER="core"
+  BASTION_PUBLIC_ADDRESS=$(oc get service ssh-bastion --namespace=test-ssh-bastion --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+fi
+
+if [ -z "${BASTION_PUBLIC_ADDRESS}" ] || [ -z "${BASTION_SSH_USER}" ]; then
+  echo "Did not find bastion public address"
+  exit 1
+else
+  export BASTION_SSH_USER
+  export BASTION_PUBLIC_ADDRESS
+fi
+
 cat > create-machines.yaml <<-'EOF'
 ---
 - name: Create AWS instances using machine sets
@@ -35,6 +56,7 @@ cat > create-machines.yaml <<-'EOF'
   vars:
     aws_region: "{{ lookup('env', 'AWS_REGION') }}"
     cluster_dir: "{{ lookup('env', 'SHARED_DIR') }}"
+    rhel_image: "{{ lookup('env', 'RHEL_IMAGE') }}"
     platform_type: "rhel"
     platform_version: "{{ lookup('env', 'PLATFORM_VERSION') }}"
     platform_type_dict:
@@ -47,6 +69,8 @@ cat > create-machines.yaml <<-'EOF'
     kubeconfig_path: "{{ lookup('env', 'KUBECONFIG') }}"
     pull_secret_path: "{{ lookup('env', 'PULL_SECRET_PATH') }}"
     private_key_path: "{{ lookup('env', 'SSH_PRIV_KEY_PATH') }}"
+    bastion_ssh_user: "{{ lookup('env', 'BASTION_SSH_USER') }}"
+    bastion_public_address: "{{ lookup('env', 'BASTION_PUBLIC_ADDRESS') }}"
     new_workers_list: []
 
   tasks:
@@ -59,7 +83,7 @@ cat > create-machines.yaml <<-'EOF'
 
   - name: Set aws_ami to most recent image
     set_fact:
-      aws_ami: "{{ ec2_ami_facts_results.images[-1].image_id }}"
+      aws_ami: "{{ rhel_image if rhel_image != '' else ec2_ami_facts_results.images[-1].image_id }}"
 
   - name: Get existing worker machinesets
     command: >
@@ -87,21 +111,6 @@ cat > create-machines.yaml <<-'EOF'
     when:
     - new_workers_list | length == 0
 
-  - name: Get ssh bastion address
-    command: >
-      oc get service ssh-bastion
-      --kubeconfig={{ kubeconfig_path }}
-      --namespace=test-ssh-bastion
-      --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-    register: oc_get
-    until:
-    - oc_get.stdout != ''
-    changed_when: false
-
-  - name: Set fact ssh_bastion
-    set_fact:
-      ssh_bastion: "{{ oc_get.stdout }}"
-
   - name: Create Ansible Inventory File
     template:
       src: hosts.j2
@@ -118,6 +127,7 @@ cat > create_machineset.yaml <<-'EOF'
   set_fact:
     machineset: "{{ machineset_obj | combine(dict_edit, recursive=True) }}"
   vars:
+    ssh_key_name: "{{ lookup('env', 'SSH_KEY_NAME') }}"
     dict_edit:
       metadata:
         name: "{{ machineset_name }}"
@@ -135,7 +145,7 @@ cat > create_machineset.yaml <<-'EOF'
               value:
                 ami:
                   id: "{{ aws_ami }}"
-                keyName: "openshift-dev"
+                keyName: "{{ ssh_key_name }}"
 
 - name: Import machineset definition
   command: >
@@ -203,7 +213,7 @@ openshift_kubeconfig_path={{ kubeconfig_path }}
 openshift_pull_secret_path={{ pull_secret_path }}
 
 [new_workers:vars]
-ansible_ssh_common_args="-o IdentityFile={{ private_key_path }} -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o IdentityFile={{ private_key_path }} -o ConnectTimeout=30 -o ConnectionAttempts=100 -o StrictHostKeyChecking=no -W %h:%p -q core@{{ ssh_bastion }}\""
+ansible_ssh_common_args="-o IdentityFile={{ private_key_path }} -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o IdentityFile={{ private_key_path }} -o ConnectTimeout=30 -o ConnectionAttempts=100 -o StrictHostKeyChecking=no -W %h:%p -q {{ bastion_ssh_user }}@{{ bastion_public_address }}\""
 ansible_user={{ platform_type_dict[platform_type].username }}
 ansible_become=True
 

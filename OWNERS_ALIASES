@@ -4,10 +4,18 @@ aliases:
   cincinnati-approvers:
   - jottofar
   - LalatenduMohanty
-  - lucab
   - PratikMahajan
   - vrutkovs
   - wking
+  okd-approvers:
+  - aleskandro
+  - cgwalters
+  - cheesesashimi
+  - lmzuccarelli
+  - LorbusChris
+  - sherine-k
+  - travier
+  - vrutkovs
   openstack-approvers:
   - EmilienM
   - MaysaMacedo
@@ -36,13 +44,11 @@ aliases:
   - danilo-gemoli
   ovirt-approvers:
   - eslutsky
-  - janosdebugs
   - mmartinv
   - bkhizgiy
   - engelmi
   ovirt-reviewers:
   - eslutsky
-  - janosdebugs
   - mmartinv
   - bkhizgiy
   - engelmi
@@ -55,6 +61,8 @@ aliases:
   - dgoodwin
   - xueqzhan
   - DennisPeriquet
+  - neisw
+  - deepsm007
   assisted-cicd:
   - romfreiman
   - celebdor
@@ -66,23 +74,23 @@ aliases:
   - tsorya
   - pawanpinjarkar
   - eliorerz
-  - michaellevy101
   - mkowalski
   - vrutkovs
   - omertuc
+  - adriengentil
   single-node:
   - romfreiman
   - eranco74
   - tsorya
   - osherdp
   - omertuc
+  - adriengentil
   edge-eco:
   - romfreiman
   - celebdor
   - filanov
   - tsorya
   - osherdp
-  - michaellevy101
   - eliorerz
   - eranco74
   - omertuc
@@ -91,6 +99,7 @@ aliases:
   - mkowalski
   - sagidayan
   - carbonin
+  - adriengentil
   coreos-approvers:
   - cgwalters
   - bgilbert
@@ -98,10 +107,7 @@ aliases:
   - mike-nguyen
   - jlebon
   - ashcrow
-  - lucab
-  - sohankunkerkar
   - travier
-  - saqibali-2k
   - HuijingHei
   - jmarrero
   - aaradhak
@@ -110,6 +116,9 @@ aliases:
   - marmijo
   - prestist
   - RishabhSaini
+  - jschintag
+  - c4rt0
+  - Adam0Brien
   coreos-reviewers:
   - cgwalters
   - bgilbert
@@ -117,10 +126,7 @@ aliases:
   - mike-nguyen
   - jlebon
   - ashcrow
-  - lucab
-  - sohankunkerkar
   - travier
-  - saqibali-2k
   - HuijingHei
   - jmarrero
   - aaradhak
@@ -129,20 +135,20 @@ aliases:
   - marmijo
   - prestist
   - RishabhSaini
+  - c4rt0
+  - Adam0Brien
   ibmcloud-approvers:
   - cjschaef
-  - gsrajpal
   - hasueki
   - jeffnowicki
+  - rvanderp3
   - srcarrier
-  - staebler
   ibmcloud-reviewers:
   - cjschaef
-  - gsrajpal
   - hasueki
   - jeffnowicki
+  - rvanderp3
   - srcarrier
-  - staebler
   alibaba-approvers:
   - kwoodson
   - jcpowermac
@@ -163,7 +169,6 @@ aliases:
   - tsmetana
   storage-reviewers:
   - bertinatto
-  - derek-pryor
   - dobsonj
   - gnufied
   - jsafrane
@@ -193,7 +198,6 @@ aliases:
   - dougbtv
   - jluhrsen
   - knobunc
-  - squeed
   - trozet
   sdn-reviewers:
   - abhat
@@ -202,13 +206,13 @@ aliases:
   - dougbtv
   - jluhrsen
   - knobunc
-  - squeed
   - trozet
   - JacobTanenbaum
   - jcaamano
   - kyrtapz
   - tssurya
   - zshi-redhat
+  - pliurh
   nutanix-approvers:
   - elmiko
   - fedosin
@@ -219,3 +223,83 @@ aliases:
   - fedosin
   - joelspeed
   - rvanderp3
+  kmm-approvers:
+  - bthurber
+  - chr15p
+  - enriquebelarte
+  - erusso7
+  - qbarrand
+  - ybettan
+  - yevgeny-shnaidman
+  kmm-reviewers:
+  - bthurber
+  - chr15p
+  - enriquebelarte
+  - erusso7
+  - qbarrand
+  - ybettan
+  - yevgeny-shnaidman
+  maistra-approvers:
+  - jwendell
+  - rcernich
+  - yxun
+  - dgn
+  - bartoszmajsak
+  - FilipB
+  maistra-reviewers:
+  - jwendell
+  - rcernich
+  - yxun
+  - dgn
+  - bartoszmajsak
+  - FilipB
+  cspi-qe-ocp-lp:
+  - calebevans
+  - madunn
+  - btjd
+  - chetna14manku
+  - ascerra
+  - smatula
+  - liswang89
+  - Sau1506mya
+  - amp-rh
+  - macharya0907
+  openstack-k8s-operators-approvers:
+  - abays
+  - arxcruz
+  - cjeanner
+  - dprince
+  - marios
+  - olliewalsh
+  - raukadah
+  - rlandy
+  - Sandeepyadav93
+  - stuggi
+  - viroel
+  openstack-k8s-operators-reviewers:
+  - abays
+  - arxcruz
+  - cjeanner
+  - dprince
+  - marios
+  - olliewalsh
+  - raukadah
+  - rlandy
+  - Sandeepyadav93
+  - stuggi
+  - viroel
+  cspi-msi-approvers:
+  - myakove
+  - rnetser
+  cspi-msi-reviewers:
+  - myakove
+  - rnetser
+  - omrirh
+  - ILpinto
+  - oharan2
+  - shakyav
+  amq-streams-approvers:
+  - Frawless
+  - im-konge
+  - see-quick
+  - jankalinic

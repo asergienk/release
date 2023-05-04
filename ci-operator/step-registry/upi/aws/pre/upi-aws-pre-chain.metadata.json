@@ -2,11 +2,11 @@
 	"path": "upi/aws/pre/upi-aws-pre-chain.yaml",
 	"owners": {
 		"approvers": [
-			"staebler",
 			"rna-afk",
 			"patrickdillon",
 			"jhixson74",
-			"jstuever"
+			"jianlinliu",
+			"yunjiang29"
 		]
 	}
 }

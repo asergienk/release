@@ -1,7 +1,7 @@
 presubmits:
   openshift/release:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^master$
     - ^master-
@@ -12,6 +12,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-check-gh-automation
     rerun_command: /test check-gh-automation
+    run_if_changed: ^ci-operator/config/.*
     spec:
       containers:
       - args:
@@ -26,6 +27,10 @@ presubmits:
         - --ignore=kata-containers/kata-containers
         - --ignore=containers/gvisor-tap-vsock
         - --ignore=containers/podman-py
+        - --ignore=CSPI-QE
+        - --ignore=redhat-openshift-ecosystem/certified-operators-prod
+        - --ignore=redhat-openshift-ecosystem/preflight
+        - --ignore=redhat-openshift-ecosystem/cvp
         command:
         - ./hack/check-gh-automation.sh
         env:
@@ -79,6 +84,35 @@ presubmits:
     branches:
     - ^master$
     - ^master-
+    cluster: build05
+    context: ci/prow/clusterimageset-validate
+    decorate: true
+    labels:
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-release-clusterimageset-validate
+    rerun_command: /test clusterimageset-validate
+    run_if_changed: ^clusters/hive/pools/.*
+    spec:
+      containers:
+      - args:
+        - --pools
+        - ./clusters/hive/pools
+        - --imagesets
+        - ./clusters/hive/pools
+        command:
+        - clusterimageset-updater
+        image: registry.ci.openshift.org/ci/clusterimageset-updater:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+    trigger: (?m)^/test( | .* )clusterimageset-validate,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
     cluster: app.ci
     context: ci/build-farm/app-ci-config-dry
     decorate: true
@@ -98,16 +132,6 @@ presubmits:
         env:
         - name: HOME
           value: /tmp
-        - name: OPENSHIFT_MONITORING_CI_TOKEN_ON_HIVE
-          valueFrom:
-            secretKeyRef:
-              key: hive-openshift-monitoring-ci-token
-              name: hive-openshift-monitoring-credentials
-        - name: OPENSHIFT_PROMETHEUS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: prometheus-k8s-basic-auth-password
-              name: app-ci-openshift-monitoring-credentials
         - name: PAGERDUTY_INTEGRATION_KEY
           valueFrom:
             secretKeyRef:
@@ -194,7 +218,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/boskos-config
     decorate: true
     labels:
@@ -209,7 +233,7 @@ presubmits:
         - core-services/prow/02_config/_boskos.yaml
         command:
         - /app
-        image: gcr.io/k8s-staging-boskos/checkconfig:v20220711-6cb8a6f
+        image: gcr.io/k8s-staging-boskos/checkconfig:v20230419-5a11e92
         imagePullPolicy: IfNotPresent
         name: ""
         resources:
@@ -221,7 +245,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/boskos-config-generation
     decorate: true
     labels:
@@ -245,7 +269,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/build-clusters
     decorate: true
     labels:
@@ -274,7 +298,7 @@ presubmits:
     context: ci/build-farm/build01-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: build01
+      ci.openshift.io/build-farm: build01
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-build01-dry
@@ -333,7 +357,7 @@ presubmits:
     context: ci/build-farm/build02-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: build02
+      ci.openshift.io/build-farm: build02
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-build02-dry
@@ -392,7 +416,7 @@ presubmits:
     context: ci/build-farm/build03-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: build03
+      ci.openshift.io/build-farm: build03
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-build03-dry
@@ -441,7 +465,7 @@ presubmits:
     context: ci/build-farm/build04-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: build04
+      ci.openshift.io/build-farm: build04
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-build04-dry
@@ -490,7 +514,7 @@ presubmits:
     context: ci/build-farm/build05-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: build05
+      ci.openshift.io/build-farm: build05
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-build05-dry
@@ -535,7 +559,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/ci-operator-config
     decorate: true
     labels:
@@ -564,7 +588,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/ci-operator-config-metadata
     decorate: true
     labels:
@@ -590,7 +614,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/ci-operator-registry
     decorate: true
     labels:
@@ -620,7 +644,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/ci-testgrid-allow-list
     decorate: true
     labels:
@@ -689,7 +713,7 @@ presubmits:
             secretKeyRef:
               key: appid
               name: openshift-prow-github-app
-        image: gcr.io/k8s-prow/checkconfig:v20220719-54797060e1
+        image: gcr.io/k8s-prow/checkconfig:v20230424-4981841b2f
         imagePullPolicy: IfNotPresent
         name: ""
         resources:
@@ -709,7 +733,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/core-valid
     decorate: true
     decoration_config:
@@ -758,7 +782,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/correctly-sharded-config
     decorate: true
     labels:
@@ -783,7 +807,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/deprecate-templates
     decorate: true
     labels:
@@ -808,7 +832,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/generated-config
     decorate: true
     labels:
@@ -834,14 +858,14 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/generated-dashboards
     decorate: true
     labels:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-generated-dashboards
     rerun_command: /test generated-dashboards
-    run_if_changed: ^clusters/app.ci/prow-monitoring/.*
+    run_if_changed: ^(clusters/app.ci/openshift-user-workload-monitoring/.*)
     spec:
       containers:
       - args:
@@ -909,7 +933,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/jira-lifecycle-config
     decorate: true
     labels:
@@ -935,7 +959,56 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: app.ci
+    context: ci/build-farm/multi01-dry
+    decorate: true
+    labels:
+      ci.openshift.io/build-farm: multi01
+      ci.openshift.io/generator: cluster-init
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-release-master-multi01-dry
+    rerun_command: /test multi01-dry
+    run_if_changed: ^clusters/.*
+    spec:
+      containers:
+      - args:
+        - --config-dir=clusters/build-clusters/multi01
+        - --as=
+        - --kubeconfig=/etc/build-farm-credentials/kubeconfig
+        command:
+        - applyconfig
+        env:
+        - name: HOME
+          value: /tmp
+        image: registry.ci.openshift.org/ci/applyconfig:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/build-farm-credentials
+          name: build-farm-credentials
+          readOnly: true
+        - mountPath: /tmp
+          name: tmp
+      serviceAccountName: config-updater
+      volumes:
+      - name: build-farm-credentials
+        secret:
+          items:
+          - key: sa.config-updater.multi01.config
+            path: kubeconfig
+          secretName: config-updater
+      - emptyDir: {}
+        name: tmp
+    trigger: (?m)^/test( | .* )multi01-dry,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build05
     context: ci/prow/ordered-prow-config
     decorate: true
     labels:
@@ -961,7 +1034,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/owners
     decorate: true
     labels:
@@ -983,162 +1056,11 @@ presubmits:
             cpu: 10m
     trigger: (?m)^/test( | .* )owners,?($|\s.*)
   - agent: kubernetes
-    always_run: true
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build04
-    context: ci/prow/pj-rehearse
-    decorate: true
-    name: pull-ci-openshift-release-master-pj-rehearse
-    optional: true
-    rerun_command: /test pj-rehearse
-    spec:
-      containers:
-      - args:
-        - --candidate-path=.
-        - --debug-log
-        - $(ARTIFACTS)/debug-log.txt
-        - --dry-run=false
-        - --prowjob-kubeconfig=/var/kubeconfigs/sa.pj-rehearse.app.ci.config
-        - --kubeconfig-dir=/var/kubeconfigs
-        - --rehearsal-limit=10
-        command:
-        - ./hack/pj-rehearse.sh
-        image: pj-rehearse:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 500m
-        volumeMounts:
-        - mountPath: /var/kubeconfigs
-          name: prowjob-kubeconfig
-      serviceAccountName: ci-operator
-      volumes:
-      - name: prowjob-kubeconfig
-        secret:
-          secretName: pj-rehearse
-    trigger: (?m)^/test( | .* )pj-rehearse,?($|\s.*)
-  - agent: kubernetes
     always_run: false
     branches:
     - ^master$
     - ^master-
-    cluster: build04
-    context: ci/prow/pj-rehearse-blocking
-    decorate: true
-    name: pull-ci-openshift-release-master-pj-rehearse-blocking
-    rerun_command: /test pj-rehearse-blocking
-    run_if_changed: core-services/prow/prow-checkconfig-version.txt
-    spec:
-      containers:
-      - args:
-        - --candidate-path=.
-        - --debug-log
-        - $(ARTIFACTS)/debug-log.txt
-        - --dry-run=false
-        - --prowjob-kubeconfig=/var/kubeconfigs/sa.pj-rehearse.app.ci.config
-        - --kubeconfig-dir=/var/kubeconfigs
-        command:
-        - pj-rehearse
-        image: pj-rehearse:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 500m
-        volumeMounts:
-        - mountPath: /var/kubeconfigs
-          name: prowjob-kubeconfig
-      serviceAccountName: ci-operator
-      volumes:
-      - name: prowjob-kubeconfig
-        secret:
-          secretName: pj-rehearse
-    trigger: (?m)^/test( | .* )pj-rehearse-blocking,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build04
-    context: ci/prow/pj-rehearse-max
-    decorate: true
-    name: pull-ci-openshift-release-master-pj-rehearse-max
-    optional: true
-    rerun_command: /test pj-rehearse-max
-    spec:
-      containers:
-      - args:
-        - --candidate-path=.
-        - --debug-log
-        - $(ARTIFACTS)/debug-log.txt
-        - --dry-run=false
-        - --prowjob-kubeconfig=/var/kubeconfigs/sa.pj-rehearse.app.ci.config
-        - --kubeconfig-dir=/var/kubeconfigs
-        - --rehearsal-limit=35
-        command:
-        - ./hack/pj-rehearse.sh
-        image: pj-rehearse:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 500m
-        volumeMounts:
-        - mountPath: /var/kubeconfigs
-          name: prowjob-kubeconfig
-      serviceAccountName: ci-operator
-      volumes:
-      - name: prowjob-kubeconfig
-        secret:
-          secretName: pj-rehearse
-    trigger: (?m)^/test( | .* )pj-rehearse-max,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build04
-    context: ci/prow/pj-rehearse-more
-    decorate: true
-    name: pull-ci-openshift-release-master-pj-rehearse-more
-    optional: true
-    rerun_command: /test pj-rehearse-more
-    spec:
-      containers:
-      - args:
-        - --candidate-path=.
-        - --debug-log
-        - $(ARTIFACTS)/debug-log.txt
-        - --dry-run=false
-        - --prowjob-kubeconfig=/var/kubeconfigs/sa.pj-rehearse.app.ci.config
-        - --kubeconfig-dir=/var/kubeconfigs
-        - --rehearsal-limit=20
-        command:
-        - ./hack/pj-rehearse.sh
-        image: pj-rehearse:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 500m
-        volumeMounts:
-        - mountPath: /var/kubeconfigs
-          name: prowjob-kubeconfig
-      serviceAccountName: ci-operator
-      volumes:
-      - name: prowjob-kubeconfig
-        secret:
-          secretName: pj-rehearse
-    trigger: (?m)^/test( | .* )pj-rehearse-more,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/prow-config
     decorate: true
     labels:
@@ -1164,7 +1086,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/prow-config-filenames
     decorate: true
     labels:
@@ -1191,7 +1113,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/prow-config-semantics
     decorate: true
     labels:
@@ -1217,7 +1139,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/release-config
     decorate: true
     labels:
@@ -1239,18 +1161,17 @@ presubmits:
             cpu: 10m
     trigger: (?m)^/test( | .* )release-config,?($|\s.*)
   - agent: kubernetes
-    always_run: false
+    always_run: true
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/release-controller-config
     decorate: true
     labels:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-release-controller-config
     rerun_command: /test release-controller-config
-    run_if_changed: ^(core-services/release-controller|clusters/app.ci/release-controller|clusters/build-clusters/common/release-controller|ci-operator/config/openshift/release|ci-operator/jobs/openshift/release)/.*
     spec:
       containers:
       - args:
@@ -1269,7 +1190,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/secret-generator-config-valid
     decorate: true
     labels:
@@ -1297,7 +1218,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/services-valid
     decorate: true
     decoration_config:
@@ -1347,7 +1268,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/step-registry-metadata
     decorate: true
     labels:
@@ -1373,7 +1294,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/step-registry-shellcheck
     decorate: true
     labels:
@@ -1399,11 +1320,35 @@ presubmits:
     branches:
     - ^master$
     - ^master-
+    cluster: build05
+    context: ci/prow/supplemental-ci-images-mapping-files
+    decorate: true
+    labels:
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-release-master-supplemental-ci-images-mapping-files
+    rerun_command: /test supplemental-ci-images-mapping-files
+    run_if_changed: ^(core-services/image-mirroring/supplemental-ci-images/mapping_supplemental_ci_images_.*)
+    spec:
+      containers:
+      - command:
+        - hack/validate-supplemental-ci-images-mapping-files.sh
+        image: centos:8
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+    trigger: (?m)^/test( | .* )supplemental-ci-images-mapping-files,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
     cluster: app.ci
     context: ci/build-farm/vsphere-dry
     decorate: true
     labels:
-      ci.openshift.io/cluster: vsphere
+      ci.openshift.io/build-farm: vsphere
       ci.openshift.io/generator: cluster-init
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-release-master-vsphere-dry
@@ -1449,7 +1394,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/openshift-image-mirror-mappings
     decorate: true
     labels:
@@ -1484,7 +1429,50 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: app.ci
+    context: ci/prow/pr-reminder-config
+    decorate: true
+    labels:
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-release-pr-reminder-config
+    rerun_command: /test pr-reminder-config
+    run_if_changed: ^core-services/pr-reminder/_config.yaml
+    spec:
+      containers:
+      - args:
+        - --config-path=core-services/pr-reminder/_config.yaml
+        - --github-mapping-config-path=/etc/github-mapping/mapping.yaml
+        - --slack-token-path=/etc/slack/oauth_token
+        - --validate-only=true
+        command:
+        - /usr/bin/pr-reminder
+        image: registry.ci.openshift.org/ci/pr-reminder:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/github-mapping
+          name: github-mapping
+          readOnly: true
+        - mountPath: /etc/slack
+          name: slack
+          readOnly: true
+      volumes:
+      - configMap:
+          name: sync-rover-groups
+        name: github-mapping
+      - name: slack
+        secret:
+          secretName: slack-credentials-dptp-bot
+    trigger: (?m)^/test( | .* )pr-reminder-config,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build05
     context: ci/prow/pylint
     decorate: true
     labels:
@@ -1496,7 +1484,7 @@ presubmits:
       containers:
       - args:
         - --rcfile=hack/.pylintrc
-        - --ignore=lib
+        - --ignore=lib,image-mirroring
         - --persistent=n
         - hack
         command:
@@ -1513,7 +1501,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/sync-rover-groups
     decorate: true
     labels:
@@ -1545,7 +1533,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build04
+    cluster: build05
     context: ci/prow/yamllint
     decorate: true
     labels:

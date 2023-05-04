@@ -51,14 +51,9 @@ promotion:
   name: ocm-2.5
   namespace: edge-infrastructure
 releases:
-  initial:
-    integration:
-      name: "4.9"
-      namespace: ocp
   latest:
     integration:
-      include_built_images: true
-      name: "4.9"
+      name: "4.10"
       namespace: ocp
 resources:
   '*':
@@ -140,11 +135,6 @@ tests:
         TEST_FUNC=test_deploy_day2_nodes_cloud
     workflow: assisted-baremetal
 - as: subsystem-test
-  steps:
-    cluster_profile: packet-assisted
-    workflow: assisted-agent
-- as: subsystem-test-periodic
-  cron: '@daily'
   steps:
     cluster_profile: packet-assisted
     workflow: assisted-agent

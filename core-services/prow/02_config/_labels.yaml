@@ -369,6 +369,12 @@ default:
       target: prs
       prowPlugin: backport-verifier
       addedBy: prow
+    - color: 15dd18
+      description: Indicates that this PR references a valid Jira ticket of any type.
+      name: jira/valid-reference
+      target: prs
+      prowPlugin: jira
+      addedBy: prow
     - color: e11d21
       description: Indicates that a referenced Jira bug is invalid for the branch this PR is targeting.
       name: jira/invalid-bug
@@ -489,6 +495,11 @@ orgs:
         name: docs-approved
         target: both
         addedBy: label
+      - color: 52809B
+        description: Indicates the PR should not be rebased by the rebasebot.
+        name: 'rebase/manual'
+        target: prs
+        addedBy: label
   cri-o:
     labels:
       - color: e11d21
@@ -517,50 +528,13 @@ orgs:
         target: prs
         prowPlugin: dco
         addedBy: prow
-  konveyor:
+  openshift-cloud-team:
     labels:
-      - color: ededed
-        description: Indicates an issue or PR lacks a `triage/foo` label and requires one.
-        name: needs-triage
-        target: both
-        prowPlugin: label
-        addedBy: org members
-      - color: 8fc951
-        description: Indicates an issue or PR is ready to be actively worked on.
-        name: triage/accepted
-        target: both
-        prowPlugin: label
-        addedBy: approvers
-      - color: e11d21
-        description: Highest priority. Must be actively worked on as someone's top priority right now. # Stuff is burning. If it's not being actively worked on, someone is expected to drop what they're doing immediately to work on it. Team leaders are responsible for making sure that all the issues, labeled with this priority, in their area are being actively worked on. Examples include user-visible bugs in core features, broken builds or tests and critical security issues.
-        name: priority/blocker
-        target: both
-        prowPlugin: label
-        addedBy: anyone
-      - color: eb6420
-        description: Must be staffed and worked on either currently, or very soon, ideally in time for the next release.
-        name: priority/critical
-        target: both
-        prowPlugin: label
-        addedBy: anyone
-      - color: eb6420
-        description: Important over the long term, but may not be staffed and/or may need multiple releases to complete.
-        name: priority/major
-        target: both
-        prowPlugin: label
-        addedBy: anyone
-      - color: fbca04
-        description: Higher priority than priority/minor. Nice to have. # There appears to be general agreement that this would be good to have, but we may not have anyone available to work on it right now or in the immediate future. Community contributions would be most welcome in the mean time (although it might take a while to get them reviewed if reviewers are fully occupied with higher priority issues, for example immediately before a release).
-        name: priority/normal
-        target: both
-        prowPlugin: label
-        addedBy: anyone
-      - color: fef2c0
-        description: Lowest priority. Possibly useful, but not yet enough support to actually get it done. # These are mostly place-holders for potentially good ideas, so that they don't get completely forgotten, and can be referenced /deduped every time they come up.
-        name: priority/minor
-        target: both
-        prowPlugin: label
-        addedBy: anyone
+      - color: 52809b
+        description: Indicates the PR should not be rebased by the rebasebot.
+        name: 'rebase/manual'
+        target: prs
+        addedBy: label
 
 repos:
   openshift/assisted-installer:
@@ -631,6 +605,12 @@ repos:
         target: both
         prowPlugin: label
         addedBy: anyone
+      - color: 5df542
+        description: Signifies that rehearsal jobs have been acknowledged
+        name: rehearsals-ack
+        target: prs
+        prowPlugin: pj-rehearse
+        addedBy: prow
   openshift/console:
     labels:
       - color: 00D8FF
@@ -756,25 +736,6 @@ repos:
         name: publish-sdk
         target: prs
         addedBy: label
-  openshift/knative-serving:
-    labels:
-      - color: 00D8FF
-        description: Issues or PRs related to test and release
-        name: area/test-and-release
-        target: both
-        addedBy: label
-  openshift/knative-eventing:
-    labels:
-      - color: 00D8FF
-        description: Issues or PRs related to test and release
-        name: area/test-and-release
-        target: both
-        addedBy: label
-      - color: 00D8FF
-        description: Issues or PRs related to eventing performance
-        name: area/performance
-        target: both
-        addedBy: label
   openshift/knative-eventing-contrib:
     labels:
       - color: 00D8FF
@@ -812,6 +773,33 @@ repos:
       - color: bfdadc
         description: Related to images used by e2e tests
         name: "e2e-images-update"
+        target: prs
+        addedBy: anyone
+  openshift/hypershift:
+    labels:
+      - color: "e72eee"
+        description: Indicates the PR includes changes for the hypershift operator and API - outside an OCP release
+        name: "area/hypershift-operator"
+        target: prs
+        addedBy: anyone
+      - color: "4b1f79"
+        description: Indicates the PR includes changes for the control plane operator - in an OCP release
+        name: "area/control-plane-operator"
+        target: prs
+        addedBy: anyone
+      - color: "5319e7"
+        description: Indicates the PR includes changes for documentation
+        name: "area/documentation"
+        target: prs
+        addedBy: anyone
+      - color: "0806a6"
+        description: Indicates the PR includes changes for CLI
+        name: "area/cli"
+        target: prs
+        addedBy: anyone
+      - color: "b99cf0"
+        description: Indicates the PR includes changes for e2e testing
+        name: "area/testing"
         target: prs
         addedBy: anyone
   operator-framework/operator-lifecycle-manager:
@@ -880,5 +868,97 @@ repos:
       - color: 0FFA16
         description: Signifies that Docs has signed off on this PR
         name: docs-approved
+        target: both
+        addedBy: label
+  openshift/openshift-docs:
+    labels:
+      - color: f9d0c4
+        description: Label for all CNV PRs
+        name: CNV
+        target: both
+        addedBy: label
+      - color: 7976e2
+        description: Label for all Odo/Pipelines/Helm/Developer Console/Perspective PRs
+        name: dev-tools
+        target: both
+        addedBy: label
+      - color: CB1709
+        description: Label for all Distributed Tracing PRs
+        name: distributed-tracing
+        target: both
+        addedBy: label
+      - color: 66e2b3
+        description: Label for all migration services PRs
+        name: IMS
+        target: both
+        addedBy: label
+      - color: a9fced
+        description: Label for all MTC PRs
+        name: MTC
+        target: both
+        addedBy: label
+      - color: "5319E7"
+        description: Signifies that the merge review team is reviewing this PR
+        name: merge-review-in-progress
+        target: both
+        addedBy: label
+      - color: 0052cc
+        description: Signifies that the merge review team needs to review this PR
+        name: merge-review-needed
+        target: both
+        addedBy: label
+      - color: bfd4f2
+        description: Label for all IBM Power and Z PRs
+        name: multi-arch
+        target: both
+        addedBy: label
+      - color: 099C69
+        description: Label for all OADP PRs
+        name: OADP
+        target: both
+        addedBy: label
+      - color: "5319E7"
+        description: Signifies that the peer review team is reviewing this PR
+        name: peer-review-in-progress
+        target: both
+        addedBy: label
+      - color: fbca04
+        description: Signifies that the peer review team has reviewed this PR
+        name: peer-review-done
+        target: both
+        addedBy: label
+      - color: 0052cc
+        description: Signifies that the peer review team needs to review this PR
+        name: peer-review-needed
+        target: both
+        addedBy: label
+      - color: 525FB7
+        description: Label for RHACS related PRs that go in the rhacs-docs branch
+        name: RHACS
+        target: both
+        addedBy: label
+      - color: A775C0
+        description: Label for RHV PRs
+        name: RHV
+        target: both
+        addedBy: label
+      - color: 89f95c
+        description: Label for all Serverless PRs
+        name: serverless
+        target: both
+        addedBy: label
+      - color: 9cf4ce
+        description: Label for all Service Mesh PRs
+        name: service-mesh
+        target: both
+        addedBy: label
+      - color: "5319E7"
+        description: Label for all Service Delivery PRs
+        name: SD-docs
+        target: both
+        addedBy: label
+      - color: d93f0b
+        description: Label for all Telco PRs
+        name: telco
         target: both
         addedBy: label

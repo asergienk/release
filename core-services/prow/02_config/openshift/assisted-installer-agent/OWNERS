@@ -11,13 +11,11 @@ filters:
     - carbonin
     - danielerez
     - eliorerz
-    - empovit
     - eranco74
     - filanov
     - flaper87
     - gamli75
-    - lranjbar
-    - michaellevy101
+    - jhernand
     - mkowalski
     - nmagnezi
     - omertuc
@@ -26,40 +24,42 @@ filters:
     - paul-maidment
     - rccrdpccl
     - romfreiman
-    - slaviered
     - tsorya
-    - ybettan
-    - yevgeny-shnaidman
+    - vrutkovs
     reviewers:
     - avishayt
     - carbonin
     - danielerez
     - eliorerz
-    - empovit
     - eranco74
     - filanov
     - flaper87
     - gamli75
-    - jakub-dzon
-    - jordigilh
-    - lranjbar
-    - machacekondra
-    - masayag
-    - michaellevy101
+    - jhernand
     - mkowalski
     - nmagnezi
     - omertuc
     - ori-amizur
     - osherdp
     - paul-maidment
-    - pkliczewski
     - rccrdpccl
     - romfreiman
-    - slaviered
     - tsorya
-    - ybettan
-    - yevgeny-shnaidman
-  ^Dockerfile\..*:
+    - vrutkovs
+  ^Dockerfile\.(?!ocp).*:
     labels:
     - downstream-change-needed
+  ^Dockerfile\.ocp:
+    approvers:
+    - andfasano
+    - bfournie
+    - pawanpinjarkar
+    - rwsu
+    - zaneb
+    reviewers:
+    - andfasano
+    - bfournie
+    - pawanpinjarkar
+    - rwsu
+    - zaneb
 options: {}

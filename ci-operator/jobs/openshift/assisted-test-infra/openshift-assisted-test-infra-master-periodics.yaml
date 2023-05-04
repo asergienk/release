@@ -1,7 +1,7 @@
 periodics:
 - agent: kubernetes
   cluster: build03
-  cron: 53 3 * * *
+  cron: 45 01 */1 * 1,4
   decorate: true
   extra_refs:
   - base_ref: master
@@ -11,17 +11,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-10-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -80,7 +72,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 6 22 * * *
+  cron: 00 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -90,17 +82,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-11-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-12-periodic
   spec:
     containers:
     - args:
@@ -109,8 +93,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-metal-assisted-4-11-periodic-cluster-profile
-      - --target=e2e-metal-assisted-4-11-periodic
+      - --secret-dir=/usr/local/e2e-metal-assisted-4-12-periodic-cluster-profile
+      - --target=e2e-metal-assisted-4-12-periodic
       command:
       - ci-operator
       image: ci-operator:latest
@@ -126,7 +110,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-metal-assisted-4-11-periodic-cluster-profile
+      - mountPath: /usr/local/e2e-metal-assisted-4-12-periodic-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -159,7 +143,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 32 0 * * *
+  cron: 00 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -169,17 +153,80 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-13-periodic
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-metal-assisted-4-13-periodic-cluster-profile
+      - --target=e2e-metal-assisted-4-13-periodic
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-metal-assisted-4-13-periodic-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-packet-assisted
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build03
+  cron: 15 01 */1 * 0-5
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: assisted-test-infra
+  labels:
+    ci-operator.openshift.io/cloud: packet-edge
+    ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-8-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -238,7 +285,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 15 1 * * *
+  cron: 30 01 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -248,17 +295,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-4-9-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -317,7 +356,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 36 22 * * *
+  cron: 15 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -327,17 +366,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-cnv-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -396,7 +427,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 39 1 * * *
+  cron: 15 15 */1 * 0,3
   decorate: true
   extra_refs:
   - base_ref: master
@@ -406,17 +437,80 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-day2-arm-workers-periodic
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-metal-assisted-day2-arm-workers-periodic-cluster-profile
+      - --target=e2e-metal-assisted-day2-arm-workers-periodic
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-metal-assisted-day2-arm-workers-periodic-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-packet-assisted
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build03
+  cron: 15 03 */1 * 0-5
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: assisted-test-infra
+  labels:
+    ci-operator.openshift.io/cloud: packet-edge
+    ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-day2-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -475,7 +569,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 29 3 * * *
+  cron: 00 03 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -485,17 +579,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-day2-single-node-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -554,7 +640,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 16 2 * * *
+  cron: 45 03 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -564,17 +650,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-ipv4v6-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -633,7 +711,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 22 2 * * *
+  cron: 30 03 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -643,17 +721,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-ipv6-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -712,7 +782,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 37 23 * * *
+  cron: 00 05 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -722,17 +792,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-ipxe-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -791,7 +853,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 0 22 * * *
+  cron: 43 22 */1 * 1-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -801,17 +863,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-kube-api-net-suite-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -870,7 +924,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 13 23 * * *
+  cron: 20 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -880,17 +934,80 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-lvm-periodic
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-metal-assisted-lvm-periodic-cluster-profile
+      - --target=e2e-metal-assisted-lvm-periodic
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-metal-assisted-lvm-periodic-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-packet-assisted
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build03
+  cron: 00 04 */1 * 0-5
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: assisted-test-infra
+  labels:
+    ci-operator.openshift.io/cloud: packet-edge
+    ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-none-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -949,7 +1066,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 50 0 * * *
+  cron: 45 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -959,17 +1076,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-ocs-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1028,7 +1137,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 42 22 * * *
+  cron: 30 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1038,17 +1147,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-odf-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1107,7 +1208,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 38 0 * * *
+  cron: 00 00 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1117,17 +1218,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-onprem-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1186,7 +1279,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 52 2 * * *
+  cron: 30 00 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1196,17 +1289,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1265,7 +1350,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 30 22 * * *
+  cron: 15 00 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1275,17 +1360,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-prod-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1344,7 +1421,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 22 2 * * *
+  cron: 15 04 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1354,17 +1431,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-single-node-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1423,7 +1492,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 32 0 * * *
+  cron: 30 04 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1433,17 +1502,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-static-ip-suite-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1502,7 +1563,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build03
-  cron: 23 3 * * *
+  cron: 15 05 */1 * 0,3
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1512,17 +1573,9 @@ periodics:
     ci-operator.openshift.io/cloud: packet-edge
     ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-tang-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-upgrade-agent-periodic
   spec:
     containers:
     - args:
@@ -1531,8 +1584,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-metal-assisted-tang-periodic-cluster-profile
-      - --target=e2e-metal-assisted-tang-periodic
+      - --secret-dir=/usr/local/e2e-metal-assisted-upgrade-agent-periodic-cluster-profile
+      - --target=e2e-metal-assisted-upgrade-agent-periodic
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1548,7 +1601,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-metal-assisted-tang-periodic-cluster-profile
+      - mountPath: /usr/local/e2e-metal-assisted-upgrade-agent-periodic-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -1580,28 +1633,21 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build03
-  cron: 34 2 * * *
+  cluster: build01
   decorate: true
   extra_refs:
   - base_ref: master
     org: openshift
     repo: assisted-test-infra
+  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: packet-edge
-    ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+    ci-operator.openshift.io/cloud: nutanix
+    ci-operator.openshift.io/cloud-cluster-profile: nutanix
+    ci-operator.openshift.io/cluster: build01
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-openshift-assisted-test-infra-master-e2e-metal-assisted-tpmv2-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-nutanix-assisted-periodic
   spec:
     containers:
     - args:
@@ -1610,8 +1656,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-metal-assisted-tpmv2-periodic-cluster-profile
-      - --target=e2e-metal-assisted-tpmv2-periodic
+      - --secret-dir=/usr/local/e2e-nutanix-assisted-periodic-cluster-profile
+      - --target=e2e-nutanix-assisted-periodic
       command:
       - ci-operator
       image: ci-operator:latest
@@ -1627,7 +1673,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-metal-assisted-tpmv2-periodic-cluster-profile
+      - mountPath: /usr/local/e2e-nutanix-assisted-periodic-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -1651,7 +1697,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-packet-assisted
+        secretName: cluster-secrets-nutanix
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -1660,7 +1706,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: vsphere
-  cron: 16 2 * * *
+  cron: 40 02 */1 * 0-5
   decorate: true
   extra_refs:
   - base_ref: master
@@ -1670,17 +1716,151 @@ periodics:
     ci-operator.openshift.io/cloud: vsphere
     ci-operator.openshift.io/cloud-cluster-profile: vsphere
     ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-vsphere-assisted-4-12-periodic
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-vsphere-assisted-4-12-periodic-cluster-profile
+      - --target=e2e-vsphere-assisted-4-12-periodic
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-vsphere-assisted-4-12-periodic-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-vsphere
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: vsphere
+  cron: 00 00 */1 * 0-5
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: assisted-test-infra
+  labels:
+    ci-operator.openshift.io/cloud: vsphere
+    ci-operator.openshift.io/cloud-cluster-profile: vsphere
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  name: periodic-ci-openshift-assisted-test-infra-master-e2e-vsphere-assisted-kube-api-periodic
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-vsphere-assisted-kube-api-periodic-cluster-profile
+      - --target=e2e-vsphere-assisted-kube-api-periodic
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-vsphere-assisted-kube-api-periodic-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-vsphere
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: vsphere
+  cron: 45 02 */1 * 0-5
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    org: openshift
+    repo: assisted-test-infra
+  labels:
+    ci-operator.openshift.io/cloud: vsphere
+    ci-operator.openshift.io/cloud-cluster-profile: vsphere
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-e2e-vsphere-assisted-periodic
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1754,15 +1934,6 @@ periodics:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-equinix-cleanup-cluster-profile-assisted
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:
@@ -1837,15 +2008,6 @@ periodics:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-openshift-assisted-test-infra-master-equinix-cleanup-cluster-profile-sno
-  reporter_config:
-    slack:
-      channel: '#assisted-deployment-ci'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: '{{ if eq .Status.State "success" }} :green_jenkins_circle:
-        {{ else }} :red_jenkins_circle: {{ end }} Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs>'
   spec:
     containers:
     - args:

@@ -21,9 +21,6 @@ images:
       as:
       - registry.ci.openshift.org/stolostron/builder:go1.17-linux
   to: multicloud-manager
-promotion:
-  name: "2.4"
-  namespace: stolostron
 releases:
   initial:
     integration:
@@ -140,7 +137,6 @@ tests:
       commands: |-
         export OSCI_COMPONENT_NAME=multicloud-manager
         export OSCI_COMPONENT_VERSION=2.4.0
-        export OSCI_IMAGE_REMOTE_REPO_SRC="registry.ci.openshift.org/stolostron"
         export SELF="make -f /opt/build-harness/Makefile.prow"
         export OSCI_PUBLISH_DELAY="0"
         make -f /opt/build-harness/Makefile.prow osci/publish

@@ -15,13 +15,24 @@
   },
   "publish":{
     "tag":{"tagRef":{"name":"4.9"}},
-    "bugs":{"verifyBugs":{
-      "previousReleaseTag":{
-        "namespace":"ocp",
-        "name":"release",
-        "tag":"4.8.0-fc.0"
+    "bugs":{
+      "verifyBugs":{
+        "previousReleaseTag":{
+          "namespace":"ocp",
+          "name":"release",
+          "tag":"4.8.0-fc.0"
+        }
       }
-    }}
+    },
+    "issues": {
+      "verifyIssues": {
+        "previousReleaseTag": {
+          "namespace": "ocp",
+          "name": "release",
+          "tag": "4.8.0-fc.0"
+        }
+      }
+    }
   },
   "verify":{
     "aws":{
@@ -71,15 +82,11 @@
     },
     "gcp-serial":{
       "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-installer-e2e-gcp-serial-4.9"}
+      "prowJob": {"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-gcp-serial"}
     },
     "gcp-rt":{
       "optional":true,
       "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-gcp-rt"}
-    },
-    "metal":{
-      "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-installer-e2e-metal-4.9"}
     },
     "metal-ipi": {
       "optional":true,
@@ -112,18 +119,6 @@
       "optional": true,
       "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-metal-ipi-virtualmedia"}
     },
-    "metal-serial":{
-      "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-installer-e2e-metal-serial-4.9"}
-    },
-    "openshift-dedicated-aws": {
-      "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-osd-aws-nightly-4.9"}
-    },
-    "openshift-dedicated-gcp": {
-      "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-osd-gcp-nightly-4.9"}
-    },
     "single-node-live-iso":{
       "optional":true,
       "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-metal-single-node-live-iso"}
@@ -135,11 +130,6 @@
     "aws-single-node-serial":{
       "optional":true,
       "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-aws-single-node-serial"}
-    },
-    "azure-upgrade-single-node":{
-      "upgrade":true,
-      "optional":true,
-      "prowJob":{"name":"periodic-ci-openshift-release-master-ci-4.9-e2e-azure-upgrade-ovn-single-node"}
     },
     "vsphere-upi":{
       "optional": true,
@@ -167,7 +157,7 @@
     },
     "aws-upi":{
       "optional":true,
-      "prowJob":{"name":"release-openshift-ocp-installer-e2e-aws-upi-4.9"}
+      "prowJob":{"name":"periodic-ci-openshift-release-master-nightly-4.9-e2e-aws-upi"}
     },
     "aws-ovn":{
       "optional":true,

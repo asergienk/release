@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/4.10-upgrade-from-stable-4.9-e2e-aws-ovn-upgrade
     decorate: true
     labels:
@@ -128,9 +128,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -200,9 +202,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-local-gateway
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws-2
@@ -272,9 +276,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-local-to-shared-gateway-mode-migration
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -344,9 +350,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-serial
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -417,9 +425,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-shared-to-local-gateway-mode-migration
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -489,9 +499,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-upgrade
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -561,16 +573,17 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-aws-ovn-windows
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-ovn-kubernetes-release-4.10-e2e-aws-ovn-windows
-    optional: true
     rerun_command: /test e2e-aws-ovn-windows
     spec:
       containers:
@@ -637,6 +650,8 @@ presubmits:
     cluster: build03
     context: ci/prow/e2e-azure-ovn
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
@@ -707,9 +722,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build04
     context: ci/prow/e2e-gcp-ovn
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: gcp
       ci-operator.openshift.io/cloud-cluster-profile: gcp-openshift-gce-devel-ci-2
@@ -783,12 +800,15 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-metal-ipi-ovn-dualstack
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-ovn-kubernetes-release-4.10-e2e-metal-ipi-ovn-dualstack
@@ -855,12 +875,15 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-metal-ipi-ovn-ipv4
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-ovn-kubernetes-release-4.10-e2e-metal-ipi-ovn-ipv4
@@ -928,12 +951,15 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-metal-ipi-ovn-ipv6
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-ovn-kubernetes-release-4.10-e2e-metal-ipi-ovn-ipv6
@@ -1000,9 +1026,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-openstack-ovn
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: openstack-vexxhost
       ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1073,9 +1101,11 @@ presubmits:
     branches:
     - ^release-4\.10$
     - ^release-4\.10-
-    cluster: build03
+    cluster: build05
     context: ci/prow/e2e-ovn-hybrid-step-registry
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: aws
       ci-operator.openshift.io/cloud-cluster-profile: aws
@@ -1149,6 +1179,8 @@ presubmits:
     cluster: vsphere
     context: ci/prow/e2e-vsphere-ovn
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: vsphere
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
@@ -1222,6 +1254,8 @@ presubmits:
     cluster: vsphere
     context: ci/prow/e2e-vsphere-windows
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: vsphere
       ci-operator.openshift.io/cloud-cluster-profile: vsphere
@@ -1293,8 +1327,59 @@ presubmits:
     - ^release-4\.10$
     - ^release-4\.10-
     cluster: build03
+    context: ci/prow/gofmt
+    decorate: true
+    decoration_config:
+      skip_cloning: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-ovn-kubernetes-release-4.10-gofmt
+    rerun_command: /test gofmt
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=gofmt
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )gofmt,?($|\s.*)
+  - agent: kubernetes
+    always_run: true
+    branches:
+    - ^release-4\.10$
+    - ^release-4\.10-
+    cluster: build03
     context: ci/prow/images
     decorate: true
+    decoration_config:
+      skip_cloning: true
     labels:
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
@@ -1341,6 +1426,55 @@ presubmits:
     - ^release-4\.10$
     - ^release-4\.10-
     cluster: build03
+    context: ci/prow/lint
+    decorate: true
+    decoration_config:
+      skip_cloning: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-ovn-kubernetes-release-4.10-lint
+    rerun_command: /test lint
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=lint
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )lint,?($|\s.*)
+  - agent: kubernetes
+    always_run: true
+    branches:
+    - ^release-4\.10$
+    - ^release-4\.10-
+    cluster: build04
     context: ci/prow/okd-e2e-gcp-ovn
     decorate: true
     labels:
@@ -1463,3 +1597,52 @@ presubmits:
         secret:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )okd-images,?($|\s.*)
+  - agent: kubernetes
+    always_run: true
+    branches:
+    - ^release-4\.10$
+    - ^release-4\.10-
+    cluster: build03
+    context: ci/prow/unit
+    decorate: true
+    decoration_config:
+      skip_cloning: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-ovn-kubernetes-release-4.10-unit
+    rerun_command: /test unit
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=unit
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )unit,?($|\s.*)

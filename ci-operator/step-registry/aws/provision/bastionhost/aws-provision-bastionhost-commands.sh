@@ -5,15 +5,22 @@ set -o errexit
 set -o pipefail
 
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
+#Save stacks events
+trap 'save_stack_events_to_artifacts' EXIT TERM INT
 
 export AWS_SHARED_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/.awscred"
 
-curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
-
 REGION="${LEASED_RESOURCE}"
 
+function save_stack_events_to_artifacts()
+{
+  set +o errexit
+  aws --region ${REGION} cloudformation describe-stack-events --stack-name ${stack_name} --output json > "${ARTIFACT_DIR}/stack-events-${stack_name}.json"
+  set -o errexit
+}
+
 # Using source region for C2S and SC2S
-if [[ "${CLUSTER_TYPE}" == "aws-c2s" ]] || [[ "${CLUSTER_TYPE}" == "aws-sc2s" ]]; then
+if [[ "${CLUSTER_TYPE:-}" =~ ^aws-s?c2s$ ]]; then
   REGION=$(jq -r ".\"${LEASED_RESOURCE}\".source_region" "${CLUSTER_PROFILE_DIR}/shift_project_setting.json")
 fi
 
@@ -21,7 +28,7 @@ fi
 VpcId=$(cat "${SHARED_DIR}/vpc_id")
 echo "VpcId: $VpcId"
 
-PublicSubnet="$(/tmp/yq r "${SHARED_DIR}/public_subnet_ids" '[0]')"
+PublicSubnet="$(yq-go r "${SHARED_DIR}/public_subnet_ids" '[0]')"
 echo "PublicSubnet: $PublicSubnet"
 
 CLUSTER_NAME="${NAMESPACE}-${JOB_NAME_HASH}"
@@ -43,10 +50,12 @@ if [[ "${BASTION_HOST_AMI}" == "" ]]; then
   aws --region $REGION s3 mb "s3://${s3_bucket_name}"
   echo "s3://${s3_bucket_name}" > "$SHARED_DIR/to_be_removed_s3_bucket_list"
   aws --region $REGION s3 cp ${bastion_ignition_file} "${ign_location}"
+  echo "core" > "${SHARED_DIR}/bastion_ssh_user"
 else
   # use BYO bastion host
   ami_id=${BASTION_HOST_AMI}
   ign_location="NA"
+  echo "ec2-user" > "${SHARED_DIR}/bastion_ssh_user"
 fi
 
 echo -e "AMI ID: $ami_id"
@@ -161,6 +170,10 @@ Resources:
         ToPort: 22
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
+        FromPort: 873
+        ToPort: 873
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
         FromPort: 3128
         ToPort: 3128
         CidrIp: 0.0.0.0/0
@@ -201,10 +214,16 @@ Resources:
       - Key: Name
         Value: !Join ["", [!Ref Machinename]]
       BlockDeviceMappings:
-        - DeviceName: /dev/xvda
-          Ebs:
-            VolumeSize: "120"
-            VolumeType: gp2
+        !If
+          - "UseIgnition"
+          - - DeviceName: /dev/xvda
+              Ebs:
+                VolumeSize: "120"
+                VolumeType: gp2
+          - - DeviceName: /dev/sda1
+              Ebs:
+                VolumeSize: "120"
+                VolumeType: gp2
       UserData:
         !If
           - "UseIgnition"
@@ -271,7 +290,9 @@ BASTION_HOST_PRIVATE_DNS="$(aws --region "${REGION}" cloudformation describe-sta
 
 echo "${BASTION_HOST_PUBLIC_DNS}" > "${SHARED_DIR}/bastion_public_address"
 echo "${BASTION_HOST_PRIVATE_DNS}" > "${SHARED_DIR}/bastion_private_address"
-echo "core" > "${SHARED_DIR}/bastion_ssh_user"
+
+# echo proxy IP to ${SHARED_DIR}/proxyip
+echo "${BASTION_HOST_PUBLIC_DNS}" > "${SHARED_DIR}/proxyip"
 
 PROXY_CREDENTIAL=$(< /var/run/vault/proxy/proxy_creds)
 PROXY_PUBLIC_URL="http://${PROXY_CREDENTIAL}@${BASTION_HOST_PUBLIC_DNS}:3128"

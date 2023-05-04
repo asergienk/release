@@ -31,6 +31,36 @@ branch-protection:
                 contexts:
                 - e2e-shared-server
                 - e2e-sharded
+            release-0.7:
+              protect: true
+              required_status_checks:
+                contexts:
+                - e2e-shared-server
+                - e2e-sharded
+            release-0.8:
+              protect: true
+              required_status_checks:
+                contexts:
+                - e2e-shared-server
+                - e2e-sharded
+            release-0.9:
+              protect: true
+              required_status_checks:
+                contexts:
+                - e2e-shared-server
+                - e2e-sharded
+            release-0.10:
+              protect: true
+              required_status_checks:
+                contexts:
+                - e2e-shared-server
+                - e2e-sharded
+            release-0.11:
+              protect: true
+              required_status_checks:
+                contexts:
+                - e2e-shared-server
+                - e2e-sharded
 tide:
   queries:
   - labels:
@@ -42,6 +72,7 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+    - jira/invalid-bug
     - needs-rebase
     repos:
     - kcp-dev/kcp

@@ -7,18 +7,17 @@
 approvers:
 - bdematte
 - dkeohane
-- dofinn
 - dustman9000
 - iamkirkbater
 - jharrington22
-- macgregor
 options: {}
 reviewers:
 - alexvulaj
 - bdematte
+- bergmannf
 - dkeohane
-- dofinn
 - dustman9000
 - jharrington22
-- macgregor
 - mrwinston
+- reedcort
+- t0masd

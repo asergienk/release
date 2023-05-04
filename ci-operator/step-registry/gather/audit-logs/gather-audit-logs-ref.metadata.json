@@ -2,9 +2,7 @@
 	"path": "gather/audit-logs/gather-audit-logs-ref.yaml",
 	"owners": {
 		"approvers": [
-			"wking",
 			"vrutkovs",
-			"abhinavdahiya",
 			"deads2k",
 			"staebler"
 		]

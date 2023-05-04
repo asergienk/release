@@ -7,7 +7,7 @@ base_images:
     name: test
     namespace: ocp-kni
     tag: dev-scripts
-  ocp_4.11_installer:
+  ocp_4.13_installer:
     name: "4.13"
     namespace: ocp
     tag: installer
@@ -20,9 +20,9 @@ images:
   dockerfile_path: Dockerfile
   from: base
   inputs:
-    ocp_4.11_installer:
+    ocp_4.13_installer:
       as:
-      - registry.ci.openshift.org/ocp/4.11:installer
+      - registry.ci.openshift.org/ocp/4.13:installer
   to: machine-os-images
 promotion:
   name: "4.13"
@@ -50,11 +50,13 @@ tests:
     from: src
   run_if_changed: (^scripts/)|(\.sh$)|(^\.ci-operator\.yaml$)
 - as: e2e-metal-ipi-ovn-ipv6
+  cluster: build05
   skip_if_only_changed: (^[A-Z]+\.md$)|((^|/)OWNERS$)
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv6
 - as: e2e-metal-ipi-serial-ipv4
+  cluster: build05
   skip_if_only_changed: (^[A-Z]+\.md$)|((^|/)OWNERS$)
   steps:
     cluster_profile: equinix-ocp-metal

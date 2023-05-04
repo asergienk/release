@@ -1,11 +1,11 @@
 presubmits:
   kcp-dev/kcp:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/boilerplate
     decorate: true
     labels:
@@ -13,6 +13,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-boilerplate
     rerun_command: /test boilerplate
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -48,11 +49,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )boilerplate,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/codegen
     decorate: true
     labels:
@@ -60,6 +61,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-codegen
     rerun_command: /test codegen
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -95,11 +97,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )codegen,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/deps
     decorate: true
     labels:
@@ -107,6 +109,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-deps
     rerun_command: /test deps
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -142,11 +145,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )deps,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/e2e
     decorate: true
     labels:
@@ -154,6 +157,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-e2e
     rerun_command: /test e2e
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -189,11 +193,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/e2e-multiple-runs
     decorate: true
     labels:
@@ -201,6 +205,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-e2e-multiple-runs
     rerun_command: /test e2e-multiple-runs
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -236,11 +241,107 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-multiple-runs,?($|\s.*)
   - agent: kubernetes
+    always_run: false
+    branches:
+    - ^main$
+    - ^main-
+    cluster: build04
+    context: ci/prow/e2e-sharded
+    decorate: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-kcp-dev-kcp-main-e2e-sharded
+    rerun_command: /test e2e-sharded
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=e2e-sharded
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-sharded,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^main$
+    - ^main-
+    cluster: build04
+    context: ci/prow/e2e-shared
+    decorate: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-kcp-dev-kcp-main-e2e-shared
+    rerun_command: /test e2e-shared
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=e2e-shared
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-shared,?($|\s.*)
+  - agent: kubernetes
     always_run: true
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/images
     decorate: true
     labels:
@@ -283,11 +384,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )images,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/imports
     decorate: true
     labels:
@@ -295,6 +396,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-imports
     rerun_command: /test imports
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -330,11 +432,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )imports,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
     context: ci/prow/lint
     decorate: true
     labels:
@@ -342,6 +444,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-lint
     rerun_command: /test lint
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:
@@ -377,11 +480,59 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )lint,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^main$
     - ^main-
-    cluster: build02
+    cluster: build04
+    context: ci/prow/modules
+    decorate: true
+    labels:
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-kcp-dev-kcp-main-modules
+    rerun_command: /test modules
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --target=modules
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )modules,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^main$
+    - ^main-
+    cluster: build04
     context: ci/prow/test
     decorate: true
     labels:
@@ -389,6 +540,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-kcp-dev-kcp-main-test
     rerun_command: /test test
+    skip_if_only_changed: ^docs\/|^\.github\/|^\.goreleaser\.yaml|\.md$|^(?:.*\/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
     spec:
       containers:
       - args:

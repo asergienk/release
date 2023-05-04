@@ -5,12 +5,11 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
+- anik120
 - awgreene
 - joelanford
 - kevinrizza
-- njhale
 - perdasilva
-- timflannagan
 options: {}
 reviewers:
 - anik120
@@ -18,9 +17,6 @@ reviewers:
 - awgreene
 - benluddy
 - dinhxuanvu
-- exdx
 - gallettilance
 - hasbro17
 - kevinrizza
-- njhale
-- timflannagan

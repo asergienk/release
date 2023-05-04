@@ -7,6 +7,7 @@
 approvers:
 - dgrisonnet
 - jan--f
+- joaobravecoding
 - raptorsun
 - simonpasquier
 - slashpai
@@ -15,6 +16,7 @@ options: {}
 reviewers:
 - dgrisonnet
 - jan--f
+- joaobravecoding
 - raptorsun
 - simonpasquier
 - slashpai

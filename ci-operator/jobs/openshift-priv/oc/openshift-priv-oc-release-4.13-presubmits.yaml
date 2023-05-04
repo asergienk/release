@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/build-rpms-from-tar
     decorate: true
     decoration_config:
@@ -62,8 +62,8 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-agnostic-cmd
+    cluster: build03
+    context: ci/prow/e2e-agnostic-ovn-cmd
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -75,9 +75,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-oc-release-4.13-e2e-agnostic-cmd
+    name: pull-ci-openshift-priv-oc-release-4.13-e2e-agnostic-ovn-cmd
     path_alias: github.com/openshift/oc
-    rerun_command: /test e2e-agnostic-cmd
+    rerun_command: /test e2e-agnostic-ovn-cmd
     spec:
       containers:
       - args:
@@ -87,8 +87,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-agnostic-cmd-cluster-profile
-        - --target=e2e-agnostic-cmd
+        - --secret-dir=/usr/local/e2e-agnostic-ovn-cmd-cluster-profile
+        - --target=e2e-agnostic-ovn-cmd
         command:
         - ci-operator
         image: ci-operator:latest
@@ -104,7 +104,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-agnostic-cmd-cluster-profile
+        - mountPath: /usr/local/e2e-agnostic-ovn-cmd-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -138,14 +138,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-agnostic-cmd,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-agnostic-ovn-cmd,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-aws
+    cluster: build03
+    context: ci/prow/e2e-aws-ovn
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -157,9 +157,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws
+    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-ovn
     path_alias: github.com/openshift/oc
-    rerun_command: /test e2e-aws
+    rerun_command: /test e2e-aws-ovn
     spec:
       containers:
       - args:
@@ -169,8 +169,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-cluster-profile
-        - --target=e2e-aws
+        - --secret-dir=/usr/local/e2e-aws-ovn-cluster-profile
+        - --target=e2e-aws-ovn
         command:
         - ci-operator
         image: ci-operator:latest
@@ -186,7 +186,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ovn-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -220,14 +220,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ovn,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-aws-builds
+    cluster: build03
+    context: ci/prow/e2e-aws-ovn-builds
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -239,9 +239,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-builds
+    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-ovn-builds
     path_alias: github.com/openshift/oc
-    rerun_command: /test e2e-aws-builds
+    rerun_command: /test e2e-aws-ovn-builds
     run_if_changed: ^(pkg/.*build.*)|^(pkg/.*newapp.*)
     spec:
       containers:
@@ -252,8 +252,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-builds-cluster-profile
-        - --target=e2e-aws-builds
+        - --secret-dir=/usr/local/e2e-aws-ovn-builds-cluster-profile
+        - --target=e2e-aws-ovn-builds
         command:
         - ci-operator
         image: ci-operator:latest
@@ -269,7 +269,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-builds-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ovn-builds-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -303,14 +303,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-builds,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ovn-builds,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-aws-serial
+    cluster: build03
+    context: ci/prow/e2e-aws-ovn-serial
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -322,9 +322,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-serial
+    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-ovn-serial
     path_alias: github.com/openshift/oc
-    rerun_command: /test e2e-aws-serial
+    rerun_command: /test e2e-aws-ovn-serial
     spec:
       containers:
       - args:
@@ -334,8 +334,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-serial-cluster-profile
-        - --target=e2e-aws-serial
+        - --secret-dir=/usr/local/e2e-aws-ovn-serial-cluster-profile
+        - --target=e2e-aws-ovn-serial
         command:
         - ci-operator
         image: ci-operator:latest
@@ -351,7 +351,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-serial-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ovn-serial-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -385,14 +385,14 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-serial,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ovn-serial,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-aws-upgrade
+    cluster: build03
+    context: ci/prow/e2e-aws-ovn-upgrade
     decorate: true
     decoration_config:
       oauth_token_secret:
@@ -404,9 +404,9 @@ presubmits:
       ci-operator.openshift.io/cloud-cluster-profile: aws
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-upgrade
+    name: pull-ci-openshift-priv-oc-release-4.13-e2e-aws-ovn-upgrade
     path_alias: github.com/openshift/oc
-    rerun_command: /test e2e-aws-upgrade
+    rerun_command: /test e2e-aws-ovn-upgrade
     spec:
       containers:
       - args:
@@ -416,8 +416,8 @@ presubmits:
         - --oauth-token-path=/usr/local/github-credentials/oauth
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-aws-upgrade-cluster-profile
-        - --target=e2e-aws-upgrade
+        - --secret-dir=/usr/local/e2e-aws-ovn-upgrade-cluster-profile
+        - --target=e2e-aws-ovn-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -433,7 +433,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-aws-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-aws-ovn-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -467,13 +467,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-aws-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-aws-ovn-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-metal-ipi-ovn-ipv6
     decorate: true
     decoration_config:
@@ -484,6 +484,7 @@ presubmits:
     labels:
       ci-operator.openshift.io/cloud: equinix-ocp-metal
       ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-priv-oc-release-4.13-e2e-metal-ipi-ovn-ipv6
@@ -556,7 +557,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/images
     decorate: true
     decoration_config:
@@ -614,7 +615,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/rpm-build
     decorate: true
     decoration_config:
@@ -671,7 +672,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/unit
     decorate: true
     decoration_config:
@@ -728,7 +729,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/verify
     decorate: true
     decoration_config:
@@ -785,7 +786,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/verify-deps
     decorate: true
     decoration_config:

@@ -6,13 +6,11 @@
 
 approvers:
 - anxhela21
-- jlpadilla
-- sherinv
-- xrajesh
-options: {}
-reviewers:
-- anxhela21
+- dislbenn
 - jlpadilla
 - sherinv
 - xrajesh
 - zlayne
+options: {}
+reviewers:
+- dislbenn

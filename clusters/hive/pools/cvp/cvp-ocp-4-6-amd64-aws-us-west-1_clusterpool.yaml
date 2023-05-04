@@ -18,10 +18,12 @@ spec:
   hibernationConfig:
     resumeTimeout: 15m0s
   imageSetRef:
-    name: ocp-release-4.6.60-x86-64-for-4.6.0-0-to-4.7.0-0
+    name: ocp-release-4.6.62-x86-64-for-4.6.0-0-to-4.7.0-0
   installAttemptsLimit: 1
   installConfigSecretTemplateRef:
     name: install-config-aws-us-west-1
+  labels:
+    tp.openshift.io/owner: cvp
   maxSize: 10
   platform:
     aws:

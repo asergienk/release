@@ -2,9 +2,7 @@
 	"path": "openshift/e2e/gcp/disruption/openshift-e2e-gcp-disruption-workflow.yaml",
 	"owners": {
 		"approvers": [
-			"wking",
 			"vrutkovs",
-			"abhinavdahiya",
 			"deads2k",
 			"marun",
 			"hexfusion"

@@ -12,15 +12,22 @@ label:
       - mandre
       - patrickdillon
       - sadasu
+      - mike-nguyen
+      - travier
+      - zaneb
       label: backport-risk-assessed
     - allowed_users:
       - gpei
       - jianlinliu
       - eurijon
       - itzikb-redhat
-      - lshilin-r
-      - omichaeli
-      - reihl
+      - rlobillo
+      - pamoedom
+      - jadhaj
+      - mayxuqq
+      - mgahagan73
+      - jhou1
+      - mhanss
       label: cherry-pick-approved
 plugins:
   openshift/installer:

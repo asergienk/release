@@ -2,9 +2,7 @@
 	"path": "openshift/e2e/azure/cilium/openshift-e2e-azure-cilium-workflow.yaml",
 	"owners": {
 		"approvers": [
-			"wking",
 			"vrutkovs",
-			"abhinavdahiya",
 			"deads2k"
 		]
 	}

@@ -10,7 +10,11 @@ if [[ -z "${LEASED_RESOURCE}" ]]; then
     exit 1
 fi
 
-NUTANIX_AUTH_PATH=/var/run/vault/nutanix/secrets.sh
+if [[ -f ${CLUSTER_PROFILE_DIR}/secrets.sh ]]; then
+  NUTANIX_AUTH_PATH=${CLUSTER_PROFILE_DIR}/secrets.sh
+else
+  NUTANIX_AUTH_PATH=/var/run/vault/nutanix/secrets.sh
+fi
 
 declare prism_central_host
 declare prism_central_port
@@ -56,7 +60,7 @@ data="{
 subnet_name="${LEASED_RESOURCE}"
 slice_number=${LEASED_RESOURCE: -1}
 
-if [[ ! -z "${one_net_mode_network_name}" ]]; then
+if [[ ! -z "${one_net_mode_network_name:-}" ]]; then
   subnet_name="${one_net_mode_network_name}"
 fi
 
@@ -75,7 +79,8 @@ if [[ -z "${API_VIP}" ]]; then
     echo "$(date -u --rfc-3399=seconds) - Cannot get VIP for API"
     exit 1
   fi
-  API_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -F. '{printf "%d.%d.%d.2", $1, $2, $3}')
+  RANDOM_API_VIP_BLOCK=$(( RANDOM % 254 ))
+  API_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -v random=${RANDOM_API_VIP_BLOCK} -F. '{printf "%d.%d.%d.%d", $1, $2, $3, random}')
 
   if [[ ! -z  "${awk_ip_program}" ]]; then
     API_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -F. -v num=${slice_number} -v type="api" "${awk_ip_program}")
@@ -87,7 +92,8 @@ if [[ -z "${INGRESS_VIP}" ]]; then
     echo "$(date -u --rfc-3399=seconds) - Cannot get VIP for Ingress"
     exit 1
   fi
-  INGRESS_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -F. '{printf "%d.%d.%d.3", $1, $2, $3}')
+  RANDOM_INGRESS_VIP_BLOCK=$(( RANDOM % 254 ))
+  INGRESS_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -v random=${RANDOM_INGRESS_VIP_BLOCK} -F. '{printf "%d.%d.%d.%d", $1, $2, $3, random}')
 
   if [[ ! -z  "${awk_ip_program}" ]]; then
     INGRESS_VIP=$(echo "${subnet_ip}" | sed 's/"//g' | awk -F. -v num=${slice_number} -v type="ingress" "${awk_ip_program}")
@@ -109,5 +115,5 @@ export PE_STORAGE_CONTAINER='${prism_element_storage_container}'
 export SUBNET_UUID='${subnet_uuid}'
 export API_VIP='${API_VIP}'
 export INGRESS_VIP='${INGRESS_VIP}'
-export OVERRIDE_RHCOS_IMAGE='${override_rhcos_image}'
+export OVERRIDE_RHCOS_IMAGE='${override_rhcos_image:-}'
 EOF

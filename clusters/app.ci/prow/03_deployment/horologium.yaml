@@ -31,7 +31,7 @@ items:
           - --job-config-path=/etc/job-config
           - --projected-token-file=/var/sa-token/token
           - --dry-run=false
-          image: gcr.io/k8s-prow/horologium:v20220719-54797060e1
+          image: gcr.io/k8s-prow/horologium:v20230424-4981841b2f
           volumeMounts:
           - name: service-account-token
             mountPath: /var/sa-token
@@ -66,7 +66,13 @@ items:
             - configMap:
                 name: job-config-master-presubmits
             - configMap:
+                name: job-config-1.x
+            - configMap:
+                name: job-config-2.x
+            - configMap:
                 name: job-config-3.x
+            - configMap:
+                name: job-config-4.0
             - configMap:
                 name: job-config-4.1
             - configMap:
@@ -93,3 +99,7 @@ items:
                 name: job-config-4.12
             - configMap:
                 name: job-config-4.13
+            - configMap:
+                name: job-config-4.14
+            - configMap:
+                name: job-config-4.15

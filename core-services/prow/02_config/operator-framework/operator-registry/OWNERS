@@ -5,11 +5,13 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- benluddy
+- awgreene
 - dinhxuanvu
+- grokspawn
 - joelanford
 - kevinrizza
-- njhale
+- oceanc80
+- perdasilva
 options: {}
 reviewers:
 - anik120
@@ -17,11 +19,13 @@ reviewers:
 - awgreene
 - benluddy
 - dinhxuanvu
-- exdx
+- everettraven
 - gallettilance
-- hasbro17
-- jmrodri
+- grokspawn
 - joelanford
 - kevinrizza
-- njhale
-- timflannagan
+- oceanc80
+- perdasilva
+- rashmigottipati
+- theishshah
+- varshaprasad96

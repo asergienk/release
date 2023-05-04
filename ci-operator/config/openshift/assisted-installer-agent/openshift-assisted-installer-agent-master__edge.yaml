@@ -1,22 +1,30 @@
 base_images:
   assisted-image-service:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-image-service
   assisted-installer:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-installer
   assisted-installer-controller:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-installer-controller
   assisted-service:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-service
+  assisted-service-index:
+    name: assisted-service-index
+    namespace: edge-infrastructure
+    tag: latest
+  assisted-service-scripts:
+    name: ocm-2.9
+    namespace: edge-infrastructure
+    tag: assisted-service-scripts
   assisted-test-infra:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-test-infra
   coreos-centos-stream8:
@@ -27,10 +35,14 @@ base_images:
     name: test
     namespace: ocp-kni
     tag: dev-scripts
-  openshift_release_golang-1.17:
+  ocp_rhel-8-golang-1.19-openshift-4.13:
+    name: builder
+    namespace: ocp
+    tag: rhel-8-golang-1.19-openshift-4.13
+  openshift_release_golang-1.18:
     name: release
     namespace: openshift
-    tag: golang-1.17
+    tag: golang-1.18
 build_root:
   project_image:
     dockerfile_path: Dockerfile.assisted_installer_agent-build
@@ -38,28 +50,50 @@ images:
 - dockerfile_path: Dockerfile.assisted_installer_agent
   from: coreos-centos-stream8
   inputs:
-    openshift_release_golang-1.17:
+    openshift_release_golang-1.18:
       as:
-      - registry.ci.openshift.org/openshift/release:golang-1.17
+      - registry.ci.openshift.org/openshift/release:golang-1.18
   to: assisted-installer-agent
 - dockerfile_literal: |
     FROM base
     COPY . .
   from: src
   to: assisted-installer-agent-src
+- dockerfile_literal: |
+    FROM test-bin AS builder
+    FROM registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+    COPY --from=builder /usr/bin/golangci-lint /usr/bin/golangci-lint
+    COPY --from=builder /go/src/github.com/openshift/assisted-installer-agent /go/src/github.com/openshift/assisted-installer-agent
+    WORKDIR /go/src/github.com/openshift/assisted-installer-agent
+    ENV GO111MODULE=on
+    ENV GOFLAGS=""
+    RUN go install golang.org/x/tools/cmd/goimports@v0.1.0 && \
+      go install github.com/onsi/ginkgo/ginkgo@v1.16.1 && \
+      go install github.com/golang/mock/mockgen@v1.6.0 && \
+      go install github.com/vektra/mockery/v2@v2.9.6 && \
+      go install gotest.tools/gotestsum@v1.6.3 && \
+      go install github.com/axw/gocov/gocov@latest && \
+      go install github.com/AlekSi/gocov-xml@latest
+    RUN go mod vendor
+    RUN mkdir /.cache && chmod 775 -R /.cache ${GOPATH}
+    RUN dnf install -y gcc nmstate-devel nmstate-libs && dnf clean all
+  inputs:
+    ocp_rhel-8-golang-1.19-openshift-4.13:
+      as:
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+    test-bin:
+      as:
+      - test-bin
+  to: assisted-test-bin
 promotion:
-  name: ocm-2.6
+  name: ocm-2.9
   namespace: edge-infrastructure
 releases:
-  initial:
-    integration:
-      name: "4.9"
-      namespace: ocp
   latest:
-    integration:
-      include_built_images: true
-      name: "4.9"
-      namespace: ocp
+    candidate:
+      product: ocp
+      stream: nightly
+      version: "4.13"
 resources:
   '*':
     requests:
@@ -69,6 +103,14 @@ test_binary_build_commands: |
   go mod vendor
   mkdir /.cache && chmod 775 -R /.cache ${GOPATH}
 tests:
+- as: publish-multi-arch-images
+  postsubmit: true
+  steps:
+    cluster_profile: packet-assisted
+    env:
+      DOCKERFILE_IMAGE_PAIRS: |
+        Dockerfile.assisted_installer_agent , quay.io/edge-infrastructure/assisted-installer-agent-multi:latest
+    workflow: assisted-tools-multi-arch
 - as: mirror-nightly-image
   cron: '@daily'
   steps:
@@ -87,16 +129,17 @@ tests:
   commands: |
     export GOLANGCI_LINT_CACHE=/tmp/.cache
     export GOPROXY=https://proxy.golang.org
+    export "GOROOT=$(go env GOROOT)"
     make lint
   container:
-    from: test-bin
+    from: assisted-test-bin
   skip_if_only_changed: ^\.github/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
 - as: unit-test
   commands: |
     export CODECOV_TOKEN=$(cat /tmp/secret/codecov-token)
     make REPORTS=${ARTIFACT_DIR} unit-test
   container:
-    from: test-bin
+    from: assisted-test-bin
   secret:
     mount_path: /tmp/secret
     name: assisted-installer-agent-codecov-token
@@ -106,11 +149,21 @@ tests:
     export CODECOV_TOKEN=$(cat /tmp/secret/codecov-token)
     make REPORTS=${ARTIFACT_DIR} unit-test
   container:
-    from: test-bin
+    from: assisted-test-bin
   postsubmit: true
   secret:
     mount_path: /tmp/secret
     name: assisted-installer-agent-codecov-token
+- as: subsystem-test
+  skip_if_only_changed: ^\.github/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
+  steps:
+    cluster_profile: packet-assisted
+    workflow: assisted-agent
+- as: subsystem-test-periodic
+  cron: 00 00 */1 * 0-5
+  steps:
+    cluster_profile: packet-assisted
+    workflow: assisted-agent
 - as: e2e-metal-assisted
   skip_if_only_changed: ^\.github/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
   steps:
@@ -140,6 +193,18 @@ tests:
     env:
       ASSISTED_CONFIG: |
         OLM_OPERATORS=cnv
+        OPENSHIFT_VERSION=4.12
+    workflow: assisted-baremetal
+- as: e2e-metal-assisted-lvm
+  optional: true
+  steps:
+    cluster_profile: packet-assisted
+    env:
+      ASSISTED_CONFIG: |
+        OLM_OPERATORS=lvm
+        MASTERS_COUNT=1
+        MASTER_MEMORY=18000
+        MASTER_CPU=9
     workflow: assisted-baremetal
 - as: e2e-metal-assisted-odf
   optional: true
@@ -148,6 +213,8 @@ tests:
     env:
       ASSISTED_CONFIG: |
         OLM_OPERATORS=odf
+        OPENSHIFT_VERSION=4.12
+      PACKET_PLAN: m3.large.x86
     workflow: assisted-baremetal
 - as: e2e-metal-assisted-ocs
   optional: true
@@ -157,6 +224,7 @@ tests:
       ASSISTED_CONFIG: |
         OLM_OPERATORS=ocs
         OPENSHIFT_VERSION=4.8
+      PACKET_PLAN: m3.large.x86
     workflow: assisted-baremetal
 - as: e2e-metal-assisted-day2
   optional: true
@@ -166,16 +234,24 @@ tests:
       ASSISTED_CONFIG: |
         TEST_FUNC=test_deploy_day2_nodes_cloud
     workflow: assisted-baremetal
-- as: subsystem-test
+- as: e2e-metal-assisted-upgrade-agent
+  optional: true
+  steps:
+    cluster_profile: packet-assisted
+    env:
+      ASSISTED_CONFIG: |
+        TEST=./src/tests/test_upgrade_agent.py
+        TEST_FUNC=test_upgrade_agent
+    workflow: assisted-baremetal
+- as: e2e-ai-operator-ztp
   skip_if_only_changed: ^\.github/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
   steps:
     cluster_profile: packet-assisted
-    workflow: assisted-agent
-- as: subsystem-test-periodic
-  cron: '@daily'
-  steps:
-    cluster_profile: packet-assisted
-    workflow: assisted-agent
+    dependencies:
+      ASSISTED_OPENSHIFT_INSTALL_RELEASE_IMAGE: release:latest
+      INDEX_IMAGE: assisted-service-index
+      OPENSHIFT_INSTALL_RELEASE_IMAGE: release:latest
+    workflow: assisted-baremetal-operator-ztp
 zz_generated_metadata:
   branch: master
   org: openshift

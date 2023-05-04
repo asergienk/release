@@ -18,16 +18,6 @@ postsubmits:
         command:
         - applyconfig
         env:
-        - name: OPENSHIFT_MONITORING_CI_TOKEN_ON_HIVE
-          valueFrom:
-            secretKeyRef:
-              key: hive-openshift-monitoring-ci-token
-              name: hive-openshift-monitoring-credentials
-        - name: OPENSHIFT_PROMETHEUS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: prometheus-k8s-basic-auth-password
-              name: app-ci-openshift-monitoring-credentials
         - name: PAGERDUTY_INTEGRATION_KEY
           valueFrom:
             secretKeyRef:
@@ -94,7 +84,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: build01
+      ci.openshift.io/build-farm: build01
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1
@@ -143,7 +133,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: build02
+      ci.openshift.io/build-farm: build02
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1
@@ -192,7 +182,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: build03
+      ci.openshift.io/build-farm: build03
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1
@@ -230,7 +220,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: build04
+      ci.openshift.io/build-farm: build04
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1
@@ -268,7 +258,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: build05
+      ci.openshift.io/build-farm: build05
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1
@@ -390,13 +380,13 @@ postsubmits:
       - args:
         - --config=./core-services/prow/02_config/_labels.yaml
         - --confirm=true
-        - --orgs=openshift,cri-o,operator-framework,openshift-priv,redhat-openshift-ecosystem,openshift-psap,openshift-metal3,shipwright-io,openshift-assisted,kcp-dev,konveyor,openshift-eng
+        - --orgs=openshift,cri-o,operator-framework,openshift-priv,redhat-openshift-ecosystem,openshift-psap,openshift-metal3,shipwright-io,openshift-assisted,kcp-dev,konveyor,openshift-eng,package-operator
         - --token=/etc/github/oauth
         - --endpoint=http://ghproxy
         - --debug
         command:
         - /ko-app/label_sync
-        image: gcr.io/k8s-prow/label_sync:v20220719-54797060e1
+        image: gcr.io/k8s-prow/label_sync:v20230424-4981841b2f
         imagePullPolicy: Always
         name: ""
         resources:
@@ -410,6 +400,44 @@ postsubmits:
       - name: token
         secret:
           secretName: github-credentials-openshift-ci-robot
+  - agent: kubernetes
+    branches:
+    - ^master$
+    cluster: app.ci
+    decorate: true
+    labels:
+      ci.openshift.io/build-farm: multi01
+      ci.openshift.io/generator: cluster-init
+      ci.openshift.io/role: infra
+    max_concurrency: 1
+    name: branch-ci-openshift-release-master-multi01-apply
+    spec:
+      containers:
+      - args:
+        - --config-dir=clusters/build-clusters/multi01
+        - --as=
+        - --kubeconfig=/etc/build-farm-credentials/kubeconfig
+        - --confirm=true
+        command:
+        - applyconfig
+        image: registry.ci.openshift.org/ci/applyconfig:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/build-farm-credentials
+          name: build-farm-credentials
+          readOnly: true
+      serviceAccountName: config-updater
+      volumes:
+      - name: build-farm-credentials
+        secret:
+          items:
+          - key: sa.config-updater.multi01.config
+            path: kubeconfig
+          secretName: config-updater
   - agent: kubernetes
     branches:
     - ^master$
@@ -436,7 +464,7 @@ postsubmits:
     cluster: app.ci
     decorate: true
     labels:
-      ci.openshift.io/cluster: vsphere
+      ci.openshift.io/build-farm: vsphere
       ci.openshift.io/generator: cluster-init
       ci.openshift.io/role: infra
     max_concurrency: 1

@@ -47,6 +47,7 @@ resources:
       memory: 200Mi
 tests:
 - as: metallb-e2e-metal-ipi
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -55,9 +56,10 @@ tests:
         NETWORK_TYPE=OpenShiftSDN
       E2E_TESTS_CONFIG: |
         IP_STACK=v4
-        METALLB_OPERATOR_BRANCH=main
+        METALLB_OPERATOR_BRANCH=release-4.11
     workflow: baremetalds-metallb-e2e
 - as: metallb-e2e-metal-ipi-ovn
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -66,7 +68,7 @@ tests:
         NETWORK_TYPE=OVNKubernetes
       E2E_TESTS_CONFIG: |
         IP_STACK=v4
-        METALLB_OPERATOR_BRANCH=main
+        METALLB_OPERATOR_BRANCH=release-4.11
     workflow: baremetalds-metallb-e2e
 zz_generated_metadata:
   branch: release-4.11

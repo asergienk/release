@@ -1,16 +1,16 @@
 # generated with generate-boskos.py; do not edit directly
 resources:
 - names:
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-0
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-1
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-2
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-3
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-4
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-5
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-6
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-7
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-8
-  - cn-hangzhou--alibabacloud-cn-qe-quota-slice-9
+  - us-east-1--alibabacloud-cn-qe-quota-slice-0
+  - us-east-1--alibabacloud-cn-qe-quota-slice-1
+  - us-east-1--alibabacloud-cn-qe-quota-slice-2
+  - us-east-1--alibabacloud-cn-qe-quota-slice-3
+  - us-east-1--alibabacloud-cn-qe-quota-slice-4
+  - us-east-1--alibabacloud-cn-qe-quota-slice-5
+  - us-east-1--alibabacloud-cn-qe-quota-slice-6
+  - us-east-1--alibabacloud-cn-qe-quota-slice-7
+  - us-east-1--alibabacloud-cn-qe-quota-slice-8
+  - us-east-1--alibabacloud-cn-qe-quota-slice-9
   state: free
   type: alibabacloud-cn-qe-quota-slice
 - names:
@@ -39,6 +39,14 @@ resources:
   - us-east-1--alibabacloud-quota-slice-9
   state: free
   type: alibabacloud-quota-slice
+- names:
+  - us-east-1--aws-1-qe-quota-slice-0
+  - us-east-1--aws-1-qe-quota-slice-1
+  - us-east-1--aws-1-qe-quota-slice-2
+  - us-east-1--aws-1-qe-quota-slice-3
+  - us-east-1--aws-1-qe-quota-slice-4
+  state: free
+  type: aws-1-qe-quota-slice
 - names:
   - us-east-1--aws-2-quota-slice-00
   - us-east-1--aws-2-quota-slice-01
@@ -336,36 +344,138 @@ resources:
   - us-west-2--aws-cpaas-quota-slice-7
   state: free
   type: aws-cpaas-quota-slice
+- names:
+  - us-east-1--aws-cspi-qe-quota-slice-0
+  - us-east-1--aws-cspi-qe-quota-slice-1
+  - us-east-1--aws-cspi-qe-quota-slice-2
+  - us-east-1--aws-cspi-qe-quota-slice-3
+  - us-east-1--aws-cspi-qe-quota-slice-4
+  - us-east-1--aws-cspi-qe-quota-slice-5
+  - us-east-1--aws-cspi-qe-quota-slice-6
+  - us-east-1--aws-cspi-qe-quota-slice-7
+  - us-east-1--aws-cspi-qe-quota-slice-8
+  - us-east-1--aws-cspi-qe-quota-slice-9
+  - us-east-2--aws-cspi-qe-quota-slice-0
+  - us-east-2--aws-cspi-qe-quota-slice-1
+  - us-east-2--aws-cspi-qe-quota-slice-2
+  - us-east-2--aws-cspi-qe-quota-slice-3
+  - us-east-2--aws-cspi-qe-quota-slice-4
+  - us-east-2--aws-cspi-qe-quota-slice-5
+  - us-east-2--aws-cspi-qe-quota-slice-6
+  - us-east-2--aws-cspi-qe-quota-slice-7
+  - us-east-2--aws-cspi-qe-quota-slice-8
+  - us-east-2--aws-cspi-qe-quota-slice-9
+  state: free
+  type: aws-cspi-qe-quota-slice
+- names:
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-0
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-1
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-2
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-3
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-4
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-5
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-6
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-7
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-8
+  - us-east-1--aws-cspi-qe-vpn-quota-slice-9
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-0
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-1
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-2
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-3
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-4
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-5
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-6
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-7
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-8
+  - us-east-2--aws-cspi-qe-vpn-quota-slice-9
+  state: free
+  type: aws-cspi-qe-vpn-quota-slice
+- names:
+  - us-east-2--aws-interop-qe-quota-slice-0
+  - us-east-2--aws-interop-qe-quota-slice-1
+  - us-east-2--aws-interop-qe-quota-slice-2
+  - us-east-2--aws-interop-qe-quota-slice-3
+  - us-east-2--aws-interop-qe-quota-slice-4
+  state: free
+  type: aws-interop-qe-quota-slice
+- names:
+  - us-east-1--aws-local-zones-quota-slice-0
+  - us-east-1--aws-local-zones-quota-slice-1
+  - us-west-2--aws-local-zones-quota-slice-0
+  - us-west-2--aws-local-zones-quota-slice-1
+  state: free
+  type: aws-local-zones-quota-slice
+- names:
+  - us-east-1--aws-managed-cspi-qe-quota-slice-0
+  - us-east-1--aws-managed-cspi-qe-quota-slice-1
+  - us-east-1--aws-managed-cspi-qe-quota-slice-2
+  - us-east-1--aws-managed-cspi-qe-quota-slice-3
+  - us-east-1--aws-managed-cspi-qe-quota-slice-4
+  - us-east-1--aws-managed-cspi-qe-quota-slice-5
+  - us-east-1--aws-managed-cspi-qe-quota-slice-6
+  - us-east-1--aws-managed-cspi-qe-quota-slice-7
+  - us-east-1--aws-managed-cspi-qe-quota-slice-8
+  - us-east-1--aws-managed-cspi-qe-quota-slice-9
+  - us-east-2--aws-managed-cspi-qe-quota-slice-0
+  - us-east-2--aws-managed-cspi-qe-quota-slice-1
+  - us-east-2--aws-managed-cspi-qe-quota-slice-2
+  - us-east-2--aws-managed-cspi-qe-quota-slice-3
+  - us-east-2--aws-managed-cspi-qe-quota-slice-4
+  - us-east-2--aws-managed-cspi-qe-quota-slice-5
+  - us-east-2--aws-managed-cspi-qe-quota-slice-6
+  - us-east-2--aws-managed-cspi-qe-quota-slice-7
+  - us-east-2--aws-managed-cspi-qe-quota-slice-8
+  - us-east-2--aws-managed-cspi-qe-quota-slice-9
+  state: free
+  type: aws-managed-cspi-qe-quota-slice
 - max-count: 15
   min-count: 15
   state: free
   type: aws-osd-msp-quota-slice
 - names:
-  - us-east-2--aws-qe-quota-slice-00
-  - us-east-2--aws-qe-quota-slice-01
-  - us-east-2--aws-qe-quota-slice-02
-  - us-east-2--aws-qe-quota-slice-03
-  - us-east-2--aws-qe-quota-slice-04
-  - us-east-2--aws-qe-quota-slice-05
-  - us-east-2--aws-qe-quota-slice-06
-  - us-east-2--aws-qe-quota-slice-07
-  - us-east-2--aws-qe-quota-slice-08
-  - us-east-2--aws-qe-quota-slice-09
-  - us-east-2--aws-qe-quota-slice-10
-  - us-east-2--aws-qe-quota-slice-11
-  - us-east-2--aws-qe-quota-slice-12
-  - us-east-2--aws-qe-quota-slice-13
-  - us-east-2--aws-qe-quota-slice-14
-  - us-east-2--aws-qe-quota-slice-15
-  - us-east-2--aws-qe-quota-slice-16
-  - us-east-2--aws-qe-quota-slice-17
-  - us-east-2--aws-qe-quota-slice-18
-  - us-east-2--aws-qe-quota-slice-19
-  - us-east-2--aws-qe-quota-slice-20
-  - us-east-2--aws-qe-quota-slice-21
-  - us-east-2--aws-qe-quota-slice-22
-  - us-east-2--aws-qe-quota-slice-23
-  - us-east-2--aws-qe-quota-slice-24
+  - us-east-1--aws-outpost-quota-slice-0
+  - us-east-1--aws-outpost-quota-slice-1
+  - us-east-1--aws-outpost-quota-slice-2
+  - us-east-1--aws-outpost-quota-slice-3
+  - us-east-1--aws-outpost-quota-slice-4
+  - us-east-1--aws-outpost-quota-slice-5
+  - us-east-1--aws-outpost-quota-slice-6
+  - us-east-1--aws-outpost-quota-slice-7
+  - us-east-1--aws-outpost-quota-slice-8
+  - us-east-1--aws-outpost-quota-slice-9
+  state: free
+  type: aws-outpost-quota-slice
+- names:
+  - ap-northeast-1--aws-qe-quota-slice-0
+  - ap-northeast-1--aws-qe-quota-slice-1
+  - ap-northeast-1--aws-qe-quota-slice-2
+  - ap-northeast-1--aws-qe-quota-slice-3
+  - ap-northeast-1--aws-qe-quota-slice-4
+  - us-east-1--aws-qe-quota-slice-00
+  - us-east-1--aws-qe-quota-slice-01
+  - us-east-1--aws-qe-quota-slice-02
+  - us-east-1--aws-qe-quota-slice-03
+  - us-east-1--aws-qe-quota-slice-04
+  - us-east-1--aws-qe-quota-slice-05
+  - us-east-1--aws-qe-quota-slice-06
+  - us-east-1--aws-qe-quota-slice-07
+  - us-east-1--aws-qe-quota-slice-08
+  - us-east-1--aws-qe-quota-slice-09
+  - us-east-1--aws-qe-quota-slice-10
+  - us-east-1--aws-qe-quota-slice-11
+  - us-east-1--aws-qe-quota-slice-12
+  - us-east-1--aws-qe-quota-slice-13
+  - us-east-1--aws-qe-quota-slice-14
+  - us-east-1--aws-qe-quota-slice-15
+  - us-east-1--aws-qe-quota-slice-16
+  - us-east-1--aws-qe-quota-slice-17
+  - us-east-1--aws-qe-quota-slice-18
+  - us-east-1--aws-qe-quota-slice-19
+  - us-east-2--aws-qe-quota-slice-0
+  - us-east-2--aws-qe-quota-slice-1
+  - us-east-2--aws-qe-quota-slice-2
+  - us-east-2--aws-qe-quota-slice-3
+  - us-east-2--aws-qe-quota-slice-4
   state: free
   type: aws-qe-quota-slice
 - names:
@@ -535,18 +645,57 @@ resources:
   state: free
   type: aws-sc2s-qe-quota-slice
 - names:
+  - us-west-2--aws-sd-qe-quota-slice-0
+  - us-west-2--aws-sd-qe-quota-slice-1
+  - us-west-2--aws-sd-qe-quota-slice-2
+  state: free
+  type: aws-sd-qe-quota-slice
+- names:
   - us-gov-east-1--aws-usgov-qe-quota-slice-0
   - us-gov-east-1--aws-usgov-qe-quota-slice-1
   - us-gov-east-1--aws-usgov-qe-quota-slice-2
   - us-gov-east-1--aws-usgov-qe-quota-slice-3
   - us-gov-east-1--aws-usgov-qe-quota-slice-4
+  - us-gov-east-1--aws-usgov-qe-quota-slice-5
+  - us-gov-east-1--aws-usgov-qe-quota-slice-6
+  - us-gov-east-1--aws-usgov-qe-quota-slice-7
+  - us-gov-east-1--aws-usgov-qe-quota-slice-8
+  - us-gov-east-1--aws-usgov-qe-quota-slice-9
   - us-gov-west-1--aws-usgov-qe-quota-slice-0
   - us-gov-west-1--aws-usgov-qe-quota-slice-1
   - us-gov-west-1--aws-usgov-qe-quota-slice-2
   - us-gov-west-1--aws-usgov-qe-quota-slice-3
   - us-gov-west-1--aws-usgov-qe-quota-slice-4
+  - us-gov-west-1--aws-usgov-qe-quota-slice-5
+  - us-gov-west-1--aws-usgov-qe-quota-slice-6
+  - us-gov-west-1--aws-usgov-qe-quota-slice-7
+  - us-gov-west-1--aws-usgov-qe-quota-slice-8
+  - us-gov-west-1--aws-usgov-qe-quota-slice-9
   state: free
   type: aws-usgov-qe-quota-slice
+- names:
+  - us-east-1--aws-virtualization-quota-slice-0
+  - us-east-1--aws-virtualization-quota-slice-1
+  - us-east-1--aws-virtualization-quota-slice-2
+  - us-east-1--aws-virtualization-quota-slice-3
+  - us-east-1--aws-virtualization-quota-slice-4
+  - us-east-2--aws-virtualization-quota-slice-0
+  - us-east-2--aws-virtualization-quota-slice-1
+  - us-east-2--aws-virtualization-quota-slice-2
+  - us-east-2--aws-virtualization-quota-slice-3
+  - us-east-2--aws-virtualization-quota-slice-4
+  - us-west-1--aws-virtualization-quota-slice-0
+  - us-west-1--aws-virtualization-quota-slice-1
+  - us-west-1--aws-virtualization-quota-slice-2
+  - us-west-1--aws-virtualization-quota-slice-3
+  - us-west-1--aws-virtualization-quota-slice-4
+  - us-west-2--aws-virtualization-quota-slice-0
+  - us-west-2--aws-virtualization-quota-slice-1
+  - us-west-2--aws-virtualization-quota-slice-2
+  - us-west-2--aws-virtualization-quota-slice-3
+  - us-west-2--aws-virtualization-quota-slice-4
+  state: free
+  type: aws-virtualization-quota-slice
 - names:
   - centralus--azure-2-quota-slice-00
   - centralus--azure-2-quota-slice-01
@@ -608,13 +757,108 @@ resources:
   state: free
   type: azure-2-quota-slice
 - names:
+  - centralus--azure-arm64-qe-quota-slice-0
+  - centralus--azure-arm64-qe-quota-slice-1
+  - centralus--azure-arm64-qe-quota-slice-2
+  - centralus--azure-arm64-qe-quota-slice-3
+  - centralus--azure-arm64-qe-quota-slice-4
+  - centralus--azure-arm64-qe-quota-slice-5
+  - eastus--azure-arm64-qe-quota-slice-0
+  - eastus--azure-arm64-qe-quota-slice-1
+  - eastus--azure-arm64-qe-quota-slice-2
+  - eastus--azure-arm64-qe-quota-slice-3
+  - eastus--azure-arm64-qe-quota-slice-4
+  - eastus--azure-arm64-qe-quota-slice-5
+  - eastus2--azure-arm64-qe-quota-slice-0
+  - eastus2--azure-arm64-qe-quota-slice-1
+  - eastus2--azure-arm64-qe-quota-slice-2
+  - eastus2--azure-arm64-qe-quota-slice-3
+  - northeurope--azure-arm64-qe-quota-slice-0
+  - northeurope--azure-arm64-qe-quota-slice-1
+  - northeurope--azure-arm64-qe-quota-slice-2
+  - northeurope--azure-arm64-qe-quota-slice-3
+  state: free
+  type: azure-arm64-qe-quota-slice
+- names:
+  - centralus--azure-arm64-quota-slice-0
+  - centralus--azure-arm64-quota-slice-1
+  - centralus--azure-arm64-quota-slice-2
+  - eastus--azure-arm64-quota-slice-0
+  - eastus--azure-arm64-quota-slice-1
+  - eastus--azure-arm64-quota-slice-2
+  - eastus2--azure-arm64-quota-slice-0
+  - eastus2--azure-arm64-quota-slice-1
+  - eastus2--azure-arm64-quota-slice-2
+  - westus2--azure-arm64-quota-slice-0
+  - westus2--azure-arm64-quota-slice-1
+  - westus2--azure-arm64-quota-slice-2
+  state: free
+  type: azure-arm64-quota-slice
+- names:
+  - westus--azure-marketplace-qe-quota-slice-0
+  - westus--azure-marketplace-qe-quota-slice-1
+  - westus--azure-marketplace-qe-quota-slice-2
+  - westus--azure-marketplace-qe-quota-slice-3
+  - westus--azure-marketplace-qe-quota-slice-4
+  - westus--azure-marketplace-qe-quota-slice-5
+  state: free
+  type: azure-marketplace-qe-quota-slice
+- names:
+  - centralus--azure-qe-quota-slice-0
+  - centralus--azure-qe-quota-slice-1
+  - centralus--azure-qe-quota-slice-2
+  - centralus--azure-qe-quota-slice-3
+  - centralus--azure-qe-quota-slice-4
+  - centralus--azure-qe-quota-slice-5
+  - centralus--azure-qe-quota-slice-6
+  - centralus--azure-qe-quota-slice-7
+  - centralus--azure-qe-quota-slice-8
+  - centralus--azure-qe-quota-slice-9
   - northcentralus--azure-qe-quota-slice-0
   - northcentralus--azure-qe-quota-slice-1
   - northcentralus--azure-qe-quota-slice-2
   - northcentralus--azure-qe-quota-slice-3
   - northcentralus--azure-qe-quota-slice-4
+  - northcentralus--azure-qe-quota-slice-5
+  - northcentralus--azure-qe-quota-slice-6
+  - northcentralus--azure-qe-quota-slice-7
+  - northcentralus--azure-qe-quota-slice-8
+  - northcentralus--azure-qe-quota-slice-9
+  - southcentralus--azure-qe-quota-slice-0
+  - southcentralus--azure-qe-quota-slice-1
+  - southcentralus--azure-qe-quota-slice-2
+  - southcentralus--azure-qe-quota-slice-3
+  - southcentralus--azure-qe-quota-slice-4
+  - southcentralus--azure-qe-quota-slice-5
+  - southcentralus--azure-qe-quota-slice-6
+  - southcentralus--azure-qe-quota-slice-7
+  - southcentralus--azure-qe-quota-slice-8
+  - southcentralus--azure-qe-quota-slice-9
   state: free
   type: azure-qe-quota-slice
+- names:
+  - centralus--azure-virtualization-quota-slice-0
+  - centralus--azure-virtualization-quota-slice-1
+  - centralus--azure-virtualization-quota-slice-2
+  - centralus--azure-virtualization-quota-slice-3
+  - centralus--azure-virtualization-quota-slice-4
+  - eastus--azure-virtualization-quota-slice-0
+  - eastus--azure-virtualization-quota-slice-1
+  - eastus--azure-virtualization-quota-slice-2
+  - eastus--azure-virtualization-quota-slice-3
+  - eastus--azure-virtualization-quota-slice-4
+  - eastus2--azure-virtualization-quota-slice-0
+  - eastus2--azure-virtualization-quota-slice-1
+  - eastus2--azure-virtualization-quota-slice-2
+  - eastus2--azure-virtualization-quota-slice-3
+  - eastus2--azure-virtualization-quota-slice-4
+  - westus--azure-virtualization-quota-slice-0
+  - westus--azure-virtualization-quota-slice-1
+  - westus--azure-virtualization-quota-slice-2
+  - westus--azure-virtualization-quota-slice-3
+  - westus--azure-virtualization-quota-slice-4
+  state: free
+  type: azure-virtualization-quota-slice
 - names:
   - centralus--azure4-quota-slice-00
   - centralus--azure4-quota-slice-01
@@ -681,6 +925,11 @@ resources:
   - usgovvirginia--azuremag-qe-quota-slice-2
   - usgovvirginia--azuremag-qe-quota-slice-3
   - usgovvirginia--azuremag-qe-quota-slice-4
+  - usgovvirginia--azuremag-qe-quota-slice-5
+  - usgovvirginia--azuremag-qe-quota-slice-6
+  - usgovvirginia--azuremag-qe-quota-slice-7
+  - usgovvirginia--azuremag-qe-quota-slice-8
+  - usgovvirginia--azuremag-qe-quota-slice-9
   state: free
   type: azuremag-qe-quota-slice
 - names:
@@ -692,6 +941,11 @@ resources:
   state: free
   type: azuremag-quota-slice
 - names:
+  - mtcazs--azurestack-qe-quota-slice-0
+  - mtcazs--azurestack-qe-quota-slice-1
+  state: free
+  type: azurestack-qe-quota-slice
+- names:
   - ppe3--azurestack-quota-slice-0
   - ppe3--azurestack-quota-slice-1
   state: free
@@ -699,7 +953,17 @@ resources:
 - max-count: 40
   min-count: 40
   state: free
+  type: equinix-ocp-metal-qe-quota-slice
+- max-count: 40
+  min-count: 40
+  state: free
   type: equinix-ocp-metal-quota-slice
+- names:
+  - ap-northeast-1--fleet-manager-qe-quota-slice-0
+  - ap-northeast-1--fleet-manager-qe-quota-slice-1
+  - ap-northeast-1--fleet-manager-qe-quota-slice-2
+  state: free
+  type: fleet-manager-qe-quota-slice
 - names:
   - us-central1--gcp-openshift-gce-devel-ci-2-quota-slice-00
   - us-central1--gcp-openshift-gce-devel-ci-2-quota-slice-01
@@ -804,46 +1068,6 @@ resources:
   - us-central1--gcp-qe-quota-slice-27
   - us-central1--gcp-qe-quota-slice-28
   - us-central1--gcp-qe-quota-slice-29
-  - us-central1--gcp-qe-quota-slice-30
-  - us-central1--gcp-qe-quota-slice-31
-  - us-central1--gcp-qe-quota-slice-32
-  - us-central1--gcp-qe-quota-slice-33
-  - us-central1--gcp-qe-quota-slice-34
-  - us-central1--gcp-qe-quota-slice-35
-  - us-central1--gcp-qe-quota-slice-36
-  - us-central1--gcp-qe-quota-slice-37
-  - us-central1--gcp-qe-quota-slice-38
-  - us-central1--gcp-qe-quota-slice-39
-  - us-central1--gcp-qe-quota-slice-40
-  - us-central1--gcp-qe-quota-slice-41
-  - us-central1--gcp-qe-quota-slice-42
-  - us-central1--gcp-qe-quota-slice-43
-  - us-central1--gcp-qe-quota-slice-44
-  - us-central1--gcp-qe-quota-slice-45
-  - us-central1--gcp-qe-quota-slice-46
-  - us-central1--gcp-qe-quota-slice-47
-  - us-central1--gcp-qe-quota-slice-48
-  - us-central1--gcp-qe-quota-slice-49
-  - us-central1--gcp-qe-quota-slice-50
-  - us-central1--gcp-qe-quota-slice-51
-  - us-central1--gcp-qe-quota-slice-52
-  - us-central1--gcp-qe-quota-slice-53
-  - us-central1--gcp-qe-quota-slice-54
-  - us-central1--gcp-qe-quota-slice-55
-  - us-central1--gcp-qe-quota-slice-56
-  - us-central1--gcp-qe-quota-slice-57
-  - us-central1--gcp-qe-quota-slice-58
-  - us-central1--gcp-qe-quota-slice-59
-  - us-central1--gcp-qe-quota-slice-60
-  - us-central1--gcp-qe-quota-slice-61
-  - us-central1--gcp-qe-quota-slice-62
-  - us-central1--gcp-qe-quota-slice-63
-  - us-central1--gcp-qe-quota-slice-64
-  - us-central1--gcp-qe-quota-slice-65
-  - us-central1--gcp-qe-quota-slice-66
-  - us-central1--gcp-qe-quota-slice-67
-  - us-central1--gcp-qe-quota-slice-68
-  - us-central1--gcp-qe-quota-slice-69
   state: free
   type: gcp-qe-quota-slice
 - names:
@@ -919,22 +1143,95 @@ resources:
   - us-central1--gcp-quota-slice-69
   state: free
   type: gcp-quota-slice
+- names:
+  - us-central1--gcp-virtualization-quota-slice-00
+  - us-central1--gcp-virtualization-quota-slice-01
+  - us-central1--gcp-virtualization-quota-slice-02
+  - us-central1--gcp-virtualization-quota-slice-03
+  - us-central1--gcp-virtualization-quota-slice-04
+  - us-central1--gcp-virtualization-quota-slice-05
+  - us-central1--gcp-virtualization-quota-slice-06
+  - us-central1--gcp-virtualization-quota-slice-07
+  - us-central1--gcp-virtualization-quota-slice-08
+  - us-central1--gcp-virtualization-quota-slice-09
+  - us-central1--gcp-virtualization-quota-slice-10
+  - us-central1--gcp-virtualization-quota-slice-11
+  - us-central1--gcp-virtualization-quota-slice-12
+  - us-central1--gcp-virtualization-quota-slice-13
+  - us-central1--gcp-virtualization-quota-slice-14
+  - us-central1--gcp-virtualization-quota-slice-15
+  - us-central1--gcp-virtualization-quota-slice-16
+  - us-central1--gcp-virtualization-quota-slice-17
+  - us-central1--gcp-virtualization-quota-slice-18
+  - us-central1--gcp-virtualization-quota-slice-19
+  - us-central1--gcp-virtualization-quota-slice-20
+  - us-central1--gcp-virtualization-quota-slice-21
+  - us-central1--gcp-virtualization-quota-slice-22
+  - us-central1--gcp-virtualization-quota-slice-23
+  - us-central1--gcp-virtualization-quota-slice-24
+  - us-central1--gcp-virtualization-quota-slice-25
+  - us-central1--gcp-virtualization-quota-slice-26
+  - us-central1--gcp-virtualization-quota-slice-27
+  - us-central1--gcp-virtualization-quota-slice-28
+  - us-central1--gcp-virtualization-quota-slice-29
+  - us-central1--gcp-virtualization-quota-slice-30
+  - us-central1--gcp-virtualization-quota-slice-31
+  - us-central1--gcp-virtualization-quota-slice-32
+  - us-central1--gcp-virtualization-quota-slice-33
+  - us-central1--gcp-virtualization-quota-slice-34
+  - us-central1--gcp-virtualization-quota-slice-35
+  - us-central1--gcp-virtualization-quota-slice-36
+  - us-central1--gcp-virtualization-quota-slice-37
+  - us-central1--gcp-virtualization-quota-slice-38
+  - us-central1--gcp-virtualization-quota-slice-39
+  - us-central1--gcp-virtualization-quota-slice-40
+  - us-central1--gcp-virtualization-quota-slice-41
+  - us-central1--gcp-virtualization-quota-slice-42
+  - us-central1--gcp-virtualization-quota-slice-43
+  - us-central1--gcp-virtualization-quota-slice-44
+  - us-central1--gcp-virtualization-quota-slice-45
+  - us-central1--gcp-virtualization-quota-slice-46
+  - us-central1--gcp-virtualization-quota-slice-47
+  - us-central1--gcp-virtualization-quota-slice-48
+  - us-central1--gcp-virtualization-quota-slice-49
+  state: free
+  type: gcp-virtualization-quota-slice
+- max-count: 80
+  min-count: 80
+  state: free
+  type: hypershift-hive-quota-slice
 - max-count: 15
   min-count: 15
   state: free
   type: hypershift-quota-slice
-- max-count: 7
-  min-count: 7
+- names:
+  - jp-tok--ibmcloud-qe-quota-slice-0
+  - jp-tok--ibmcloud-qe-quota-slice-1
+  - jp-tok--ibmcloud-qe-quota-slice-2
+  - jp-tok--ibmcloud-qe-quota-slice-3
+  - jp-tok--ibmcloud-qe-quota-slice-4
+  - jp-tok--ibmcloud-qe-quota-slice-5
+  - jp-tok--ibmcloud-qe-quota-slice-6
+  - jp-tok--ibmcloud-qe-quota-slice-7
+  - jp-tok--ibmcloud-qe-quota-slice-8
+  - jp-tok--ibmcloud-qe-quota-slice-9
+  state: free
+  type: ibmcloud-qe-quota-slice
+- names:
+  - us-east--ibmcloud-quota-slice-0
+  - us-east--ibmcloud-quota-slice-1
+  - us-east--ibmcloud-quota-slice-2
+  - us-east--ibmcloud-quota-slice-3
+  - us-east--ibmcloud-quota-slice-4
+  - us-east--ibmcloud-quota-slice-5
+  - us-east--ibmcloud-quota-slice-6
   state: free
   type: ibmcloud-quota-slice
 - names:
-  - libvirt-ppc64le-0-0
-  - libvirt-ppc64le-0-1
-  - libvirt-ppc64le-0-2
-  - libvirt-ppc64le-0-3
   - libvirt-ppc64le-1-0
   - libvirt-ppc64le-1-1
   - libvirt-ppc64le-1-2
+  - libvirt-ppc64le-1-3
   - libvirt-ppc64le-2-0
   - libvirt-ppc64le-2-1
   - libvirt-ppc64le-2-2
@@ -961,6 +1258,18 @@ resources:
   state: free
   type: metal-quota-slice
 - names:
+  - nutanix-qe-dis-segment-00
+  - nutanix-qe-dis-segment-01
+  - nutanix-qe-dis-segment-02
+  state: free
+  type: nutanix-qe-dis-quota-slice
+- names:
+  - nutanix-qe-segment-00
+  - nutanix-qe-segment-01
+  - nutanix-qe-segment-02
+  state: free
+  type: nutanix-qe-quota-slice
+- names:
   - nutanix-segment-00
   - nutanix-segment-01
   - nutanix-segment-02
@@ -978,6 +1287,10 @@ resources:
   min-count: 5
   state: free
   type: openstack-nfv-quota-slice
+- max-count: 2
+  min-count: 2
+  state: free
+  type: openstack-operators-vexxhost-quota-slice
 - names:
   - openstack-osuosl-00
   - openstack-osuosl-01
@@ -994,16 +1307,16 @@ resources:
   min-count: 7
   state: free
   type: openstack-quota-slice
-- max-count: 18
-  min-count: 18
+- max-count: 9
+  min-count: 9
   state: free
   type: openstack-vexxhost-quota-slice
-- max-count: 5
-  min-count: 5
+- max-count: 2
+  min-count: 2
   state: free
   type: openstack-vh-mecha-az0-quota-slice
-- max-count: 5
-  min-count: 5
+- max-count: 4
+  min-count: 4
   state: free
   type: openstack-vh-mecha-central-quota-slice
 - max-count: 15
@@ -1020,15 +1333,6 @@ resources:
   - ovirt-12
   - ovirt-13
   - ovirt-14
-  - ovirt-15
-  - ovirt-16
-  - ovirt-17
-  - ovirt-18
-  - ovirt-19
-  - ovirt-20
-  - ovirt-21
-  - ovirt-22
-  - ovirt-23
   state: free
   type: ovirt-quota-slice
 - names:
@@ -1048,10 +1352,24 @@ resources:
   min-count: 60
   state: free
   type: packet-quota-slice
-- max-count: 1
-  min-count: 1
+- names:
+  - mon01
+  - osa21
   state: free
-  type: powervs-quota-slice
+  type: powervs-1-quota-slice
+- names:
+  - syd04
+  - syd05
+  - tok04
+  state: free
+  type: powervs-2-quota-slice
+- names:
+  - ci-segment-200
+  - ci-segment-201
+  - ci-segment-202
+  - ci-segment-203
+  state: free
+  type: vsphere-8-quota-slice
 - names:
   - ci-segment-50
   - ci-segment-51
@@ -1060,15 +1378,28 @@ resources:
   state: free
   type: vsphere-clusterbot-quota-slice
 - names:
+  - ci-segment-55
+  state: free
+  type: vsphere-connected-quota-slice
+- names:
   - qe-discon-segment-60
   - qe-discon-segment-61
   state: free
   type: vsphere-discon-quota-slice
 - names:
+  - ci-segment-109
+  - ci-segment-110
+  - ci-segment-111
+  state: free
+  type: vsphere-ibm-7-quota-slice
+- names:
   - ci-segment-151
   - ci-segment-152
   - ci-segment-153
   - ci-segment-154
+  - ci-segment-155
+  - ci-segment-156
+  - ci-segment-157
   state: free
   type: vsphere-multizone-quota-slice
 - names:
@@ -1085,21 +1416,10 @@ resources:
   - ci-segment-103
   - ci-segment-104
   - ci-segment-105
-  - ci-segment-79
-  - ci-segment-80
-  - ci-segment-81
-  - ci-segment-82
-  - ci-segment-83
-  - ci-segment-84
-  - ci-segment-85
-  - ci-segment-86
-  - ci-segment-87
-  - ci-segment-88
   - ci-segment-89
   - ci-segment-90
   - ci-segment-91
   - ci-segment-92
-  - ci-segment-93
   - ci-segment-94
   - ci-segment-95
   - ci-segment-96

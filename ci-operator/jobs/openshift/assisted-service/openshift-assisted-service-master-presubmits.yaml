@@ -1,6 +1,292 @@
 presubmits:
   openshift/assisted-service:
   - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build05
+    context: ci/prow/e2e-agent-compact-ipv4
+    decorate: true
+    decoration_config:
+      timeout: 6h0m0s
+    labels:
+      ci-operator.openshift.io/cloud: equinix-ocp-metal
+      ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-e2e-agent-compact-ipv4
+    rerun_command: /test e2e-agent-compact-ipv4
+    skip_if_only_changed: ^openshift/|^docs/|\.md$|^(LICENSE|OWNERS|OWNERS_ALIASES)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-agent-compact-ipv4-cluster-profile
+        - --target=e2e-agent-compact-ipv4
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-agent-compact-ipv4-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-equinix-ocp-metal
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-agent-compact-ipv4,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build05
+    context: ci/prow/e2e-agent-ha-dualstack
+    decorate: true
+    decoration_config:
+      timeout: 6h0m0s
+    labels:
+      ci-operator.openshift.io/cloud: equinix-ocp-metal
+      ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-e2e-agent-ha-dualstack
+    optional: true
+    rerun_command: /test e2e-agent-ha-dualstack
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-agent-ha-dualstack-cluster-profile
+        - --target=e2e-agent-ha-dualstack
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-agent-ha-dualstack-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-equinix-ocp-metal
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-agent-ha-dualstack,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build05
+    context: ci/prow/e2e-agent-sno-ipv6
+    decorate: true
+    decoration_config:
+      timeout: 6h0m0s
+    labels:
+      ci-operator.openshift.io/cloud: equinix-ocp-metal
+      ci-operator.openshift.io/cloud-cluster-profile: equinix-ocp-metal
+      ci-operator.openshift.io/cluster: build05
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-e2e-agent-sno-ipv6
+    optional: true
+    rerun_command: /test e2e-agent-sno-ipv6
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-agent-sno-ipv6-cluster-profile
+        - --target=e2e-agent-sno-ipv6
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-agent-sno-ipv6-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-equinix-ocp-metal
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )e2e-agent-sno-ipv6,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-assisted-operator-catalog-publish-verify
+    decorate: true
+    labels:
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-assisted-operator-catalog-publish-verify
+    rerun_command: /test edge-assisted-operator-catalog-publish-verify
+    run_if_changed: ^(deploy/olm-catalog/.*)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --target=assisted-operator-catalog-publish-verify
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-assisted-operator-catalog-publish-verify,?($|\s.*)
+  - agent: kubernetes
     always_run: true
     branches:
     - ^master$
@@ -8,11 +294,10 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-ci-index
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-ci-index
     rerun_command: /test edge-ci-index
@@ -59,17 +344,16 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-ai-operator-ztp
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp
     rerun_command: /test edge-e2e-ai-operator-ztp
-    run_if_changed: ^(cmd/.*|data/.*|deploy/operator/.*|hack/.*|internal/.*|pkg/.*|tools/.*|Dockerfile\..*|Makefile|go\.mod|go\.sum|swagger.yaml)$
+    run_if_changed: ^(cmd/.*|data/.*|deploy/operator/.*|deploy/assisted-controller/.*|hack/.*|internal/.*|pkg/.*|tools/.*|Dockerfile\..*|Makefile|go\.mod|go\.sum|swagger.yaml)$
     spec:
       containers:
       - args:
@@ -136,13 +420,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-ai-operator-ztp-3masters
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-3masters
     optional: true
@@ -214,18 +497,17 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-ai-operator-ztp-capi
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-capi
     optional: true
     rerun_command: /test edge-e2e-ai-operator-ztp-capi
-    run_if_changed: ^(deploy/operator/.*)$
+    run_if_changed: ^(deploy/operator/.*|api/.*|internal/controller/controllers/.*)$
     spec:
       containers:
       - args:
@@ -290,19 +572,18 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-converged
+    context: ci/prow/edge-e2e-ai-operator-ztp-compact-day2-masters
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-converged
-    rerun_command: /test edge-e2e-ai-operator-ztp-converged
-    run_if_changed: ^(deploy/operator/.*)$
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-compact-day2-masters
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-compact-day2-masters
     spec:
       containers:
       - args:
@@ -311,8 +592,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-ai-operator-ztp-converged-cluster-profile
-        - --target=e2e-ai-operator-ztp-converged
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-compact-day2-masters-cluster-profile
+        - --target=e2e-ai-operator-ztp-compact-day2-masters
         - --variant=edge
         command:
         - ci-operator
@@ -329,7 +610,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-ai-operator-ztp-converged-cluster-profile
+        - mountPath: /usr/local/e2e-ai-operator-ztp-compact-day2-masters-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -360,7 +641,83 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-converged,?($|\s.*)
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-compact-day2-masters,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-compact-day2-workers
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-compact-day2-workers
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-compact-day2-workers
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-compact-day2-workers-cluster-profile
+        - --target=e2e-ai-operator-ztp-compact-day2-workers
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-compact-day2-workers-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-compact-day2-workers,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
@@ -369,13 +726,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-ai-operator-ztp-disconnected
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-disconnected
     optional: true
@@ -445,19 +801,95 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410
+    context: ci/prow/edge-e2e-ai-operator-ztp-hypershift-zero-nodes
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-hypershift-zero-nodes
     optional: true
-    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410
+    rerun_command: /test edge-e2e-ai-operator-ztp-hypershift-zero-nodes
+    run_if_changed: ^(deploy/operator/hypershift/.*|api/.*|internal/controller/controllers/.*agentserviceconfig.*)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-hypershift-zero-nodes-cluster-profile
+        - --target=e2e-ai-operator-ztp-hypershift-zero-nodes
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-hypershift-zero-nodes-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-hypershift-zero-nodes,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-3masters
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-3masters
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-3masters
     run_if_changed: ^(deploy/operator/.*)$
     spec:
       containers:
@@ -467,8 +899,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410-cluster-profile
-        - --target=e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-cluster-profile
+        - --target=e2e-ai-operator-ztp-ipv4v6-3masters
         - --variant=edge
         command:
         - ci-operator
@@ -485,7 +917,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410-cluster-profile
+        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -516,103 +948,25 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-410,?($|\s.*)
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-3masters,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49
+    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411
     optional: true
-    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49-cluster-profile
-        - --target=e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49
-        - --variant=edge
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-packet-assisted
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-49,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-410
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/cloud: packet-edge
-      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
-      ci-operator.openshift.io/variant: edge
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-410
-    optional: true
-    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-410
+    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411
     run_if_changed: ^(deploy/operator/.*)$
     spec:
       containers:
@@ -622,8 +976,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-410-cluster-profile
-        - --target=e2e-ai-operator-ztp-ipv4v6-sno-ocp-410
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411-cluster-profile
+        - --target=e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411
         - --variant=edge
         command:
         - ci-operator
@@ -640,7 +994,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-410-cluster-profile
+        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -671,26 +1025,26 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-410,?($|\s.*)
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-3masters-ocp-411,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-49
+    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-sno
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-49
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-sno
     optional: true
-    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-49
+    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-sno
+    run_if_changed: ^(deploy/operator/.*)$
     spec:
       containers:
       - args:
@@ -699,8 +1053,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-49-cluster-profile
-        - --target=e2e-ai-operator-ztp-ipv4v6-sno-ocp-49
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-sno-cluster-profile
+        - --target=e2e-ai-operator-ztp-ipv4v6-sno
         - --variant=edge
         command:
         - ci-operator
@@ -717,7 +1071,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-49-cluster-profile
+        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-sno-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -748,7 +1102,312 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-49,?($|\s.*)
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-sno,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-411
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-411
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-411
+    run_if_changed: ^(deploy/operator/.*)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-411-cluster-profile
+        - --target=e2e-ai-operator-ztp-ipv4v6-sno-ocp-411
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-ipv4v6-sno-ocp-411-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-ipv4v6-sno-ocp-411,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-multiarch-3masters-ocp-411
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-multiarch-3masters-ocp-411
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-multiarch-3masters-ocp-411
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-multiarch-3masters-ocp-411-cluster-profile
+        - --target=e2e-ai-operator-ztp-multiarch-3masters-ocp-411
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-multiarch-3masters-ocp-411-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-multiarch-3masters-ocp-411,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-multiarch-sno-ocp-411
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-multiarch-sno-ocp-411
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-multiarch-sno-ocp-411
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-multiarch-sno-ocp-411-cluster-profile
+        - --target=e2e-ai-operator-ztp-multiarch-sno-ocp-411
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-multiarch-sno-ocp-411-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-multiarch-sno-ocp-411,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-sno-day2-masters
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-sno-day2-masters
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-sno-day2-masters
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-sno-day2-masters-cluster-profile
+        - --target=e2e-ai-operator-ztp-sno-day2-masters
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-sno-day2-masters-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-sno-day2-masters,?($|\s.*)
   - agent: kubernetes
     always_run: false
     branches:
@@ -757,13 +1416,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-ai-operator-ztp-sno-day2-workers
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-sno-day2-workers
     rerun_command: /test edge-e2e-ai-operator-ztp-sno-day2-workers
@@ -831,15 +1489,90 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-ai-operator-ztp-sno-day2-workers-late-binding
+    context: ci/prow/edge-e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride
+    optional: true
+    rerun_command: /test edge-e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride-cluster-profile
+        - --target=e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-ai-operator-ztp-sno-day2-workers-ignitionoverride,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-ai-operator-ztp-sno-day2-workers-late-binding
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-ai-operator-ztp-sno-day2-workers-late-binding
     rerun_command: /test edge-e2e-ai-operator-ztp-sno-day2-workers-late-binding
@@ -909,13 +1642,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted
     rerun_command: /test edge-e2e-metal-assisted
@@ -986,13 +1718,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-4-10
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-10
     rerun_command: /test edge-e2e-metal-assisted-4-10
@@ -1062,13 +1793,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-4-11
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-11
     rerun_command: /test edge-e2e-metal-assisted-4-11
@@ -1136,15 +1866,165 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-metal-assisted-4-8
+    context: ci/prow/edge-e2e-metal-assisted-4-12
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-12
+    rerun_command: /test edge-e2e-metal-assisted-4-12
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-metal-assisted-4-12-cluster-profile
+        - --target=e2e-metal-assisted-4-12
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-metal-assisted-4-12-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-4-12,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-metal-assisted-4-13
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-13
+    optional: true
+    rerun_command: /test edge-e2e-metal-assisted-4-13
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-metal-assisted-4-13-cluster-profile
+        - --target=e2e-metal-assisted-4-13
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-metal-assisted-4-13-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-4-13,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-metal-assisted-4-8
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-8
     rerun_command: /test edge-e2e-metal-assisted-4-8
@@ -1214,13 +2094,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-4-9
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-4-9
     rerun_command: /test edge-e2e-metal-assisted-4-9
@@ -1288,97 +2167,18 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-metal-assisted-capi
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/cloud: packet-edge
-      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
-      ci-operator.openshift.io/variant: edge
-      ci.openshift.io/generator: prowgen
-      pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-capi
-    optional: true
-    rerun_command: /test edge-e2e-metal-assisted-capi
-    run_if_changed: ^(api/.*|internal/controller/controllers/.*)$
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --lease-server-credentials-file=/etc/boskos/credentials
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-metal-assisted-capi-cluster-profile
-        - --target=e2e-metal-assisted-capi
-        - --variant=edge
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /etc/boskos
-          name: boskos
-          readOnly: true
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /usr/local/e2e-metal-assisted-capi-cluster-profile
-          name: cluster-profile
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: boskos
-        secret:
-          items:
-          - key: credentials
-            path: credentials
-          secretName: boskos-credentials
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: cluster-profile
-        secret:
-          secretName: cluster-secrets-packet-assisted
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-capi,?($|\s.*)
-  - agent: kubernetes
-    always_run: false
-    branches:
-    - ^master$
-    - ^master-
-    cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-cnv
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-cnv
-    optional: true
     rerun_command: /test edge-e2e-metal-assisted-cnv
+    run_if_changed: ^(internal/operators/.*\.go|internal/operators/cnv/.*|internal/operators/api/.*|internal/operators/handler/.*)$
     spec:
       containers:
       - args:
@@ -1445,13 +2245,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-day2
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-day2
     optional: true
@@ -1521,15 +2320,90 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-metal-assisted-day2-single-node
+    context: ci/prow/edge-e2e-metal-assisted-day2-arm-workers
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-day2-arm-workers
+    optional: true
+    rerun_command: /test edge-e2e-metal-assisted-day2-arm-workers
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-metal-assisted-day2-arm-workers-cluster-profile
+        - --target=e2e-metal-assisted-day2-arm-workers
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-metal-assisted-day2-arm-workers-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-day2-arm-workers,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-metal-assisted-day2-single-node
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-day2-single-node
     optional: true
@@ -1601,13 +2475,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-ipv4v6
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-ipv4v6
     optional: true
@@ -1679,13 +2552,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-ipv6
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-ipv6
     optional: true
@@ -1756,13 +2628,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-kube-api-late-binding-single-node
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-kube-api-late-binding-single-node
     optional: true
@@ -1833,13 +2704,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-kube-api-late-unbinding-ipv4-single-node
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-kube-api-late-unbinding-ipv4-single-node
     optional: true
@@ -1910,13 +2780,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-kube-api-net-suite
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-kube-api-net-suite
     optional: true
@@ -1985,15 +2854,90 @@ presubmits:
     - ^master$
     - ^master-
     cluster: build02
-    context: ci/prow/edge-e2e-metal-assisted-none
+    context: ci/prow/edge-e2e-metal-assisted-lvm
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-lvm
+    rerun_command: /test edge-e2e-metal-assisted-lvm
+    run_if_changed: ^(internal/operators/.*\.go|internal/operators/lvm/.*|internal/operators/api/.*|internal/operators/handler/.*)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-metal-assisted-lvm-cluster-profile
+        - --target=e2e-metal-assisted-lvm
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-metal-assisted-lvm-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-lvm,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-metal-assisted-none
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-none
     optional: true
@@ -2064,17 +3008,16 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-ocs
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-ocs
-    optional: true
     rerun_command: /test edge-e2e-metal-assisted-ocs
+    run_if_changed: ^(internal/operators/.*\.go|internal/operators/odf/.*|internal/operators/api/.*|internal/operators/handler/.*)$
     spec:
       containers:
       - args:
@@ -2141,17 +3084,16 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-odf
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-odf
-    optional: true
     rerun_command: /test edge-e2e-metal-assisted-odf
+    run_if_changed: ^(internal/operators/.*\.go|internal/operators/odf/.*|internal/operators/api/.*|internal/operators/handler/.*)$
     spec:
       containers:
       - args:
@@ -2218,13 +3160,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-onprem
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-onprem
     optional: true
@@ -2295,13 +3236,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-single-node
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-single-node
     optional: true
@@ -2373,13 +3313,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-static-ip-suite
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-static-ip-suite
     optional: true
@@ -2451,13 +3390,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-tang
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-tang
     optional: true
@@ -2528,13 +3466,12 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-e2e-metal-assisted-tpmv2
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/cloud: packet-edge
       ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-tpmv2
     optional: true
@@ -2598,6 +3535,540 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-tpmv2,?($|\s.*)
   - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build02
+    context: ci/prow/edge-e2e-metal-assisted-upgrade-agent
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: packet-edge
+      ci-operator.openshift.io/cloud-cluster-profile: packet-assisted
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-metal-assisted-upgrade-agent
+    optional: true
+    rerun_command: /test edge-e2e-metal-assisted-upgrade-agent
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-metal-assisted-upgrade-agent-cluster-profile
+        - --target=e2e-metal-assisted-upgrade-agent
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-metal-assisted-upgrade-agent-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-packet-assisted
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-metal-assisted-upgrade-agent,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build01
+    context: ci/prow/edge-e2e-nutanix-assisted
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: nutanix
+      ci-operator.openshift.io/cloud-cluster-profile: nutanix
+      ci-operator.openshift.io/cluster: build01
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-nutanix-assisted
+    optional: true
+    rerun_command: /test edge-e2e-nutanix-assisted
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-nutanix-assisted-cluster-profile
+        - --target=e2e-nutanix-assisted
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-nutanix-assisted-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-nutanix
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-nutanix-assisted,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: build01
+    context: ci/prow/edge-e2e-nutanix-assisted-2workers
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: nutanix
+      ci-operator.openshift.io/cloud-cluster-profile: nutanix
+      ci-operator.openshift.io/cluster: build01
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-nutanix-assisted-2workers
+    optional: true
+    rerun_command: /test edge-e2e-nutanix-assisted-2workers
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-nutanix-assisted-2workers-cluster-profile
+        - --target=e2e-nutanix-assisted-2workers
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-nutanix-assisted-2workers-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-nutanix
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-nutanix-assisted-2workers,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: vsphere
+    context: ci/prow/edge-e2e-vsphere-assisted
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: vsphere
+      ci-operator.openshift.io/cloud-cluster-profile: vsphere
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-vsphere-assisted
+    optional: true
+    rerun_command: /test edge-e2e-vsphere-assisted
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-vsphere-assisted-cluster-profile
+        - --target=e2e-vsphere-assisted
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-vsphere-assisted-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-vsphere
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-vsphere-assisted,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: vsphere
+    context: ci/prow/edge-e2e-vsphere-assisted-4-12
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: vsphere
+      ci-operator.openshift.io/cloud-cluster-profile: vsphere
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-vsphere-assisted-4-12
+    optional: true
+    rerun_command: /test edge-e2e-vsphere-assisted-4-12
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-vsphere-assisted-4-12-cluster-profile
+        - --target=e2e-vsphere-assisted-4-12
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-vsphere-assisted-4-12-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-vsphere
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-vsphere-assisted-4-12,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: vsphere
+    context: ci/prow/edge-e2e-vsphere-assisted-4-13
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: vsphere
+      ci-operator.openshift.io/cloud-cluster-profile: vsphere
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-vsphere-assisted-4-13
+    optional: true
+    rerun_command: /test edge-e2e-vsphere-assisted-4-13
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-vsphere-assisted-4-13-cluster-profile
+        - --target=e2e-vsphere-assisted-4-13
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-vsphere-assisted-4-13-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-vsphere
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-vsphere-assisted-4-13,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^master$
+    - ^master-
+    cluster: vsphere
+    context: ci/prow/edge-e2e-vsphere-assisted-umn
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: vsphere
+      ci-operator.openshift.io/cloud-cluster-profile: vsphere
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-assisted-service-master-edge-e2e-vsphere-assisted-umn
+    optional: true
+    rerun_command: /test edge-e2e-vsphere-assisted-umn
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/e2e-vsphere-assisted-umn-cluster-profile
+        - --target=e2e-vsphere-assisted-umn
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/e2e-vsphere-assisted-umn-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-vsphere
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )edge-e2e-vsphere-assisted-umn,?($|\s.*)
+  - agent: kubernetes
     always_run: true
     branches:
     - ^master$
@@ -2605,11 +4076,10 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-images
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-images
     rerun_command: /test edge-images
@@ -2620,8 +4090,6 @@ presubmits:
         - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
         - --report-credentials-file=/etc/report/credentials
         - --target=[images]
-        - --target=assisted-service-scripts
-        - --target=ci-index
         - --variant=edge
         command:
         - ci-operator
@@ -2658,15 +4126,14 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-lint
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-lint
     rerun_command: /test edge-lint
-    skip_if_only_changed: ^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNER_ALIASES)$
+    skip_if_only_changed: ^dashboards/|^openshift/|^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNERS_ALIASES)$
     spec:
       containers:
       - args:
@@ -2710,11 +4177,10 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-push-pr-image
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-push-pr-image
     optional: true
@@ -2769,11 +4235,10 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-subsystem-aws
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-subsystem-aws
     rerun_command: /test edge-subsystem-aws
@@ -2835,11 +4300,10 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-subsystem-kubeapi-aws
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-subsystem-kubeapi-aws
     rerun_command: /test edge-subsystem-kubeapi-aws
@@ -2901,15 +4365,14 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-unit-test
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-unit-test
     rerun_command: /test edge-unit-test
-    skip_if_only_changed: ^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNER_ALIASES)$
+    skip_if_only_changed: ^dashboards/|^openshift/|^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNERS_ALIASES)$
     spec:
       containers:
       - args:
@@ -2960,15 +4423,14 @@ presubmits:
     cluster: build02
     context: ci/prow/edge-verify-generated-code
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-assisted-service-master-edge-verify-generated-code
     rerun_command: /test edge-verify-generated-code
-    skip_if_only_changed: ^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNER_ALIASES)$
+    skip_if_only_changed: ^dashboards/|^openshift/|^docs/|^sites/|\.md$|^(LICENSE|OWNERS|OWNERS_ALIASES)$
     spec:
       containers:
       - args:

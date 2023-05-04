@@ -13,22 +13,61 @@ function populate_artifact_dir() {
     s/password: .*/password: REDACTED/;
     s/X-Auth-Token.*/X-Auth-Token REDACTED/;
     s/UserData:.*,/UserData: REDACTED,/;
-    ' "${dir}/.openshift_install.log" > "${ARTIFACT_DIR}/.openshift_install.log"
+    ' "${dir}/.openshift_install.log" > "${ARTIFACT_DIR}/.openshift_install-$(date +%s).log"
+  sed -i '
+    s/password: .*/password: REDACTED/;
+    s/X-Auth-Token.*/X-Auth-Token REDACTED/;
+    s/UserData:.*,/UserData: REDACTED,/;
+    ' "${dir}/terraform.txt"
+  tar -czvf "${ARTIFACT_DIR}/terraform.tar.gz" --remove-files "${dir}/terraform.txt"
   case "${CLUSTER_TYPE}" in
-    aws|aws-arm64)
-      grep -Po 'Instance ID: \Ki\-\w+' "${dir}/.openshift_install.log" > "${SHARED_DIR}/aws-instance-ids.txt";;
     alibabacloud)
       awk -F'id=' '/alicloud_instance.*Creation complete/ && /master/{ print $2 }' "${dir}/.openshift_install.log" | tr -d ']"' > "${SHARED_DIR}/alibaba-instance-ids.txt";;
   *) >&2 echo "Unsupported cluster type '${CLUSTER_TYPE}' to collect machine IDs"
   esac
 }
 
-function prepare_next_steps() {
+# copy_kubeconfig_minimal runs in the background to monitor kubeconfig file
+# As soon as kubeconfig file is available, it copes it to shared dir as kubeconfig-minimal
+# Installer might still amend the file. But this is a minimally working kubeconfig and is
+# useful for components like observers. In the end, the complete kubeconfig will be copies
+# as before.
+function copy_kubeconfig_minimal() {
+  local dir=${1}
+  echo "waiting for ${dir}/auth/kubeconfig to exist"
+  while [ ! -s  "${dir}/auth/kubeconfig" ]
+  do
+    sleep 5
+  done
+  echo 'kubeconfig received!'
+
+  echo 'waiting for api to be available'
+  until env KUBECONFIG="${dir}/auth/kubeconfig" oc get --raw / >/dev/null 2>&1; do
+    sleep 5
+  done
+  echo 'api available'
+
+  echo 'waiting for bootstrap to complete'
+  openshift-install --dir="${dir}" wait-for bootstrap-complete &
+  wait "$!"
+  ret=$?
+  if [ $ret -eq 0 ]; then
+    echo "Copying kubeconfig to shared dir as kubeconfig-minimal"
+    cp "${dir}/auth/kubeconfig" "${SHARED_DIR}/kubeconfig-minimal"
+  fi
+}
+
+function write_install_status() {
   #Save exit code for must-gather to generate junit
-  echo "$?" > "${SHARED_DIR}/install-status.txt"
+  echo "$ret" >> "${SHARED_DIR}/install-status.txt"
+}
+
+function prepare_next_steps() {
+  write_install_status
   set +e
   echo "Setup phase finished, prepare env for next steps"
   populate_artifact_dir
+
   echo "Copying required artifacts to shared dir"
   #Copy the auth artifacts to shared dir for the next steps
   cp \
@@ -36,6 +75,42 @@ function prepare_next_steps() {
       "${dir}/auth/kubeconfig" \
       "${dir}/auth/kubeadmin-password" \
       "${dir}/metadata.json"
+
+  # For private cluster, the bootstrap address is private, installer cann't gather log-bundle directly even if proxy is set
+  # the workaround is gather log-bundle from bastion host
+  # copying install folder to bastion host for gathering logs
+  publish=$(grep "publish:" ${SHARED_DIR}/install-config.yaml | awk '{print $2}')
+  if [[ "${publish}" == "Internal" ]] && [[ ! $(grep "Bootstrap status: complete" "${dir}/.openshift_install.log") ]]; then
+    echo "Copying install dir to bastion host."
+    echo > "${SHARED_DIR}/REQUIRE_INSTALL_DIR_TO_BASTION"
+    if [[ -s "${SHARED_DIR}/bastion_ssh_user" ]] && [[ -s "${SHARED_DIR}/bastion_public_address" ]]; then
+      bastion_ssh_user=$(head -n 1 "${SHARED_DIR}/bastion_ssh_user")
+      bastion_public_address=$(head -n 1 "${SHARED_DIR}/bastion_public_address")
+      if [[ -n "${bastion_ssh_user}" ]] && [[ -n "${bastion_public_address}" ]]; then
+
+        # Ensure our UID, which is randomly generated, is in /etc/passwd. This is required
+        # to be able to SSH.
+        if ! whoami &> /dev/null; then
+          if [[ -w /etc/passwd ]]; then
+            echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
+          else
+            echo "/etc/passwd is not writeable, and user matching this uid is not found."
+            exit 1
+          fi
+        fi
+
+        # this required rsync daemon is running on ${bastion_public_address} and /tmp dir is configured
+        cmd="rsync -rtv ${dir}/ ${bastion_public_address}::tmp/installer/"
+        echo "Running Command: ${cmd}"
+        eval "${cmd}"
+        echo > "${SHARED_DIR}/COPIED_INSTALL_DIR_TO_BASTION"
+      else
+        echo "ERROR: Can not get bastion user/host, skip to copy install dir."
+      fi
+    else
+      echo "ERROR: File bastion_ssh_user or bastion_public_address is empty or not exist, skip to copy install dir."
+    fi
+  fi
 
   # TODO: remove once BZ#1926093 is done and backported
   if [[ "${CLUSTER_TYPE}" == "ovirt" ]]; then
@@ -216,8 +291,34 @@ EOF
   done
 }
 
+# inject_spot_instance_config is an AWS specific option that enables the use of AWS spot instances for worker nodes
+function inject_spot_instance_config() {
+  local dir=${1}
+
+  if [ ! -f /tmp/yq ]; then
+    curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+  fi
+
+  PATCH="${SHARED_DIR}/machinesets-spot-instances.yaml.patch"
+  cat > "${PATCH}" << EOF
+spec:
+  template:
+    spec:
+      providerSpec:
+        value:
+          spotMarketOptions: {}
+EOF
+
+  for MACHINESET in $dir/openshift/99_openshift-cluster-api_worker-machineset-*.yaml; do
+    /tmp/yq m -x -i "${MACHINESET}" "${PATCH}"
+    echo "Patched spotMarketOptions into ${MACHINESET}"
+  done
+
+  echo "Enabled AWS Spot instances for worker nodes"
+}
+
 trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
-trap 'prepare_next_steps' EXIT TERM
+trap 'prepare_next_steps' EXIT TERM INT
 
 if [[ -z "$OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE" ]]; then
   echo "OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE is an empty string, exiting"
@@ -226,7 +327,6 @@ fi
 
 echo "Installing from release ${OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE}"
 export SSH_PRIV_KEY_PATH=${CLUSTER_PROFILE_DIR}/ssh-privatekey
-export PULL_SECRET_PATH=${CLUSTER_PROFILE_DIR}/pull-secret
 export OPENSHIFT_INSTALL_INVOKER=openshift-internal-ci/${JOB_NAME}/${BUILD_ID}
 export HOME=/tmp
 
@@ -242,17 +342,45 @@ then
 fi
 
 case "${CLUSTER_TYPE}" in
-aws|aws-arm64|aws-usgov) export AWS_SHARED_CREDENTIALS_FILE=${CLUSTER_PROFILE_DIR}/.awscred;;
-azure4|azuremag) export AZURE_AUTH_LOCATION=${CLUSTER_PROFILE_DIR}/osServicePrincipal.json;;
-azurestack) export AZURE_AUTH_LOCATION=${SHARED_DIR}/osServicePrincipal.json;;
-gcp) export GOOGLE_CLOUD_KEYFILE_JSON=${CLUSTER_PROFILE_DIR}/gce.json;;
+aws|aws-arm64|aws-usgov)
+    if [[ -f "${SHARED_DIR}/aws_minimal_permission" ]]; then
+        echo "Setting AWS credential with minimal permision for installer"
+        export AWS_SHARED_CREDENTIALS_FILE=${SHARED_DIR}/aws_minimal_permission
+    else
+        export AWS_SHARED_CREDENTIALS_FILE=${CLUSTER_PROFILE_DIR}/.awscred
+    fi
+    ;;
+azure4|azuremag|azure-arm64)
+    if [[ -f "${SHARED_DIR}/azure_minimal_permission" ]]; then
+        echo "Setting AZURE credential with minimal permissions for installer"
+        export AZURE_AUTH_LOCATION=${SHARED_DIR}/azure_minimal_permission
+    else
+        export AZURE_AUTH_LOCATION=${CLUSTER_PROFILE_DIR}/osServicePrincipal.json
+    fi
+    ;;
+azurestack)
+    export AZURE_AUTH_LOCATION=${SHARED_DIR}/osServicePrincipal.json
+    if [[ -f "${CLUSTER_PROFILE_DIR}/ca.pem" ]]; then
+        export SSL_CERT_FILE="${CLUSTER_PROFILE_DIR}/ca.pem"
+    fi
+    ;;
+gcp)
+    export GOOGLE_CLOUD_KEYFILE_JSON=${CLUSTER_PROFILE_DIR}/gce.json
+    if [ -f "${SHARED_DIR}/gcp_min_permissions.json" ]; then
+      echo "$(date -u --rfc-3339=seconds) - Using the IAM service account for the minimum permissions testing on GCP..."
+      export GOOGLE_CLOUD_KEYFILE_JSON="${SHARED_DIR}/gcp_min_permissions.json"
+    fi
+    ;;
 ibmcloud)
     IC_API_KEY="$(< "${CLUSTER_PROFILE_DIR}/ibmcloud-api-key")"
     export IC_API_KEY
     ;;
 alibabacloud) export ALIBABA_CLOUD_CREDENTIALS_FILE=${SHARED_DIR}/alibabacreds.ini;;
 kubevirt) export KUBEVIRT_KUBECONFIG=${HOME}/.kube/config;;
-vsphere) export VSPHERE_PERSIST_SESSION=true;;
+vsphere)
+    export VSPHERE_PERSIST_SESSION=true
+    export SSL_CERT_FILE=/var/run/vsphere8-secrets/vcenter-certificate
+    ;;
 openstack-osuosl) ;;
 openstack-ppc64le) ;;
 openstack*) export OS_CLIENT_CONFIG_FILE=${SHARED_DIR}/clouds.yaml ;;
@@ -277,7 +405,12 @@ wait "$!"
 
 # Platform specific manifests adjustments
 case "${CLUSTER_TYPE}" in
-azure4) inject_boot_diagnostics ${dir} ;;
+azure4|azure-arm64) inject_boot_diagnostics ${dir} ;;
+aws|aws-arm64|aws-usgov)
+    if [[ "${SPOT_INSTANCES:-}"  == 'true' ]]; then
+      inject_spot_instance_config ${dir}
+    fi
+    ;;
 esac
 
 sed -i '/^  channel:/d' "${dir}/manifests/cvo-overrides.yaml"
@@ -307,11 +440,67 @@ if [ ! -z "${OPENSHIFT_INSTALL_PROMTAIL_ON_BOOTSTRAP:-}" ]; then
   inject_promtail_service
 fi
 
-date "+%F %X" > "${SHARED_DIR}/CLUSTER_INSTALL_START_TIME"
-TF_LOG=debug openshift-install --dir="${dir}" create cluster 2>&1 | grep --line-buffered -v 'password\|X-Auth-Token\|UserData:' &
+echo "install-config.yaml"
+echo "-------------------"
+cat ${SHARED_DIR}/install-config.yaml | grep -v "password\|username\|pullSecret" | tee ${ARTIFACT_DIR}/install-config.yaml
 
-wait "$!"
-ret="$?"
+if [ "${OPENSHIFT_INSTALL_AWS_PUBLIC_ONLY:-}" == "true" ]; then
+	echo "Cluster will be created with public subnets only"
+fi
+
+date "+%F %X" > "${SHARED_DIR}/CLUSTER_INSTALL_START_TIME"
+export TF_LOG_PATH="${dir}/terraform.txt"
+
+# Cloud infrastructure problems are common, instead of failing and
+# forcing a retest of the entire job, try the installation again if
+# the installer exits with 4, indicating an infra problem.
+case $JOB_NAME in
+  *vsphere*)
+    # Do not retry because `cluster destroy` doesn't properly clean up tags on vsphere.
+    max=1
+    ;;
+  *)
+    max=3
+    ;;
+esac
+ret=4
+tries=1
+set +o errexit
+backup=/tmp/install-orig
+cp -rfpv "$dir" "$backup"
+while [ $ret -eq 4 ] && [ $tries -le $max ]
+do
+  echo "Install attempt $tries of $max"
+  if [ $tries -gt 1 ]; then
+    write_install_status
+    cp "${dir}"/log-bundle-*.tar.gz "${ARTIFACT_DIR}/" 2>/dev/null
+    openshift-install --dir="${dir}" destroy cluster 2>&1 | grep --line-buffered -v 'password\|X-Auth-Token\|UserData:' &
+    wait "$!"
+    ret="$?"
+    if test "${ret}" -ne 0 ; then
+      echo "Failed to destroy cluster, aborting retries."
+      ret=4
+      break
+    fi
+    if [[ -v copy_kubeconfig_pid ]]; then
+      kill $copy_kubeconfig_pid
+    fi
+    rm -rf "$dir"
+    cp -rfpv "$backup" "$dir"
+  else
+    date "+%F %X" > "${SHARED_DIR}/CLUSTER_INSTALL_START_TIME"
+  fi
+
+  copy_kubeconfig_minimal "${dir}" &
+  copy_kubeconfig_pid=$!
+  openshift-install --dir="${dir}" create cluster 2>&1 | grep --line-buffered -v 'password\|X-Auth-Token\|UserData:' &
+  wait "$!"
+  ret="$?"
+  echo "Installer exit with code $ret"
+
+  tries=$((tries+1))
+done
+set -o errexit
 
 echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_INSTALL_END"
 date "+%F %X" > "${SHARED_DIR}/CLUSTER_INSTALL_END_TIME"

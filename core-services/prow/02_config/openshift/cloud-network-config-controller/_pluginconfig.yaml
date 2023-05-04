@@ -14,14 +14,13 @@ label:
       - danwinship
       - dcbw
       - knobunc
-      - squeed
+      - kyrtapz
       - trozet
       label: backport-risk-assessed
     - allowed_users:
       - mffiedler
       - rbbratta
       - zhaozhanqi
-      - brahaney
       - weliang1
       - anuragthehatter
       - huiran0826
@@ -29,6 +28,8 @@ label:
       - yingwang-0320
       - qiowang721
       - jechen0648
+      assign_on:
+      - label: backport-risk-assessed
       label: cherry-pick-approved
 lgtm:
 - repos:

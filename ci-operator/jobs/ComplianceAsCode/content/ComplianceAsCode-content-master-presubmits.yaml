@@ -5,7 +5,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-cis
     decorate: true
     decoration_config:
@@ -17,7 +17,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-cis
     rerun_command: /test e2e-aws-ocp4-cis
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -80,7 +79,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-cis-node
     decorate: true
     decoration_config:
@@ -92,7 +91,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-cis-node
     rerun_command: /test e2e-aws-ocp4-cis-node
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -155,7 +153,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-e8
     decorate: true
     decoration_config:
@@ -167,7 +165,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-e8
     rerun_command: /test e2e-aws-ocp4-e8
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -230,7 +227,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-high
     decorate: true
     decoration_config:
@@ -242,7 +239,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-high
     rerun_command: /test e2e-aws-ocp4-high
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -305,7 +301,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-high-node
     decorate: true
     decoration_config:
@@ -317,7 +313,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-high-node
     rerun_command: /test e2e-aws-ocp4-high-node
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -380,7 +375,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-moderate
     decorate: true
     decoration_config:
@@ -392,7 +387,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-moderate
     rerun_command: /test e2e-aws-ocp4-moderate
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -455,7 +449,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-moderate-node
     decorate: true
     decoration_config:
@@ -467,7 +461,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-moderate-node
     rerun_command: /test e2e-aws-ocp4-moderate-node
-    run_if_changed: ^(applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -530,7 +523,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-pci-dss
     decorate: true
     decoration_config:
@@ -542,7 +535,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-pci-dss
     rerun_command: /test e2e-aws-ocp4-pci-dss
-    run_if_changed: ^(controls/pcidss_ocp4.yml|applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -605,7 +597,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-pci-dss-node
     decorate: true
     decoration_config:
@@ -617,7 +609,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-pci-dss-node
     rerun_command: /test e2e-aws-ocp4-pci-dss-node
-    run_if_changed: ^(controls/pcidss_ocp4.yml|applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -680,7 +671,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-stig
     decorate: true
     decoration_config:
@@ -692,7 +683,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-stig
     rerun_command: /test e2e-aws-ocp4-stig
-    run_if_changed: ^(controls/srg_ctr/.*|applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -755,7 +745,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-ocp4-stig-node
     decorate: true
     decoration_config:
@@ -767,7 +757,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-ocp4-stig-node
     rerun_command: /test e2e-aws-ocp4-stig-node
-    run_if_changed: ^(controls/srg_ctr/.*|applications/openshift/.*|products/ocp4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -830,7 +819,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-rhcos4-e8
     decorate: true
     decoration_config:
@@ -842,7 +831,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-rhcos4-e8
     rerun_command: /test e2e-aws-rhcos4-e8
-    run_if_changed: ^(linux_os/guide/.*|products/rhcos4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -905,7 +893,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-rhcos4-high
     decorate: true
     decoration_config:
@@ -917,7 +905,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-rhcos4-high
     rerun_command: /test e2e-aws-rhcos4-high
-    run_if_changed: ^(linux_os/guide/.*|products/rhcos4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -980,7 +967,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build05
     context: ci/prow/e2e-aws-rhcos4-moderate
     decorate: true
     decoration_config:
@@ -992,7 +979,6 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-ComplianceAsCode-content-master-e2e-aws-rhcos4-moderate
     rerun_command: /test e2e-aws-rhcos4-moderate
-    run_if_changed: ^(linux_os/guide/.*|products/rhcos4/.*|ocp-resources/.*|shared/(macros.*jinja|checks/.*|templates/.*)|Dockerfiles/ocp4_content|Dockerfiles/quay_publish)$
     spec:
       containers:
       - args:
@@ -1055,7 +1041,7 @@ presubmits:
     branches:
     - ^master$
     - ^master-
-    cluster: build01
+    cluster: build03
     context: ci/prow/images
     decorate: true
     decoration_config:

@@ -1,6 +1,6 @@
 base_images:
   installer:
-    name: "4.11"
+    name: "4.14"
     namespace: ocp
     tag: installer
 build_root:
@@ -13,6 +13,7 @@ images:
     FROM src
     RUN ./hack/dnf_safe -y install python3-openstackclient python3-octaviaclient jq && dnf clean all
     ADD openshift-install /usr/bin/openshift-install
+    RUN python -m pip install yq
   from: src
   inputs:
     installer:
@@ -32,55 +33,48 @@ tests:
   commands: find . -type f -name "*.sh" | xargs --verbose --no-run-if-empty shellcheck
   container:
     from: src
-- as: cleanup-moc
-  interval: 24h
-  steps:
-    env:
-      CLUSTER_TYPE_OVERRIDE: openstack
-    workflow: shiftstack-cleanup
 - as: cleanup-vexxhost
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-vexxhost
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
 - as: cleanup-openstack-nfv
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-nfv
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
 - as: cleanup-openstack-hwoffload
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-hwoffload
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
 - as: cleanup-vh-mecha-central
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-vh-mecha-central
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
 - as: cleanup-vh-mecha-az0
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-vh-mecha-az0
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
 - as: cleanup-kuryr
   interval: 1h
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-kuryr
+      OPENSTACK_AUTHENTICATION_METHOD: password
     workflow: shiftstack-cleanup
-- as: quotas-moc
-  interval: 1h
-  steps:
-    env:
-      CLOUD_NAME: MOC
-      CLUSTER_TYPE_OVERRIDE: openstack
-    workflow: shiftstack-quotas
 - as: quotas-vexxhost
   interval: 1h
   steps:
@@ -124,12 +118,6 @@ tests:
       CLUSTER_TYPE_OVERRIDE: openstack-kuryr
       MIN_PERCENTAGE: "7"
     workflow: shiftstack-quotas
-- as: monitor-moc
-  interval: 5m
-  steps:
-    env:
-      CLUSTER_TYPE_OVERRIDE: openstack
-    workflow: shiftstack-monitor
 - as: monitor-vexxhost
   interval: 5m
   steps:
@@ -165,6 +153,12 @@ tests:
   steps:
     env:
       CLUSTER_TYPE_OVERRIDE: openstack-kuryr
+    workflow: shiftstack-monitor
+- as: monitor-nerc-dev
+  interval: 5m
+  steps:
+    env:
+      CLUSTER_TYPE_OVERRIDE: openstack-nerc-dev
     workflow: shiftstack-monitor
 - as: liveliness-mecha-central
   interval: 1h

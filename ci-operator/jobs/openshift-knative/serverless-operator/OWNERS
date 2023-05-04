@@ -14,8 +14,10 @@ approvers:
 - nak3
 - openshift-cherrypick-robot
 - pierdipi
+- retocode
 - rhuss
 - skonto
+- cspi-qe-ocp-lp
 options: {}
 reviewers:
 - alanfx
@@ -27,5 +29,7 @@ reviewers:
 - mgencur
 - nak3
 - pierdipi
+- retocode
 - rhuss
 - skonto
+- cspi-qe-ocp-lp

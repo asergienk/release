@@ -2,7 +2,9 @@ label:
   restricted_labels:
     openshift/library-go:
     - allowed_users:
+      - ingvagabund
       - soltysh
+      - stlaz
       - sttts
       - s-urbaniak
       - tkashem

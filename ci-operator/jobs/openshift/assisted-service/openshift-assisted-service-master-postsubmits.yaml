@@ -4,14 +4,66 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
-    decoration_config:
-      skip_cloning: true
+    labels:
+      ci-operator.openshift.io/variant: edge
+      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
+    max_concurrency: 1
+    name: branch-ci-openshift-assisted-service-master-edge-assisted-operator-catalog-publish
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --target=assisted-operator-catalog-publish
+        - --variant=edge
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+  - agent: kubernetes
+    always_run: true
+    branches:
+    - ^master$
+    cluster: build03
+    decorate: true
     labels:
       ci-operator.openshift.io/is-promotion: "true"
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
     max_concurrency: 1
     name: branch-ci-openshift-assisted-service-master-edge-images
     spec:
@@ -23,8 +75,6 @@ postsubmits:
         - --promote
         - --report-credentials-file=/etc/report/credentials
         - --target=[images]
-        - --target=assisted-service-scripts
-        - --target=ci-index
         - --variant=edge
         command:
         - ci-operator
@@ -62,13 +112,12 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
     max_concurrency: 1
     name: branch-ci-openshift-assisted-service-master-edge-mirror-vcsref-image
     spec:
@@ -116,67 +165,12 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
-    max_concurrency: 1
-    name: branch-ci-openshift-assisted-service-master-edge-operator-catalog-publish-to-quay
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --target=operator-catalog-publish-to-quay
-        - --variant=edge
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-  - agent: kubernetes
-    always_run: true
-    branches:
-    - ^master$
-    cluster: build04
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/variant: edge
-      ci.openshift.io/generator: prowgen
+      job-release: "4.13"
     max_concurrency: 1
     name: branch-ci-openshift-assisted-service-master-edge-operator-publish
     spec:
@@ -224,13 +218,12 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
     max_concurrency: 1
     name: branch-ci-openshift-assisted-service-master-edge-publish-python-client
     spec:
@@ -278,13 +271,12 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
-    decoration_config:
-      skip_cloning: true
     labels:
       ci-operator.openshift.io/variant: edge
       ci.openshift.io/generator: prowgen
+      job-release: "4.13"
     max_concurrency: 1
     name: branch-ci-openshift-assisted-service-master-edge-unit-test-postsubmit
     spec:
@@ -332,61 +324,7 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
-    decorate: true
-    decoration_config:
-      skip_cloning: true
-    labels:
-      ci-operator.openshift.io/variant: edge
-      ci.openshift.io/generator: prowgen
-    max_concurrency: 1
-    name: branch-ci-openshift-assisted-service-master-edge-verify-generated-code-postsubmit
-    spec:
-      containers:
-      - args:
-        - --gcs-upload-secret=/secrets/gcs/service-account.json
-        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-        - --report-credentials-file=/etc/report/credentials
-        - --secret-dir=/secrets/ci-pull-credentials
-        - --target=verify-generated-code-postsubmit
-        - --variant=edge
-        command:
-        - ci-operator
-        image: ci-operator:latest
-        imagePullPolicy: Always
-        name: ""
-        resources:
-          requests:
-            cpu: 10m
-        volumeMounts:
-        - mountPath: /secrets/ci-pull-credentials
-          name: ci-pull-credentials
-          readOnly: true
-        - mountPath: /secrets/gcs
-          name: gcs-credentials
-          readOnly: true
-        - mountPath: /etc/pull-secret
-          name: pull-secret
-          readOnly: true
-        - mountPath: /etc/report
-          name: result-aggregator
-          readOnly: true
-      serviceAccountName: ci-operator
-      volumes:
-      - name: ci-pull-credentials
-        secret:
-          secretName: ci-pull-credentials
-      - name: pull-secret
-        secret:
-          secretName: registry-pull-credentials
-      - name: result-aggregator
-        secret:
-          secretName: result-aggregator
-  - agent: kubernetes
-    always_run: true
-    branches:
-    - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
     labels:
       ci-operator.openshift.io/is-promotion: "true"
@@ -438,7 +376,7 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
     decoration_config:
       skip_cloning: true
@@ -494,7 +432,7 @@ postsubmits:
     always_run: true
     branches:
     - ^master$
-    cluster: build04
+    cluster: build03
     decorate: true
     decoration_config:
       skip_cloning: true

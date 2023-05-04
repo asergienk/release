@@ -26,7 +26,7 @@ used by a release controller. Create a service and a route to this public instan
         })
 
         gendoc.append({
-            'apiVersion': 'v1',
+            'apiVersion': 'route.openshift.io/v1',
             'kind': 'Route',
             'metadata': {
                 'name': 'files-cache',
@@ -93,7 +93,7 @@ used by a release controller. Create a service and a route to this public instan
         })
 
         gendoc.append({
-            'apiVersion': 'v1',
+            'apiVersion': 'route.openshift.io/v1',
             'kind': 'Route',
             'metadata': {
                 'name': 'files-cache-oauth-proxy',
@@ -145,8 +145,8 @@ instance.
                                      f'-client-id=system:serviceaccount:{context.jobs_namespace}:files-cache-oauth',
                                      '-openshift-ca=/etc/pki/tls/cert.pem',
                                      '-openshift-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
-                                     '-openshift-sar={"verb": "get", "resource": "imagestreams", "namespace": "%s"}' % context.is_namespace,
-                                     '-openshift-delegate-urls={"/": {"verb": "get", "resource": "imagestreams", "namespace": "%s"}}' % context.is_namespace,
+                                     f'-openshift-sar={{"verb": "get", "resource": "imagestreams", "namespace": "{context.is_namespace}"}}',
+                                     f'-openshift-delegate-urls={{"/": {{"verb": "get", "resource": "imagestreams", "namespace": "{context.is_namespace}"}}}}',
                                      '-client-secret-file=/var/run/secrets/kubernetes.io/serviceaccount/token',
                                      '-cookie-secret-file=/etc/proxy/secrets/session_secret',
                                      '-tls-cert=/etc/tls/private/tls.crt',

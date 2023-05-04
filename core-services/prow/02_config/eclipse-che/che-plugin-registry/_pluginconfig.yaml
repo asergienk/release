@@ -50,7 +50,6 @@ plugins:
     - goose
     - help
     - hold
-    - jira
     - label
     - lgtm
     - lifecycle

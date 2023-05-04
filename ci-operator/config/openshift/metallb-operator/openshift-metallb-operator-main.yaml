@@ -1,6 +1,6 @@
 base_images:
   base:
-    name: "4.12"
+    name: "4.14"
     namespace: ocp
     tag: base
   dev-scripts:
@@ -8,17 +8,17 @@ base_images:
     namespace: ocp-kni
     tag: dev-scripts
   metallb:
-    name: "4.12"
+    name: "4.14"
     namespace: ocp
     tag: metallb
   metallb-frr:
-    name: "4.12"
+    name: "4.14"
     namespace: ocp
     tag: metallb-frr
-  ocp_builder_rhel-8-golang-1.18-openshift-4.11:
+  ocp_builder_rhel-8-golang-1.20-openshift-4.14:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.18-openshift-4.11
+    tag: rhel-8-golang-1.20-openshift-4.14
   redhat-operator-index:
     name: redhat-operator-index
     namespace: ci
@@ -32,9 +32,9 @@ images:
 - dockerfile_path: Dockerfile.openshift
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.18-openshift-4.11:
+    ocp_builder_rhel-8-golang-1.20-openshift-4.14:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.11
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.20-openshift-4.14
   to: metallb-operator
 operator:
   bundles:
@@ -51,17 +51,17 @@ operator:
   - pullspec: quay.io/openshift/origin-metallb-frr:4.12
     with: pipeline:metallb-frr
 promotion:
-  name: "4.12"
+  name: "4.14"
   namespace: ocp
 releases:
   initial:
     integration:
-      name: "4.12"
+      name: "4.14"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.12"
+      name: "4.14"
       namespace: ocp
 resources:
   '*':
@@ -108,6 +108,7 @@ tests:
     test:
     - as: e2e
       commands: |
+        hack/validate_ocp_bundle.sh
         export OO_INSTALL_NAMESPACE=openshift-metallb-operator
         export USE_LOCAL_RESOURCES=true
         export IS_OPENSHIFT=1
@@ -120,6 +121,7 @@ tests:
           memory: 200Mi
     workflow: optional-operators-ci-aws-upgrade
 - as: metallb-e2e-metal-ipi
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:
@@ -132,6 +134,7 @@ tests:
         METALLB_OPERATOR_BRANCH=main
     workflow: baremetalds-metallb-e2e
 - as: metallb-e2e-metal-ipi-ovn
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     env:

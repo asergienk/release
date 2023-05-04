@@ -9,18 +9,34 @@
     "pullSecretName": "source",
     "referenceMode": "source",
     "verify": {
-        "multi-e2e": {
+        "multi-aws-ovn-upgrade": {
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-heterogeneous-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-ovn-heterogeneous-upgrade-priv"
             }
         },
-        "multi-serial": {
+        "multi-aws-ovn-upgrade-from-previous-stable": {
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-serial-aws-heterogeneous-priv"
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-upgrade-from-stable-4.11-ocp-e2e-aws-heterogeneous-upgrade-priv"
+            },
+            "upgrade": true,
+            "upgradeFrom": "PreviousMinor"
+        },
+        "multi-e2e-ovn": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-aws-ovn-heterogeneous-priv"
+            }
+        },
+        "multi-serial-ovn": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-multiarch-master-nightly-4.12-ocp-e2e-serial-aws-ovn-heterogeneous-priv"
             }
         }
     }

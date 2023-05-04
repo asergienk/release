@@ -1,6 +1,6 @@
 base_images:
   base:
-    name: "4.12"
+    name: "4.14"
     namespace: ocp
     tag: base
   dev-scripts:
@@ -11,16 +11,16 @@ base_images:
     name: golangci-lint
     namespace: ci
     tag: v1.46.0
-  ocp_builder_rhel-8-golang-1.15-openshift-4.8:
+  ocp_builder_rhel-8-golang-1.19-openshift-4.13:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.15-openshift-4.8
-  ocp_builder_rhel-8-golang-1.18-openshift-4.11:
+    tag: rhel-8-golang-1.19-openshift-4.13
+  ocp_builder_rhel-8-golang-1.20-openshift-4.14:
     name: builder
     namespace: ocp
-    tag: rhel-8-golang-1.18-openshift-4.11
+    tag: rhel-8-golang-1.20-openshift-4.14
   tools:
-    name: "4.12"
+    name: "4.14"
     namespace: ocp
     tag: tools
 binary_build_commands: make build
@@ -30,36 +30,32 @@ images:
 - dockerfile_path: images/tests/Dockerfile.rhel
   from: tools
   inputs:
-    ocp_builder_rhel-8-golang-1.15-openshift-4.8:
+    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.15-openshift-4.8
-    ocp_builder_rhel-8-golang-1.18-openshift-4.11:
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
+    ocp_builder_rhel-8-golang-1.20-openshift-4.14:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.11
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.20-openshift-4.14
   to: tests
 - dockerfile_path: images/hello-openshift/Dockerfile.rhel
   from: base
   inputs:
-    ocp_builder_rhel-8-golang-1.15-openshift-4.8:
+    ocp_builder_rhel-8-golang-1.19-openshift-4.13:
       as:
-      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.15-openshift-4.8
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.13
   to: hello-openshift
 promotion:
-  name: "4.12"
+  name: "4.14"
   namespace: ocp
 releases:
   initial:
     integration:
-      name: "4.12"
+      name: "4.14"
       namespace: ocp
   latest:
     integration:
       include_built_images: true
-      name: "4.12"
-      namespace: ocp
-  previous:
-    integration:
-      name: "4.11"
+      name: "4.14"
       namespace: ocp
 resources:
   '*':
@@ -79,6 +75,12 @@ resources:
       cpu: "3"
       memory: 8Gi
 tests:
+- as: unit
+  commands: GOTEST_FLAGS='-p 8' hack/test-go.sh
+  container:
+    from: src
+    memory_backed_volume:
+      size: 4Gi
 - as: verify
   commands: |
     make verify -k --warn-undefined-variables
@@ -95,11 +97,12 @@ tests:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
-    workflow: openshift-e2e-aws-loki
-- as: e2e-gcp
+      TELEMETRY_ENABLED: "false"
+    workflow: openshift-e2e-aws
+- as: e2e-gcp-ovn
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
-    workflow: openshift-e2e-gcp-loki
+    workflow: openshift-e2e-gcp
 - as: e2e-gcp-fips-serial
   optional: true
   steps:
@@ -123,14 +126,14 @@ tests:
   steps:
     cluster_profile: azure4
     workflow: openshift-e2e-azure
-- as: e2e-agnostic-cmd
+- as: e2e-agnostic-ovn-cmd
   optional: true
   steps:
     cluster_profile: azure4
     env:
       TEST_SUITE: openshift/test-cmd
     workflow: openshift-e2e-azure
-- as: e2e-gcp-builds
+- as: e2e-gcp-ovn-builds
   run_if_changed: ^(pkg/oc/cli/startbuild/startbuild.go)|^(pkg/build)|^(staging/src/.*/pkg/.*build)|^(pkg/cmd/infra/builder)|^(test/extended/builds)|^(test/extended/testdata/builds)|^(test/extended/util)|^(vendor/github.com/openshift/source-to-image)|^(vendor/github.com/openshift/imagebuilder)
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
@@ -164,12 +167,12 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_SUITE: openshift/jenkins-e2e
     workflow: openshift-e2e-aws-jenkins
-- as: e2e-gcp-image-ecosystem
+- as: e2e-gcp-ovn-image-ecosystem
   run_if_changed: ^(test/extended/image_ecosystem)|^(examples/db-templates)|^(examples/quickstarts)|^(examples/image-streams)|^(examples/jenkins)|^(vendor/github.com/openshift/source-to-image)|^(vendor/github.com/openshift/imagebuilder)
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-e2e-gcp-image-ecosystem
-- as: e2e-aws-image-registry
+- as: e2e-aws-ovn-image-registry
   run_if_changed: ^(pkg/image)|^(test/extended/registry)|^(test/extended/images)|^(test/extended/imageapis)|^(vendor/github.com/docker/distribution)
   steps:
     cluster_profile: aws-2
@@ -177,7 +180,7 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_SUITE: openshift/image-registry
     workflow: openshift-e2e-aws-image-registry
-- as: e2e-gcp-upgrade
+- as: e2e-gcp-ovn-upgrade
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-upgrade-gcp
@@ -185,15 +188,13 @@ tests:
   optional: true
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
-    dependencies:
-      OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE: release:previous
     workflow: openshift-upgrade-gcp-ovn-rt
 - as: e2e-gcp-csi
   optional: true
   steps:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-e2e-gcp-csi
-- as: e2e-aws-upgrade
+- as: e2e-aws-ovn-upgrade
   optional: true
   steps:
     cluster_profile: aws-2
@@ -204,7 +205,7 @@ tests:
       TEST_TYPE: upgrade
       TEST_UPGRADE_OPTIONS: abort-at=100
     workflow: openshift-upgrade-aws
-- as: e2e-aws-serial
+- as: e2e-aws-ovn-serial
   steps:
     cluster_profile: aws-2
     env:
@@ -227,7 +228,7 @@ tests:
     env:
       TEST_SUITE: openshift/conformance/parallel
     workflow: openshift-e2e-vsphere-upi
-- as: e2e-aws-fips
+- as: e2e-aws-ovn-fips
   steps:
     cluster_profile: aws-2
     env:
@@ -247,44 +248,50 @@ tests:
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-sdn-multi
-- as: e2e-metal-ipi
+- as: e2e-metal-ipi-sdn
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ipv4
 - as: e2e-metal-ipi-ovn-ipv6
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv6
 - as: e2e-metal-ipi-ovn-dualstack
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-dualstack
 - as: e2e-metal-ipi-virtualmedia
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-virtualmedia
 - as: e2e-metal-ipi-serial
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-serial-ipv4
 - as: e2e-metal-ipi-serial-ovn-ipv6
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-serial-ovn-ipv6
-- as: e2e-aws-single-node
+- as: e2e-aws-ovn-single-node
   optional: true
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
     workflow: openshift-e2e-aws-single-node
-- as: e2e-aws-single-node-serial
+- as: e2e-aws-ovn-single-node-serial
   optional: true
   steps:
     cluster_profile: aws-2
@@ -292,7 +299,7 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_SUITE: openshift/conformance/serial
     workflow: openshift-e2e-aws-single-node
-- as: e2e-aws-single-node-upgrade
+- as: e2e-aws-ovn-single-node-upgrade
   optional: true
   steps:
     cluster_profile: aws-2
@@ -300,7 +307,7 @@ tests:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_TYPE: upgrade-conformance
     workflow: openshift-upgrade-aws-single-node
-- as: e2e-openstack
+- as: e2e-openstack-ovn
   optional: true
   steps:
     cluster_profile: openstack-vexxhost
@@ -308,6 +315,21 @@ tests:
       BASE_DOMAIN: shiftstack.devcluster.openshift.com
       CONFIG_TYPE: minimal
       TEST_SUITE: openshift/conformance/parallel
+    workflow: openshift-e2e-openstack-ipi
+- as: e2e-openstack-kuryr
+  optional: true
+  steps:
+    cluster_profile: openstack-kuryr
+    env:
+      BASE_DOMAIN: shiftstack.devcluster.openshift.com
+      CONFIG_TYPE: minimal
+      NETWORK_TYPE: Kuryr
+      TEST_SKIPS: NodePort \| session affinity \| Services should be able to change
+        the type from ExternalName to ClusterIP \| Pods should delete a collection
+        of pods \| Kubectl client Guestbook application should create and stop a working
+        application \| Services should serve multiport endpoints from pods \| Services
+        should serve a basic endpoint from pods
+      TEST_SUITE: kubernetes/conformance
     workflow: openshift-e2e-openstack-ipi
 - as: e2e-openstack-serial
   optional: true
@@ -318,12 +340,7 @@ tests:
       CONFIG_TYPE: minimal
       TEST_SUITE: openshift/conformance/serial
     workflow: openshift-e2e-openstack-ipi
-- as: e2e-aws-csi-migration
-  optional: true
-  steps:
-    cluster_profile: aws
-    workflow: openshift-e2e-aws-csi-migration
-- as: e2e-aws-cgroupsv2
+- as: e2e-aws-ovn-cgroupsv2
   optional: true
   steps:
     cluster_profile: aws
@@ -337,6 +354,42 @@ tests:
   container:
     clone: true
     from: golangci-lint
+- as: e2e-aws-ovn-etcd-scaling
+  optional: true
+  steps:
+    cluster_profile: aws
+    workflow: openshift-e2e-aws-etcd-scaling
+- as: e2e-gcp-ovn-etcd-scaling
+  optional: true
+  steps:
+    cluster_profile: gcp
+    workflow: openshift-e2e-gcp-etcd-scaling
+- as: e2e-azure-ovn-etcd-scaling
+  optional: true
+  steps:
+    cluster_profile: azure4
+    workflow: openshift-e2e-azure-etcd-scaling
+- as: e2e-vsphere-ovn-etcd-scaling
+  optional: true
+  steps:
+    cluster_profile: vsphere
+    workflow: openshift-e2e-vsphere-etcd-scaling
+- always_run: false
+  as: e2e-gcp-ovn-techpreview
+  optional: true
+  steps:
+    cluster_profile: gcp-openshift-gce-devel-ci-2
+    env:
+      FEATURE_SET: TechPreviewNoUpgrade
+    workflow: openshift-e2e-gcp
+- always_run: false
+  as: e2e-gcp-ovn-techpreview-serial
+  optional: true
+  steps:
+    cluster_profile: gcp-openshift-gce-devel-ci-2
+    env:
+      FEATURE_SET: TechPreviewNoUpgrade
+    workflow: openshift-e2e-gcp
 zz_generated_metadata:
   branch: master
   org: openshift

@@ -2,9 +2,7 @@
 	"path": "gather/network/gather-network-ref.yaml",
 	"owners": {
 		"approvers": [
-			"wking",
 			"vrutkovs",
-			"abhinavdahiya",
 			"deads2k",
 			"staebler"
 		]

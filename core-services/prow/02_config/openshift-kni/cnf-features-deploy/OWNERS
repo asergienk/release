@@ -7,16 +7,16 @@
 filters:
   .*:
     approvers:
-    - davidvossel
     - fedepaol
-    - fromanirh
+    - ffromani
+    - imiller0
     - schseba
     - yuvalk
     reviewers:
     - aneeshkp
-    - davidvossel
+    - bartwensley
     - fedepaol
-    - fromanirh
+    - ffromani
     - ijolliffe
     - imiller0
     - jlojosnegros
@@ -26,8 +26,8 @@ filters:
     - marioferh
     - marsik
     - missxiaoguo
-    - mmirecki
     - nishant-parekh
+    - sakhoury
     - schseba
     - serngawy
     - simon3z

@@ -1,11 +1,11 @@
 presubmits:
   openshift/cluster-api-provider-alibaba:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/e2e-aws
     decorate: true
     labels:
@@ -15,6 +15,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-api-provider-alibaba-release-4.13-e2e-aws
     rerun_command: /test e2e-aws
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -73,11 +74,11 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )e2e-aws,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build03
     context: ci/prow/e2e-aws-serial
     decorate: true
     labels:
@@ -87,6 +88,7 @@ presubmits:
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
     name: pull-ci-openshift-cluster-api-provider-alibaba-release-4.13-e2e-aws-serial
     rerun_command: /test e2e-aws-serial
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -149,7 +151,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/fmt
     decorate: true
     labels:
@@ -196,7 +198,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/images
     decorate: true
     labels:
@@ -244,7 +246,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/unit
     decorate: true
     labels:
@@ -291,7 +293,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/vet
     decorate: true
     labels:

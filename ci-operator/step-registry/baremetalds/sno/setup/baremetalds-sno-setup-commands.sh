@@ -10,6 +10,27 @@ echo "************ baremetalds single-node setup command ************"
 # shellcheck source=/dev/null
 source "${SHARED_DIR}/packet-conf.sh"
 
+echo "Creating Ansible inventory file"
+cat > "${SHARED_DIR}/inventory" <<-EOF
+
+[primary]
+${IP} ansible_user=root ansible_ssh_user=root ansible_ssh_private_key_file=${CLUSTER_PROFILE_DIR}/packet-ssh-key ansible_ssh_common_args="-o ConnectTimeout=5 -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=90 -o LogLevel=ERROR"
+
+EOF
+
+echo "Creating Ansible configuration file"
+cat > "${SHARED_DIR}/ansible.cfg" <<-EOF
+
+[defaults]
+callback_whitelist = profile_tasks
+host_key_checking = False
+
+verbosity = 2
+stdout_callback = yaml
+bin_ansible_callbacks = True
+
+EOF
+
 # Copy assisted-test-infra source from current directory to the remote server
 tar -czf - . | ssh "${SSHOPTS[@]}" "root@${IP}" "cat > /root/sno.tar.gz"
 
@@ -34,12 +55,24 @@ then
   scp "${SSHOPTS[@]}" "${SHARED_DIR}/sno-additional-config" "root@${IP}:sno-additional-config"
 fi
 
+# Copy additional manifests
+ssh "${SSHOPTS[@]}" "root@${IP}" "rm -rf /root/sno-additional-manifests && mkdir /root/sno-additional-manifests"
+while IFS= read -r -d '' item
+do
+  echo "Copying ${item}"
+  scp "${SSHOPTS[@]}" "${item}" "root@${IP}:sno-additional-manifests/"
+done < <( find "${SHARED_DIR}" \( -name "manifest_*.yml" -o -name "manifest_*.yaml" \) -print0)
+echo -e "\nThe following manifests will be included at installation time:"
+ssh "${SSHOPTS[@]}" "root@${IP}" "find /root/sno-additional-manifests -name manifest_*.yml -o -name manifest_*.yaml"
+
 # TODO: Figure out way to get these parameters (used by deploy_ibip) without hardcoding them here
 # preferrably by making deploy_ibip / makefile perform these configurations itself in the assisted_test_infra
 # repo.
 export SINGLE_NODE_IP_ADDRESS="192.168.127.10"
 export CLUSTER_NAME="test-infra-cluster"
 export CLUSTER_API_DOMAIN="api.${CLUSTER_NAME}.redhat.com"
+export CLUSTER_INGRESS_SUB_DOMAIN="apps.${CLUSTER_NAME}.redhat.com"
+export INGRESS_APPS=(oauth-openshift console-openshift-console canary-openshift-ingress-canary thanos-querier-openshift-monitoring)
 
 timeout -s 9 175m ssh "${SSHOPTS[@]}" "root@${IP}" bash - << EOF |& sed -e 's/.*auths.*/*** PULL_SECRET ***/g'
 
@@ -90,9 +123,18 @@ source /root/config
 
 # Configure dnsmasq
 echo "${SINGLE_NODE_IP_ADDRESS} ${CLUSTER_API_DOMAIN}" | tee --append /etc/hosts
+for ingress_app in ${INGRESS_APPS[@]}; do
+  echo "${SINGLE_NODE_IP_ADDRESS} \${ingress_app}.${CLUSTER_INGRESS_SUB_DOMAIN}" | tee --append /etc/hosts
+done
+
 echo Reloading NetworkManager systemd configuration
 systemctl reload NetworkManager
 
-timeout -s 9 105m make setup deploy_ibip TEST_FUNC=${TEST_FUNC}
+export TEST_ARGS="TEST_FUNC=${TEST_FUNC}"
+if [[ -e /root/sno-additional-manifests ]]
+then
+  TEST_ARGS="\${TEST_ARGS} ADDITIONAL_MANIFEST_DIR=/root/sno-additional-manifests"
+fi
+timeout -s 9 105m make setup deploy_ibip \${TEST_ARGS}
 
 EOF

@@ -2,8 +2,12 @@ tide:
   queries:
   - includedBranches:
     - openshift-4.10
+    - openshift-4.11
+    - openshift-4.12
     - openshift-4.9
     - release-4.10
+    - release-4.11
+    - release-4.12
     - release-4.9
     labels:
     - approved
@@ -17,23 +21,47 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/ibm-vpc-node-label-updater
   - includedBranches:
-    - openshift-4.11
-    - release-4.11
+    - openshift-4.13
+    - release-4.13
     labels:
     - approved
+    - backport-risk-assessed
     - bugzilla/valid-bug
+    - cherry-pick-approved
     - lgtm
-    - staff-eng-approved
     missingLabels:
     - backports/unvalidated-commits
     - bugzilla/invalid-bug
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+    - jira/invalid-bug
+    - needs-rebase
+    repos:
+    - openshift/ibm-vpc-node-label-updater
+  - includedBranches:
+    - main
+    - master
+    labels:
+    - approved
+    - bugzilla/valid-bug
+    - docs-approved
+    - lgtm
+    - px-approved
+    - qe-approved
+    missingLabels:
+    - backports/unvalidated-commits
+    - bugzilla/invalid-bug
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    - jira/invalid-bug
+    - keep-main-query-separate
     - needs-rebase
     repos:
     - openshift/ibm-vpc-node-label-updater
@@ -50,6 +78,7 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+    - jira/invalid-bug
     - keep-main-query-separate
     - needs-rebase
     repos:
@@ -59,9 +88,13 @@ tide:
     - master
     - openshift-4.10
     - openshift-4.11
+    - openshift-4.12
+    - openshift-4.13
     - openshift-4.9
     - release-4.10
     - release-4.11
+    - release-4.12
+    - release-4.13
     - release-4.9
     labels:
     - approved
@@ -73,12 +106,23 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/ibm-vpc-node-label-updater
-  - includedBranches:
+  - excludedBranches:
     - main
     - master
+    - openshift-4.10
+    - openshift-4.11
+    - openshift-4.12
+    - openshift-4.13
+    - openshift-4.9
+    - release-4.10
+    - release-4.11
+    - release-4.12
+    - release-4.13
+    - release-4.9
     labels:
     - approved
     - docs-approved
@@ -91,31 +135,7 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
-    - keep-main-query-separate
-    - needs-rebase
-    repos:
-    - openshift/ibm-vpc-node-label-updater
-  - excludedBranches:
-    - main
-    - master
-    - openshift-4.10
-    - openshift-4.11
-    - openshift-4.9
-    - release-4.10
-    - release-4.11
-    - release-4.9
-    labels:
-    - approved
-    - docs-approved
-    - lgtm
-    - px-approved
-    - qe-approved
-    missingLabels:
-    - backports/unvalidated-commits
-    - bugzilla/invalid-bug
-    - do-not-merge/hold
-    - do-not-merge/invalid-owners-file
-    - do-not-merge/work-in-progress
+    - jira/invalid-bug
     - needs-rebase
     repos:
     - openshift/ibm-vpc-node-label-updater

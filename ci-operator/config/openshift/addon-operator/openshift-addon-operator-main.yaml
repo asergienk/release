@@ -3,7 +3,7 @@ build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.17
+    tag: golang-1.19
 images:
 - dockerfile_path: config/docker/addon-operator-manager.Dockerfile
   inputs:
@@ -70,14 +70,32 @@ tests:
     from: addon-operator-tooling
 - as: operator-e2e
   steps:
+    allow_skip_on_success: true
     cluster_profile: aws
     dependencies:
       OO_INDEX: ci-index
     env:
       OO_CHANNEL: stable
-      OO_INSTALL_NAMESPACE: '!create'
+      OO_INSTALL_NAMESPACE: addon-operator-test
       OO_PACKAGE: addon-operator
       OO_TARGET_NAMESPACES: '!all'
+    pre:
+    - chain: ipi-aws-pre
+    - as: label-infra-nodes
+      commands: ./mage test:integrationciprepare
+      from: src
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+    - ref: optional-operators-subscribe
+    - as: enable-status-reporting
+      commands: OO_INSTALL_NAMESPACE=addon-operator-test ./mage test:IntegrationCIInjectEnvVariable
+      from: src
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
     test:
     - as: test
       commands: ENABLE_WEBHOOK=true make test-e2e

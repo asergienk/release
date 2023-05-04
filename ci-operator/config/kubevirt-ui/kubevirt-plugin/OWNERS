@@ -6,16 +6,16 @@
 
 approvers:
 - avivtur
-- glekner
+- hstastna
 - metalice
 - pcbailey
 - tnisan
+- upalatucci
 - vojtechszocs
 - yaacov
 options: {}
 reviewers:
 - avivtur
-- glekner
 - hstastna
 - metalice
 - pcbailey

@@ -8,10 +8,9 @@ approvers:
 - awgreene
 - benluddy
 - dinhxuanvu
-- jmrodri
+- grokspawn
 - joelanford
 - kevinrizza
-- njhale
 - perdasilva
 options: {}
 reviewers:
@@ -20,11 +19,9 @@ reviewers:
 - awgreene
 - benluddy
 - dinhxuanvu
-- exdx
 - gallettilance
-- jmrodri
+- grokspawn
 - joelanford
 - kevinrizza
-- njhale
+- oceanc80
 - perdasilva
-- timflannagan

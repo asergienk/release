@@ -5,25 +5,29 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- bwplotka
+- coleenquadros
+- danielmellado
+- douglascamata
 - jan--f
-- jessicalins
 - joaobravecoding
-- matej-g
 - philipgough
 - raptorsun
+- saswatamcode
 - simonpasquier
 - slashpai
 - sthaha
+- thibaultmg
 options: {}
 reviewers:
-- bwplotka
+- coleenquadros
+- danielmellado
+- douglascamata
 - jan--f
-- jessicalins
 - joaobravecoding
-- matej-g
 - philipgough
 - raptorsun
+- saswatamcode
 - simonpasquier
 - slashpai
 - sthaha
+- thibaultmg

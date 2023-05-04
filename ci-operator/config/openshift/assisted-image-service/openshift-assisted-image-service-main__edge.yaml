@@ -1,22 +1,30 @@
 base_images:
   assisted-installer:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-installer
   assisted-installer-agent:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-installer-agent
   assisted-installer-controller:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-installer-controller
   assisted-service:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-service
+  assisted-service-index:
+    name: assisted-service-index
+    namespace: edge-infrastructure
+    tag: latest
+  assisted-service-scripts:
+    name: ocm-2.9
+    namespace: edge-infrastructure
+    tag: assisted-service-scripts
   assisted-test-infra:
-    name: ocm-2.6
+    name: ocm-2.9
     namespace: edge-infrastructure
     tag: assisted-test-infra
   coreos-centos-stream8:
@@ -49,22 +57,20 @@ images:
       - registry.ci.openshift.org/openshift/release:golang-1.17
   to: assisted-image-service
 promotion:
-  name: ocm-2.6
+  name: ocm-2.9
   namespace: edge-infrastructure
 releases:
-  candidate:
-    release:
-      channel: candidate
-      version: "4.8"
-  initial:
-    integration:
-      name: "4.9"
-      namespace: ocp
   latest:
-    integration:
-      include_built_images: true
-      name: "4.9"
-      namespace: ocp
+    candidate:
+      product: ocp
+      stream: nightly
+      version: "4.13"
+  latest-multi:
+    candidate:
+      architecture: multi
+      product: ocp
+      stream: nightly
+      version: "4.13"
 resources:
   '*':
     requests:
@@ -97,6 +103,7 @@ tests:
   container:
     clone: true
     from: golangci-lint
+  skip_if_only_changed: ^\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
 - as: test
   commands: |
     export CODECOV_TOKEN=$(cat /tmp/secret/codecov-token)
@@ -106,6 +113,7 @@ tests:
   secret:
     mount_path: /tmp/secret
     name: assisted-image-service-codecov-token
+  skip_if_only_changed: ^\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
 - as: test-postsubmit
   commands: |
     export CODECOV_TOKEN=$(cat /tmp/secret/codecov-token)
@@ -122,13 +130,36 @@ tests:
     cluster_profile: packet-assisted
     workflow: assisted-baremetal
 - as: e2e-metal-assisted-deploy-nodes
-  skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|PROJECT|LICENSE)$
+  skip_if_only_changed: ^\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
   steps:
     cluster_profile: packet-assisted
     env:
       ASSISTED_CONFIG: |
-        MAKEFILE_TARGET="setup run deploy_nodes"
+        MAKEFILE_TARGET="deploy_nodes"
     workflow: assisted-baremetal
+- as: e2e-metal-assisted-day2-arm-workers
+  optional: true
+  steps:
+    cluster_profile: packet-assisted
+    dependencies:
+      OPENSHIFT_INSTALL_RELEASE_IMAGE: release:latest-multi
+    env:
+      ANSIBLE_PLAYBOOK_CREATE_INFRA: equinix_heterogeneous_create_infra_playbook.yml
+      ASSISTED_CONFIG: |
+        TEST_FUNC=test_deploy_day2_nodes_cloud
+        AGENT_DOCKER_IMAGE=quay.io/edge-infrastructure/assisted-installer-agent-multi:latest
+        CONTROLLER_IMAGE=quay.io/edge-infrastructure/assisted-installer-controller-multi:latest
+        INSTALLER_IMAGE=quay.io/edge-infrastructure/assisted-installer-multi:latest
+    workflow: assisted-equinix
+- as: e2e-ai-operator-ztp
+  skip_if_only_changed: ^\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|OWNERS_ALIASES|LICENSE)$
+  steps:
+    cluster_profile: packet-assisted
+    dependencies:
+      ASSISTED_OPENSHIFT_INSTALL_RELEASE_IMAGE: release:latest
+      INDEX_IMAGE: assisted-service-index
+      OPENSHIFT_INSTALL_RELEASE_IMAGE: release:latest
+    workflow: assisted-baremetal-operator-ztp
 zz_generated_metadata:
   branch: main
   org: openshift

@@ -18,6 +18,11 @@ external_plugins:
     events:
     - pull_request
     name: needs-rebase
+  - endpoint: http://jira-lifecycle-plugin
+    events:
+    - issue_comment
+    - pull_request
+    name: jira-lifecycle-plugin
 lgtm:
 - repos:
   - openshift-assisted
@@ -29,7 +34,6 @@ plugins:
     - assisted-ui-lib
     - openshift-assisted-ui
     - dynamic-cim
-    - assisted-scripts
     - assisted-swarm
     - openshift-assisted.github.io
     plugins:
@@ -54,7 +58,6 @@ plugins:
     - verify-owners
     - wip
     - yuks
-    - bugzilla
     - jira
     - size
     - welcome

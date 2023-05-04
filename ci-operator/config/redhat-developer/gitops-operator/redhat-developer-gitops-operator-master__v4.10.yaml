@@ -3,7 +3,10 @@ base_images:
     name: "4.10"
     namespace: ocp
     tag: cli
-binary_build_commands: make bin
+  operator-sdk:
+    name: "4.13"
+    namespace: origin
+    tag: operator-sdk
 build_root:
   project_image:
     dockerfile_path: openshift-ci/build-root/Dockerfile
@@ -16,6 +19,17 @@ images:
       - destination_dir: .
         source_path: /usr/bin/oc
   to: oc-bin-image
+- context_dir: .
+  from: src
+  to: gitops-operator
+operator:
+  bundles:
+  - as: gitops-operator-bundle
+    context_dir: bundle/
+    dockerfile_path: bundle.Dockerfile
+  substitutions:
+  - pullspec: quay.io/redhat-developer/gitops-operator:latest
+    with: pipeline:gitops-operator
 releases:
   initial:
     integration:
@@ -32,6 +46,70 @@ resources:
       cpu: 800m
       memory: 6Gi
 tests:
+- as: kuttl-sequential
+  cluster_claim:
+    architecture: amd64
+    cloud: aws
+    owner: openshift-ci
+    product: ocp
+    timeout: 1h0m0s
+    version: "4.10"
+  steps:
+    test:
+    - as: install
+      cli: latest
+      commands: "operator-sdk run bundle -n openshift-operators \"$OO_BUNDLE\"\noc
+        get pods -n openshift-operators \n"
+      dependencies:
+      - env: OO_BUNDLE
+        name: gitops-operator-bundle
+      from: operator-sdk
+      resources:
+        requests:
+          cpu: "2"
+          memory: 6Gi
+    - as: sequential-e2e-steps
+      commands: |
+        scripts/openshift-CI-kuttl-tests.sh
+        make e2e-tests-sequential
+      from: oc-bin-image
+      resources:
+        requests:
+          cpu: "2"
+          memory: 6Gi
+    workflow: generic-claim
+- as: kuttl-parallel
+  cluster_claim:
+    architecture: amd64
+    cloud: aws
+    owner: openshift-ci
+    product: ocp
+    timeout: 1h0m0s
+    version: "4.10"
+  steps:
+    test:
+    - as: install
+      cli: latest
+      commands: "operator-sdk run bundle -n openshift-operators \"$OO_BUNDLE\"\noc
+        get pods -n openshift-operators \n"
+      dependencies:
+      - env: OO_BUNDLE
+        name: gitops-operator-bundle
+      from: operator-sdk
+      resources:
+        requests:
+          cpu: "2"
+          memory: 6Gi
+    - as: parallel-e2e-steps
+      commands: |
+        scripts/openshift-CI-kuttl-tests.sh
+        make e2e-tests-parallel
+      from: oc-bin-image
+      resources:
+        requests:
+          cpu: "2"
+          memory: 6Gi
+    workflow: generic-claim
 - as: e2e
   steps:
     cluster_profile: aws

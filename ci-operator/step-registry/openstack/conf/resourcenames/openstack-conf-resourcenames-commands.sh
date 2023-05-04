@@ -7,51 +7,51 @@ CLUSTER_TYPE="${CLUSTER_TYPE_OVERRIDE:-$CLUSTER_TYPE}"
 declare -A external_network=(
 	['openstack-kuryr']='external'
 	['openstack-vexxhost']='public'
+        ['openstack-operators-vexxhost']='public'
 	['openstack-vh-mecha-central']='external'
 	['openstack-vh-mecha-az0']='external'
 	['openstack-nfv']='intel-dpdk'
 	['openstack-hwoffload']='external'
-	['openstack']='external'
 	)
 
 declare -A controlplane_flavor=(
 	['openstack-kuryr']='m1.xlarge'
 	['openstack-vexxhost']='ci.m1.xlarge'
+        ['openstack-operators-vexxhost']='ci.m1.large'
 	['openstack-vh-mecha-central']='m1.xlarge'
 	['openstack-vh-mecha-az0']='m1.xlarge'
 	['openstack-nfv']='m1.xlarge'
 	['openstack-hwoffload']='m1.xlarge'
-	['openstack']='m1.s2.xlarge'
 	)
 
 declare -A compute_flavor=(
 	['openstack-kuryr']='m1.xlarge'
 	['openstack-vexxhost']='ci.m1.xlarge'
+        ['openstack-operators-vexxhost']='ci.m1.large'
 	['openstack-vh-mecha-central']='m1.xlarge'
 	['openstack-vh-mecha-az0']='m1.xlarge'
 	['openstack-nfv']='m1.xlarge.nfv'
 	['openstack-hwoffload']='m1.xlarge.nfv'
-	['openstack']='m1.s2.xlarge'
 	)
 
 declare -A compute_azs=(
-	['openstack-kuryr']=''
+	['openstack-kuryr']='az0'
 	['openstack-vexxhost']=''
+        ['openstack-operators-vexxhost']=''
 	['openstack-vh-mecha-central']=''
 	['openstack-vh-mecha-az0']='az0'
 	['openstack-nfv']=''
 	['openstack-hwoffload']=''
-	['openstack']=''
 	)
 
 declare -A bastion_flavor=(
-	['openstack-kuryr']=''
+	['openstack-kuryr']='m1.small'
 	['openstack-vexxhost']='1vcpu_2gb'
+        ['openstack-operators-vexxhost']='ci.m1.small'
 	['openstack-vh-mecha-central']='m1.small'
 	['openstack-vh-mecha-az0']='m1.small'
 	['openstack-nfv']='m1.small'
 	['openstack-hwoffload']='m1.small'
-	['openstack']=''
 	)
 
 if [[ -z "${OPENSTACK_EXTERNAL_NETWORK:-}" ]]; then

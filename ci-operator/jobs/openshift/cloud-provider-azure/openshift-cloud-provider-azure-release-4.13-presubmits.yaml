@@ -1,21 +1,22 @@
 presubmits:
   openshift/cloud-provider-azure:
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-azure
+    cluster: build05
+    context: ci/prow/e2e-azure-ovn
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure
+    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure-ovn
     path_alias: github.com/kubernetes-sigs/cloud-provider-azure
-    rerun_command: /test e2e-azure
+    rerun_command: /test e2e-azure-ovn
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -24,8 +25,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-cluster-profile
-        - --target=e2e-azure
+        - --secret-dir=/usr/local/e2e-azure-ovn-cluster-profile
+        - --target=e2e-azure-ovn
         command:
         - ci-operator
         image: ci-operator:latest
@@ -41,7 +42,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-cluster-profile
+        - mountPath: /usr/local/e2e-azure-ovn-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -72,24 +73,25 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-ovn,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-azure-ccm
+    cluster: build05
+    context: ci/prow/e2e-azure-ovn-ccm
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure-ccm
+    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure-ovn-ccm
     optional: true
     path_alias: github.com/kubernetes-sigs/cloud-provider-azure
-    rerun_command: /test e2e-azure-ccm
+    rerun_command: /test e2e-azure-ovn-ccm
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -98,8 +100,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-ccm-cluster-profile
-        - --target=e2e-azure-ccm
+        - --secret-dir=/usr/local/e2e-azure-ovn-ccm-cluster-profile
+        - --target=e2e-azure-ovn-ccm
         command:
         - ci-operator
         image: ci-operator:latest
@@ -115,7 +117,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-ccm-cluster-profile
+        - mountPath: /usr/local/e2e-azure-ovn-ccm-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -146,23 +148,24 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-ccm,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-ovn-ccm,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/e2e-azure-upgrade
+    cluster: build05
+    context: ci/prow/e2e-azure-ovn-upgrade
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure-upgrade
+    name: pull-ci-openshift-cloud-provider-azure-release-4.13-e2e-azure-ovn-upgrade
     path_alias: github.com/kubernetes-sigs/cloud-provider-azure
-    rerun_command: /test e2e-azure-upgrade
+    rerun_command: /test e2e-azure-ovn-upgrade
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -171,8 +174,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/e2e-azure-upgrade-cluster-profile
-        - --target=e2e-azure-upgrade
+        - --secret-dir=/usr/local/e2e-azure-ovn-upgrade-cluster-profile
+        - --target=e2e-azure-ovn-upgrade
         command:
         - ci-operator
         image: ci-operator:latest
@@ -188,7 +191,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/e2e-azure-upgrade-cluster-profile
+        - mountPath: /usr/local/e2e-azure-ovn-upgrade-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -219,13 +222,13 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )e2e-azure-upgrade,?($|\s.*)
+    trigger: (?m)^/test( | .* )e2e-azure-ovn-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/images
     decorate: true
     labels:
@@ -270,22 +273,22 @@ presubmits:
           secretName: result-aggregator
     trigger: (?m)^/test( | .* )images,?($|\s.*)
   - agent: kubernetes
-    always_run: true
+    always_run: false
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
-    context: ci/prow/openshift-e2e-azure-ccm-install
+    cluster: build05
+    context: ci/prow/openshift-e2e-azure-ovn-ccm-install
     decorate: true
     labels:
       ci-operator.openshift.io/cloud: azure4
       ci-operator.openshift.io/cloud-cluster-profile: azure4
       ci.openshift.io/generator: prowgen
       pj-rehearse.openshift.io/can-be-rehearsed: "true"
-    name: pull-ci-openshift-cloud-provider-azure-release-4.13-openshift-e2e-azure-ccm-install
-    optional: true
+    name: pull-ci-openshift-cloud-provider-azure-release-4.13-openshift-e2e-azure-ovn-ccm-install
     path_alias: github.com/kubernetes-sigs/cloud-provider-azure
-    rerun_command: /test openshift-e2e-azure-ccm-install
+    rerun_command: /test openshift-e2e-azure-ovn-ccm-install
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
     spec:
       containers:
       - args:
@@ -294,8 +297,8 @@ presubmits:
         - --lease-server-credentials-file=/etc/boskos/credentials
         - --report-credentials-file=/etc/report/credentials
         - --secret-dir=/secrets/ci-pull-credentials
-        - --secret-dir=/usr/local/openshift-e2e-azure-ccm-install-cluster-profile
-        - --target=openshift-e2e-azure-ccm-install
+        - --secret-dir=/usr/local/openshift-e2e-azure-ovn-ccm-install-cluster-profile
+        - --target=openshift-e2e-azure-ovn-ccm-install
         command:
         - ci-operator
         image: ci-operator:latest
@@ -311,7 +314,7 @@ presubmits:
         - mountPath: /secrets/ci-pull-credentials
           name: ci-pull-credentials
           readOnly: true
-        - mountPath: /usr/local/openshift-e2e-azure-ccm-install-cluster-profile
+        - mountPath: /usr/local/openshift-e2e-azure-ovn-ccm-install-cluster-profile
           name: cluster-profile
         - mountPath: /secrets/gcs
           name: gcs-credentials
@@ -342,13 +345,88 @@ presubmits:
       - name: result-aggregator
         secret:
           secretName: result-aggregator
-    trigger: (?m)^/test( | .* )openshift-e2e-azure-ccm-install,?($|\s.*)
+    trigger: (?m)^/test( | .* )openshift-e2e-azure-ovn-ccm-install,?($|\s.*)
+  - agent: kubernetes
+    always_run: false
+    branches:
+    - ^release-4\.13$
+    - ^release-4\.13-
+    cluster: build05
+    context: ci/prow/openshift-e2e-azure-ovn-techpreview-upgrade
+    decorate: true
+    labels:
+      ci-operator.openshift.io/cloud: azure4
+      ci-operator.openshift.io/cloud-cluster-profile: azure4
+      ci.openshift.io/generator: prowgen
+      pj-rehearse.openshift.io/can-be-rehearsed: "true"
+    name: pull-ci-openshift-cloud-provider-azure-release-4.13-openshift-e2e-azure-ovn-techpreview-upgrade
+    optional: true
+    path_alias: github.com/kubernetes-sigs/cloud-provider-azure
+    rerun_command: /test openshift-e2e-azure-ovn-techpreview-upgrade
+    skip_if_only_changed: ^docs/|\.md$|^(?:.*/)?(?:\.gitignore|OWNERS|PROJECT|LICENSE)$
+    spec:
+      containers:
+      - args:
+        - --gcs-upload-secret=/secrets/gcs/service-account.json
+        - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+        - --lease-server-credentials-file=/etc/boskos/credentials
+        - --report-credentials-file=/etc/report/credentials
+        - --secret-dir=/secrets/ci-pull-credentials
+        - --secret-dir=/usr/local/openshift-e2e-azure-ovn-techpreview-upgrade-cluster-profile
+        - --target=openshift-e2e-azure-ovn-techpreview-upgrade
+        command:
+        - ci-operator
+        image: ci-operator:latest
+        imagePullPolicy: Always
+        name: ""
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /etc/boskos
+          name: boskos
+          readOnly: true
+        - mountPath: /secrets/ci-pull-credentials
+          name: ci-pull-credentials
+          readOnly: true
+        - mountPath: /usr/local/openshift-e2e-azure-ovn-techpreview-upgrade-cluster-profile
+          name: cluster-profile
+        - mountPath: /secrets/gcs
+          name: gcs-credentials
+          readOnly: true
+        - mountPath: /etc/pull-secret
+          name: pull-secret
+          readOnly: true
+        - mountPath: /etc/report
+          name: result-aggregator
+          readOnly: true
+      serviceAccountName: ci-operator
+      volumes:
+      - name: boskos
+        secret:
+          items:
+          - key: credentials
+            path: credentials
+          secretName: boskos-credentials
+      - name: ci-pull-credentials
+        secret:
+          secretName: ci-pull-credentials
+      - name: cluster-profile
+        secret:
+          secretName: cluster-secrets-azure4
+      - name: pull-secret
+        secret:
+          secretName: registry-pull-credentials
+      - name: result-aggregator
+        secret:
+          secretName: result-aggregator
+    trigger: (?m)^/test( | .* )openshift-e2e-azure-ovn-techpreview-upgrade,?($|\s.*)
   - agent: kubernetes
     always_run: true
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/unit
     decorate: true
     labels:
@@ -396,7 +474,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/verify
     decorate: true
     labels:
@@ -444,7 +522,7 @@ presubmits:
     branches:
     - ^release-4\.13$
     - ^release-4\.13-
-    cluster: build01
+    cluster: build05
     context: ci/prow/verify-git-history
     decorate: true
     labels:

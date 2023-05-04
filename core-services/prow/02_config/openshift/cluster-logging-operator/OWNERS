@@ -8,14 +8,15 @@ filters:
   .*:
     approvers:
     - alanconway
+    - cahartma
     - jcantrill
     - periklis
     - vimalk78
     reviewers:
     - alanconway
     - cahartma
+    - clee2691
     - jcantrill
-    - pmoogi-redhat
     - syedriko
     - vimalk78
     - vparfonov

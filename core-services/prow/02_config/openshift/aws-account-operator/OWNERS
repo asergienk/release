@@ -11,10 +11,12 @@ approvers:
 - nautilux
 options: {}
 reviewers:
-- dastergon
+- alexvulaj
+- bergmannf
 - dkeohane
 - iamkirkbater
 - jharrington22
-- katherinelc321
 - mrwinston
 - nautilux
+- reedcort
+- t0masd

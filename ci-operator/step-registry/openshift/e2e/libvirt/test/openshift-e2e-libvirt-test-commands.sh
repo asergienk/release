@@ -5,11 +5,16 @@ set -o errexit
 set -o pipefail
 
 export PATH=/usr/libexec/origin:$PATH
+
 # Initial check
-if [[ "${CLUSTER_TYPE}" != "libvirt-ppc64le" ]] && [[ "${CLUSTER_TYPE}" != "libvirt-s390x" ]] ; then
-    echo "Unsupported cluster type '${CLUSTER_TYPE}'"
+case "${CLUSTER_TYPE}" in
+libvirt-ppc64le|libvirt-s390x|powervs*)
+    ;;
+*)
+    >&2 echo "Unsupported cluster type '${CLUSTER_TYPE}'"
     exit 1
-fi
+    ;;
+esac
 
 function upgrade() {
     set -x
@@ -317,7 +322,7 @@ sigStorageRegistry: quay.io/multiarch-k8s-e2e
 EOREGISTRY
 export KUBE_TEST_REPO_LIST=${SHARED_DIR}/kube-test-repo-list
         ;;
-    4.[789]|4.1[01])
+    4.[789]|4.10)
         TEST_ARGS="${TEST_ARGS:-} --from-repository=quay.io/multi-arch/community-e2e-images"
         ;;
     esac

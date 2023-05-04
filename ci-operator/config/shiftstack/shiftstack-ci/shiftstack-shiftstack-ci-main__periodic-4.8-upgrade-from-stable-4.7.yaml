@@ -28,20 +28,20 @@ resources:
       memory: 200Mi
 tests:
 - as: e2e-openstack-upgrade
-  interval: 72h
+  cron: 50 19 7,24 * *
   steps:
     cluster_profile: openstack-vexxhost
     env:
       TEST_TYPE: upgrade-conformance
-    workflow: openshift-upgrade-openstack-loki
+    workflow: openshift-upgrade-openstack
 - as: e2e-openstack-kuryr-upgrade
-  interval: 168h
+  cron: 52 15 13,24 * *
   steps:
     cluster_profile: openstack-kuryr
     env:
       NETWORK_TYPE: Kuryr
       TEST_UPGRADE_SUITE: none
-    workflow: openshift-upgrade-openstack-loki
+    workflow: openshift-upgrade-openstack
 zz_generated_metadata:
   branch: main
   org: shiftstack

@@ -99,7 +99,7 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "release-openshift-ocp-installer-e2e-aws-upi-4.10-priv"
+                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-aws-upi-priv"
             }
         },
         "azure": {
@@ -151,14 +151,6 @@
             "prowJob": {
                 "name": "periodic-ci-openshift-release-master-ci-4.10-e2e-azure-techpreview-serial-priv"
             }
-        },
-        "azure-upgrade-single-node": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-release-master-ci-4.10-e2e-azure-upgrade-ovn-single-node-priv"
-            },
-            "upgrade": true
         },
         "cnv": {
             "disabled": true,
@@ -223,7 +215,7 @@
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "release-openshift-ocp-installer-e2e-gcp-serial-4.10-priv"
+                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-gcp-serial-priv"
             }
         },
         "gcp-techpreview": {
@@ -240,19 +232,29 @@
                 "name": "periodic-ci-openshift-release-master-ci-4.10-e2e-gcp-techpreview-serial-priv"
             }
         },
-        "metal": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "release-openshift-ocp-installer-e2e-metal-4.10-priv"
-            }
-        },
         "metal-ipi": {
             "disabled": true,
             "optional": true,
             "prowJob": {
                 "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-priv"
             }
+        },
+        "metal-ipi-bm-upgrade": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-bm-upgrade-priv"
+            },
+            "upgrade": true
+        },
+        "metal-ipi-bm-upgrade-minor": {
+            "disabled": true,
+            "optional": true,
+            "prowJob": {
+                "name": "periodic-ci-openshift-release-master-nightly-4.10-upgrade-from-stable-4.9-e2e-metal-ipi-bm-upgrade-priv"
+            },
+            "upgrade": true,
+            "upgradeFrom": "PreviousMinor"
         },
         "metal-ipi-ovn-dualstack": {
             "disabled": true,
@@ -275,22 +277,12 @@
                 "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-serial-ipv4-priv"
             }
         },
-        "metal-ipi-upgrade": {
+        "metal-ipi-serial-virtualmedia": {
             "disabled": true,
             "optional": true,
             "prowJob": {
-                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-upgrade-priv"
-            },
-            "upgrade": true
-        },
-        "metal-ipi-upgrade-minor": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-release-master-nightly-4.10-upgrade-from-stable-4.9-e2e-metal-ipi-upgrade-priv"
-            },
-            "upgrade": true,
-            "upgradeFrom": "PreviousMinor"
+                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-serial-virtualmedia-priv"
+            }
         },
         "metal-ipi-upgrade-ovn-ipv6": {
             "disabled": true,
@@ -308,20 +300,6 @@
             },
             "upgrade": true,
             "upgradeFrom": "PreviousMinor"
-        },
-        "metal-ipi-virtualmedia": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "periodic-ci-openshift-release-master-nightly-4.10-e2e-metal-ipi-virtualmedia-priv"
-            }
-        },
-        "metal-serial": {
-            "disabled": true,
-            "optional": true,
-            "prowJob": {
-                "name": "release-openshift-ocp-installer-e2e-metal-serial-4.10-priv"
-            }
         },
         "openshift-dedicated-aws": {
             "disabled": true,

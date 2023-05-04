@@ -15,6 +15,16 @@ ref:
   - name: ADD_INGRESS_RECORDS_MANUALLY
     default: "no"
     documentation: "Allow create cluster fail with exit code zero, and then execute wait-for install complete in next step"
+  - name: ENABLE_AWS_LOCALZONE
+    default: "no"
+    documentation: "Enable worker nodes in Local Zone or not"
+  - name: LOCALZONE_WORKER_SCHEDULABLE
+    default: "no"
+    documentation: |-
+      If worker nodes in Local Zone are schedulable.
+  - name: OPENSHIFT_INSTALL_AWS_PUBLIC_ONLY
+    default: ""
+    documentation: "Whether to use public only subnets. Implies no NAT gateways. Requires a VPC to be configured prior to install"
   dependencies:
   - name: "release:latest"
     env: OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE

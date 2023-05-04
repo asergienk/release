@@ -1,23 +1,27 @@
 base_images:
-  base:
+  golangci-lint:
+    name: golangci-lint
+    namespace: ci
+    tag: v1.45.2
+  govulncheck:
+    name: govulncheck
+    namespace: ci
+    tag: latest
+  os:
     name: centos
     namespace: openshift
-    tag: "7"
-  openshift_release_golang-1.18:
-    name: release
-    namespace: openshift
-    tag: golang-1.18
+    tag: stream9
+binary_build_commands: make
 build_root:
-  image_stream_tag:
-    name: release
-    namespace: openshift
-    tag: golang-1.16
+  from_repository: true
 images:
-- from: base
+- dockerfile_path: images/Dockerfile
+  from: os
   inputs:
-    openshift_release_golang-1.18:
-      as:
-      - registry.ci.openshift.org/openshift/release:golang-1.18
+    bin:
+      paths:
+      - destination_dir: .
+        source_path: /go/src/github.com/openshift/ci-chat-bot/ci-chat-bot
   to: ci-chat-bot
 promotion:
   namespace: ci
@@ -27,6 +31,24 @@ resources:
     requests:
       cpu: 100m
       memory: 200Mi
+tests:
+- as: lint
+  commands: HOME=/tmp golangci-lint run
+  container:
+    from: golangci-lint
+- as: vendor
+  commands: make validate-vendor
+  container:
+    from: src
+- as: verify
+  commands: make verify
+  container:
+    from: src
+- as: govulncheck
+  commands: GOCACHE=$(mktemp -d) GOMODCACHE=$(mktemp -d) govulncheck ./...
+  container:
+    from: govulncheck
+  optional: true
 zz_generated_metadata:
   branch: master
   org: openshift

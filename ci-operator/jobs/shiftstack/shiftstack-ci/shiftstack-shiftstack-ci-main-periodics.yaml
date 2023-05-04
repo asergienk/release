@@ -62,59 +62,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
-  labels:
-    ci.openshift.io/generator: prowgen
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-cleanup-moc
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      report_template: ':sponge: MOC cleanup failed. <{{ .Status.URL }}|View logs>'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --report-credentials-file=/etc/report/credentials
-      - --target=cleanup-moc
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
   interval: 1h
   labels:
     ci.openshift.io/generator: prowgen
@@ -584,14 +531,14 @@ periodics:
   labels:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-monitor-moc
+  name: periodic-ci-shiftstack-shiftstack-ci-main-monitor-nerc-dev
   spec:
     containers:
     - args:
       - --gcs-upload-secret=/secrets/gcs/service-account.json
       - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
       - --report-credentials-file=/etc/report/credentials
-      - --target=monitor-moc
+      - --target=monitor-nerc-dev
       command:
       - ci-operator
       image: ci-operator:latest
@@ -761,6 +708,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 47 9  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -768,90 +716,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vh-mecha-az0
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-az0
-    ci-operator.openshift.io/variant: periodic-4.10
-    ci.openshift.io/generator: prowgen
-    job-release: "4.10"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.10-e2e-openstack-az
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-az-cluster-profile
-      - --target=e2e-openstack-az
-      - --variant=periodic-4.10
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-az-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vh-mecha-az0
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -927,6 +791,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 52 20  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -934,7 +799,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -1009,7 +873,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 20 1  * * 0
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1017,7 +882,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1093,6 +957,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 52 6  * * 0
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1100,7 +965,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -1176,6 +1040,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 31 5  * * 0
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1183,7 +1048,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -1259,6 +1123,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 54 6  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1266,7 +1131,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -1341,7 +1205,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 9 14  * * 0
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1349,7 +1214,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1424,7 +1288,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 37 11  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1432,7 +1297,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1508,6 +1372,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 51 14  * * 0
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1515,7 +1380,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -1590,7 +1454,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 12 10  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1598,7 +1463,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1674,6 +1538,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 10 10  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1681,7 +1546,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -1756,7 +1620,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 58 21  * * 6
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -1764,7 +1629,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -1839,165 +1703,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vh-mecha-az0
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-az0
-    ci-operator.openshift.io/variant: periodic-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-az
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-az-cluster-profile
-      - --target=e2e-openstack-az
-      - --variant=periodic-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-az-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vh-mecha-az0
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-ccm-install
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-ccm-install-cluster-profile
-      - --target=e2e-openstack-ccm-install
-      - --variant=periodic-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-ccm-install-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -2005,6 +1710,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-csi-cinder
   reporter_config:
     slack:
@@ -2080,7 +1786,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -2088,6 +1793,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-csi-manila
   reporter_config:
     slack:
@@ -2155,7 +1861,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2163,7 +1869,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -2171,6 +1876,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-fips
   reporter_config:
     slack:
@@ -2246,7 +1952,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -2254,6 +1959,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-kuryr
   reporter_config:
     slack:
@@ -2329,7 +2035,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-hwoffload
     ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
@@ -2337,6 +2042,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-nfv-hwoffload
   reporter_config:
     slack:
@@ -2412,7 +2118,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -2420,6 +2125,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-nfv-intel
   reporter_config:
     slack:
@@ -2495,7 +2201,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -2503,6 +2208,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-nfv-intel-kuryr
   reporter_config:
     slack:
@@ -2578,7 +2284,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -2586,6 +2291,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-nfv-mellanox
   reporter_config:
     slack:
@@ -2653,7 +2359,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2661,7 +2367,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -2669,6 +2374,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-ovn
   reporter_config:
     slack:
@@ -2736,7 +2442,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2744,7 +2450,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -2752,6 +2457,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-parallel
   reporter_config:
     slack:
@@ -2827,7 +2533,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -2835,6 +2540,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-proxy
   reporter_config:
     slack:
@@ -2902,7 +2608,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -2910,7 +2616,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -2918,6 +2623,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-serial
   reporter_config:
     slack:
@@ -2993,173 +2699,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-techpreview-parallel
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-techpreview-parallel-cluster-profile
-      - --target=e2e-openstack-techpreview-parallel
-      - --variant=periodic-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-techpreview-parallel-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.11
-    ci.openshift.io/generator: prowgen
-    job-release: "4.11"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-e2e-openstack-techpreview-serial
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-techpreview-serial-cluster-profile
-      - --target=e2e-openstack-techpreview-serial
-      - --variant=periodic-4.11
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-techpreview-serial-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -3167,6 +2706,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 252h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-upgrade-from-stable-4.10-e2e-openstack-kuryr-upgrade
   reporter_config:
     slack:
@@ -3234,7 +2774,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -3242,7 +2782,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -3250,6 +2789,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.11"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 168h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.11-upgrade-from-stable-4.10-e2e-openstack-upgrade
   reporter_config:
     slack:
@@ -3325,15 +2865,15 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
-    ci-operator.openshift.io/cloud: openstack-vh-mecha-az0
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-az0
+    ci-operator.openshift.io/cloud: openstack-hwoffload
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
     ci-operator.openshift.io/variant: periodic-4.12
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-az
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-additional-ipv6-network
   reporter_config:
     slack:
       channel: '#shiftstack-bot'
@@ -3350,8 +2890,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-az-cluster-profile
-      - --target=e2e-openstack-az
+      - --secret-dir=/usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
+      - --target=e2e-openstack-additional-ipv6-network
       - --variant=periodic-4.12
       command:
       - ci-operator
@@ -3368,7 +2908,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-openstack-az-cluster-profile
+      - mountPath: /usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -3392,7 +2932,7 @@ periodics:
         secretName: ci-pull-credentials
     - name: cluster-profile
       secret:
-        secretName: cluster-secrets-openstack-vh-mecha-az0
+        secretName: cluster-secrets-openstack-hwoffload
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials
@@ -3408,90 +2948,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-ccm-install
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-ccm-install-cluster-profile
-      - --target=e2e-openstack-ccm-install
-      - --variant=periodic-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-ccm-install-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -3499,6 +2955,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-csi-cinder
   reporter_config:
     slack:
@@ -3574,7 +3031,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -3582,6 +3038,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-csi-manila
   reporter_config:
     slack:
@@ -3649,7 +3106,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -3657,7 +3114,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -3665,6 +3121,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-fips
   reporter_config:
     slack:
@@ -3740,7 +3197,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -3748,6 +3204,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-kuryr
   reporter_config:
     slack:
@@ -3823,7 +3280,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-hwoffload
     ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
@@ -3831,6 +3287,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-nfv-hwoffload
   reporter_config:
     slack:
@@ -3906,7 +3363,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -3914,6 +3370,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-nfv-intel
   reporter_config:
     slack:
@@ -3989,7 +3446,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -3997,6 +3453,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-nfv-intel-kuryr
   reporter_config:
     slack:
@@ -4072,7 +3529,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -4080,6 +3536,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-nfv-mellanox
   reporter_config:
     slack:
@@ -4147,7 +3604,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -4155,7 +3612,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -4163,7 +3619,8 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-ovn
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-ovn-appcreds
   reporter_config:
     slack:
       channel: '#shiftstack-bot'
@@ -4180,8 +3637,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-ovn-cluster-profile
-      - --target=e2e-openstack-ovn
+      - --secret-dir=/usr/local/e2e-openstack-ovn-appcreds-cluster-profile
+      - --target=e2e-openstack-ovn-appcreds
       - --variant=periodic-4.12
       command:
       - ci-operator
@@ -4198,7 +3655,173 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-openstack-ovn-cluster-profile
+      - mountPath: /usr/local/e2e-openstack-ovn-appcreds-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.12
+    ci.openshift.io/generator: prowgen
+    job-release: "4.12"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-ovn-parallel
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-parallel-cluster-profile
+      - --target=e2e-openstack-ovn-parallel
+      - --variant=periodic-4.12
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-parallel-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.12
+    ci.openshift.io/generator: prowgen
+    job-release: "4.12"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-ovn-serial
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-serial-cluster-profile
+      - --target=e2e-openstack-ovn-serial
+      - --variant=periodic-4.12
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-serial-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -4238,90 +3861,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-parallel
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-parallel-cluster-profile
-      - --target=e2e-openstack-parallel
-      - --variant=periodic-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-parallel-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -4329,6 +3868,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-proxy
   reporter_config:
     slack:
@@ -4396,7 +3936,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -4404,7 +3944,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -4412,7 +3951,8 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-serial
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-sdn
   reporter_config:
     slack:
       channel: '#shiftstack-bot'
@@ -4429,8 +3969,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-serial-cluster-profile
-      - --target=e2e-openstack-serial
+      - --secret-dir=/usr/local/e2e-openstack-sdn-cluster-profile
+      - --target=e2e-openstack-sdn
       - --variant=periodic-4.12
       command:
       - ci-operator
@@ -4447,7 +3987,90 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-openstack-serial-cluster-profile
+      - mountPath: /usr/local/e2e-openstack-sdn-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.12
+    ci.openshift.io/generator: prowgen
+    job-release: "4.12"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 240h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-upi
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-upi-cluster-profile
+      - --target=e2e-openstack-upi
+      - --variant=periodic-4.12
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-upi-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -4487,173 +4110,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-techpreview-parallel
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-techpreview-parallel-cluster-profile
-      - --target=e2e-openstack-techpreview-parallel
-      - --variant=periodic-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-techpreview-parallel-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 24h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vexxhost
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
-    ci-operator.openshift.io/variant: periodic-4.12
-    ci.openshift.io/generator: prowgen
-    job-release: "4.12"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-e2e-openstack-techpreview-serial
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-techpreview-serial-cluster-profile
-      - --target=e2e-openstack-techpreview-serial
-      - --variant=periodic-4.12
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-techpreview-serial-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -4661,6 +4117,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 252h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-upgrade-from-stable-4.11-e2e-openstack-kuryr-upgrade
   reporter_config:
     slack:
@@ -4728,7 +4185,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -4736,7 +4193,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -4744,7 +4200,8 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.12"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-upgrade-from-stable-4.11-e2e-openstack-upgrade
+  minimum_interval: 168h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.12-upgrade-from-stable-4.11-e2e-openstack-sdn-upgrade
   reporter_config:
     slack:
       channel: '#shiftstack-bot'
@@ -4761,8 +4218,8 @@ periodics:
       - --lease-server-credentials-file=/etc/boskos/credentials
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-upgrade-cluster-profile
-      - --target=e2e-openstack-upgrade
+      - --secret-dir=/usr/local/e2e-openstack-sdn-upgrade-cluster-profile
+      - --target=e2e-openstack-sdn-upgrade
       - --variant=periodic-4.12-upgrade-from-stable-4.11
       command:
       - ci-operator
@@ -4779,7 +4236,7 @@ periodics:
       - mountPath: /secrets/ci-pull-credentials
         name: ci-pull-credentials
         readOnly: true
-      - mountPath: /usr/local/e2e-openstack-upgrade-cluster-profile
+      - mountPath: /usr/local/e2e-openstack-sdn-upgrade-cluster-profile
         name: cluster-profile
       - mountPath: /secrets/gcs
         name: gcs-credentials
@@ -4819,7 +4276,2994 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
+  labels:
+    ci-operator.openshift.io/cloud: openstack-hwoffload
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-additional-ipv6-network
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
+      - --target=e2e-openstack-additional-ipv6-network
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-hwoffload
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-csi-cinder
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-csi-cinder-cluster-profile
+      - --target=e2e-openstack-csi-cinder
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-csi-cinder-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-csi-manila
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-csi-manila-cluster-profile
+      - --target=e2e-openstack-csi-manila
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-csi-manila-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 168h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-externallb-techpreview
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-externallb-techpreview-cluster-profile
+      - --target=e2e-openstack-externallb-techpreview
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-externallb-techpreview-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-fips
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-fips-cluster-profile
+      - --target=e2e-openstack-fips
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-fips-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-kuryr
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-kuryr
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-kuryr-cluster-profile
+      - --target=e2e-openstack-kuryr
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-kuryr-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-kuryr
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-hwoffload
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-nfv-hwoffload
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-hwoffload-cluster-profile
+      - --target=e2e-openstack-nfv-hwoffload
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-hwoffload-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-hwoffload
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-nfv-intel
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-intel-cluster-profile
+      - --target=e2e-openstack-nfv-intel
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-intel-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-nfv-intel-kuryr
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-intel-kuryr-cluster-profile
+      - --target=e2e-openstack-nfv-intel-kuryr
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-intel-kuryr-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-nfv-mellanox
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-mellanox-cluster-profile
+      - --target=e2e-openstack-nfv-mellanox
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-mellanox-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-ovn-parallel
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-parallel-cluster-profile
+      - --target=e2e-openstack-ovn-parallel
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-parallel-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-ovn-password
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-password-cluster-profile
+      - --target=e2e-openstack-ovn-password
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-password-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-ovn-serial
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-serial-cluster-profile
+      - --target=e2e-openstack-ovn-serial
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-serial-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-proxy
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-proxy-cluster-profile
+      - --target=e2e-openstack-proxy
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-proxy-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-sdn
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-sdn-cluster-profile
+      - --target=e2e-openstack-sdn
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-sdn-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 240h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-e2e-openstack-upi
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-upi-cluster-profile
+      - --target=e2e-openstack-upi
+      - --variant=periodic-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-upi-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-kuryr
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
+    ci-operator.openshift.io/variant: periodic-4.13-upgrade-from-stable-4.12
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 252h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-upgrade-from-stable-4.12-e2e-openstack-kuryr-upgrade
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-kuryr-upgrade-cluster-profile
+      - --target=e2e-openstack-kuryr-upgrade
+      - --variant=periodic-4.13-upgrade-from-stable-4.12
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-kuryr-upgrade-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-kuryr
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.13-upgrade-from-stable-4.12
+    ci.openshift.io/generator: prowgen
+    job-release: "4.13"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 168h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.13-upgrade-from-stable-4.12-e2e-openstack-ovn-upgrade
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-upgrade-cluster-profile
+      - --target=e2e-openstack-ovn-upgrade
+      - --variant=periodic-4.13-upgrade-from-stable-4.12
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-upgrade-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-hwoffload
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-additional-ipv6-network
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
+      - --target=e2e-openstack-additional-ipv6-network
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-additional-ipv6-network-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-hwoffload
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-csi-cinder
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-csi-cinder-cluster-profile
+      - --target=e2e-openstack-csi-cinder
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-csi-cinder-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-csi-manila
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-csi-manila-cluster-profile
+      - --target=e2e-openstack-csi-manila
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-csi-manila-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 168h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-externallb-techpreview
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-externallb-techpreview-cluster-profile
+      - --target=e2e-openstack-externallb-techpreview
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-externallb-techpreview-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-fips
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-fips-cluster-profile
+      - --target=e2e-openstack-fips
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-fips-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-kuryr
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-kuryr
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-kuryr-cluster-profile
+      - --target=e2e-openstack-kuryr
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-kuryr-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-kuryr
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-hwoffload
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-hwoffload
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 48h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-nfv-hwoffload
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-hwoffload-cluster-profile
+      - --target=e2e-openstack-nfv-hwoffload
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-hwoffload-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-hwoffload
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-nfv-intel
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-intel-cluster-profile
+      - --target=e2e-openstack-nfv-intel
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-intel-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-nfv-intel-kuryr
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-intel-kuryr-cluster-profile
+      - --target=e2e-openstack-nfv-intel-kuryr
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-intel-kuryr-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-nfv
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-nfv-mellanox
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-nfv-mellanox-cluster-profile
+      - --target=e2e-openstack-nfv-mellanox
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-nfv-mellanox-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-nfv
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-ovn-parallel
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-parallel-cluster-profile
+      - --target=e2e-openstack-ovn-parallel
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-parallel-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-ovn-password
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-password-cluster-profile
+      - --target=e2e-openstack-ovn-password
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-password-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 24h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-ovn-serial
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-serial-cluster-profile
+      - --target=e2e-openstack-ovn-serial
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-serial-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vh-mecha-central
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-proxy
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-proxy-cluster-profile
+      - --target=e2e-openstack-proxy
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-proxy-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vh-mecha-central
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 72h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-sdn
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-sdn-cluster-profile
+      - --target=e2e-openstack-sdn
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-sdn-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 240h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-e2e-openstack-upi
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-upi-cluster-profile
+      - --target=e2e-openstack-upi
+      - --variant=periodic-4.14
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-upi-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build01
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-kuryr
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
+    ci-operator.openshift.io/variant: periodic-4.14-upgrade-from-stable-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 252h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-upgrade-from-stable-4.13-e2e-openstack-kuryr-upgrade
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-kuryr-upgrade-cluster-profile
+      - --target=e2e-openstack-kuryr-upgrade
+      - --variant=periodic-4.14-upgrade-from-stable-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-kuryr-upgrade-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-kuryr
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
+  labels:
+    ci-operator.openshift.io/cloud: openstack-vexxhost
+    ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
+    ci-operator.openshift.io/variant: periodic-4.14-upgrade-from-stable-4.13
+    ci.openshift.io/generator: prowgen
+    job-release: "4.14"
+    pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 168h
+  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.14-upgrade-from-stable-4.13-e2e-openstack-ovn-upgrade
+  reporter_config:
+    slack:
+      channel: '#shiftstack-bot'
+      job_states_to_report:
+      - failure
+      - error
+      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
+        <{{.Status.URL}}|View logs> :volcano:'
+  spec:
+    containers:
+    - args:
+      - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
+      - --lease-server-credentials-file=/etc/boskos/credentials
+      - --report-credentials-file=/etc/report/credentials
+      - --secret-dir=/secrets/ci-pull-credentials
+      - --secret-dir=/usr/local/e2e-openstack-ovn-upgrade-cluster-profile
+      - --target=e2e-openstack-ovn-upgrade
+      - --variant=periodic-4.14-upgrade-from-stable-4.13
+      command:
+      - ci-operator
+      image: ci-operator:latest
+      imagePullPolicy: Always
+      name: ""
+      resources:
+        requests:
+          cpu: 10m
+      volumeMounts:
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
+      - mountPath: /secrets/ci-pull-credentials
+        name: ci-pull-credentials
+        readOnly: true
+      - mountPath: /usr/local/e2e-openstack-ovn-upgrade-cluster-profile
+        name: cluster-profile
+      - mountPath: /secrets/gcs
+        name: gcs-credentials
+        readOnly: true
+      - mountPath: /etc/pull-secret
+        name: pull-secret
+        readOnly: true
+      - mountPath: /etc/report
+        name: result-aggregator
+        readOnly: true
+    serviceAccountName: ci-operator
+    volumes:
+    - name: boskos
+      secret:
+        items:
+        - key: credentials
+          path: credentials
+        secretName: boskos-credentials
+    - name: ci-pull-credentials
+      secret:
+        secretName: ci-pull-credentials
+    - name: cluster-profile
+      secret:
+        secretName: cluster-secrets-openstack-vexxhost
+    - name: pull-secret
+      secret:
+        secretName: registry-pull-credentials
+    - name: result-aggregator
+      secret:
+        secretName: result-aggregator
+- agent: kubernetes
+  cluster: build05
+  decorate: true
+  decoration_config:
+    skip_cloning: true
+  extra_refs:
+  - base_ref: main
+    org: shiftstack
+    repo: shiftstack-ci
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -4827,6 +7271,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.6"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.6-e2e-openstack-parallel
   reporter_config:
     slack:
@@ -4894,7 +7339,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -4902,7 +7347,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -4910,6 +7354,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.6"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.6-e2e-openstack-serial
   reporter_config:
     slack:
@@ -4985,7 +7430,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -4993,6 +7437,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.7"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.7-e2e-openstack-csi-cinder
   reporter_config:
     slack:
@@ -5061,7 +7506,6 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
-  cron: 0 6 * * 2
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5076,6 +7520,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.7"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.7-e2e-openstack-kuryr
   reporter_config:
     slack:
@@ -5143,7 +7588,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5151,7 +7596,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5159,6 +7603,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.7"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.7-e2e-openstack-parallel
   reporter_config:
     slack:
@@ -5226,7 +7671,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5234,7 +7679,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5242,6 +7686,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.7"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.7-e2e-openstack-serial
   reporter_config:
     slack:
@@ -5309,7 +7754,7 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5317,7 +7762,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5325,6 +7769,7 @@ periodics:
     ci.openshift.io/generator: prowgen
     job-release: "4.7"
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
+  minimum_interval: 8766h
   name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.7-upgrade-from-stable-4.6-e2e-openstack-upgrade
   spec:
     containers:
@@ -5385,6 +7830,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 40 5 13,23 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5392,7 +7838,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -5550,7 +7995,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 19 19 11,25 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5558,7 +8004,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5633,7 +8078,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 43 22 7,24 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5641,7 +8087,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5717,6 +8162,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 52 15 13,24 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5724,7 +8170,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 168h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -5799,7 +8244,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 50 19 7,24 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5807,7 +8253,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -5875,6 +8320,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 2 0 3,19 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -5882,90 +8328,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
-  labels:
-    ci-operator.openshift.io/cloud: openstack-vh-mecha-az0
-    ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-az0
-    ci-operator.openshift.io/variant: periodic-4.9
-    ci.openshift.io/generator: prowgen
-    job-release: "4.9"
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-periodic-4.9-e2e-openstack-az
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      - error
-      report_template: ':volcano: Job *{{.Spec.Job}}* ended with *{{.Status.State}}*.
-        <{{.Status.URL}}|View logs> :volcano:'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --lease-server-credentials-file=/etc/boskos/credentials
-      - --report-credentials-file=/etc/report/credentials
-      - --secret-dir=/secrets/ci-pull-credentials
-      - --secret-dir=/usr/local/e2e-openstack-az-cluster-profile
-      - --target=e2e-openstack-az
-      - --variant=periodic-4.9
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /etc/boskos
-        name: boskos
-        readOnly: true
-      - mountPath: /secrets/ci-pull-credentials
-        name: ci-pull-credentials
-        readOnly: true
-      - mountPath: /usr/local/e2e-openstack-az-cluster-profile
-        name: cluster-profile
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
-    - name: boskos
-      secret:
-        items:
-        - key: credentials
-          path: credentials
-        secretName: boskos-credentials
-    - name: ci-pull-credentials
-      secret:
-        secretName: ci-pull-credentials
-    - name: cluster-profile
-      secret:
-        secretName: cluster-secrets-openstack-vh-mecha-az0
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -6040,7 +8402,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 29 3 8,22 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6048,7 +8411,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 48h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -6124,6 +8486,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 54 19 10,26 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6131,7 +8494,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -6207,6 +8569,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 0 4 1,17 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6214,7 +8577,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -6290,6 +8652,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 53 13 2,26 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6297,7 +8660,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-nfv
     ci-operator.openshift.io/cloud-cluster-profile: openstack-nfv
@@ -6372,7 +8734,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 38 8 8,27 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6380,7 +8743,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -6455,7 +8817,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 21 14 13,26 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6463,7 +8826,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -6539,6 +8901,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 46 7 1,22 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6546,7 +8909,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 72h
   labels:
     ci-operator.openshift.io/cloud: openstack-vh-mecha-central
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vh-mecha-central
@@ -6621,7 +8983,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 39 3 8,23 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6629,7 +8992,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -6705,6 +9067,7 @@ periodics:
         secretName: result-aggregator
 - agent: kubernetes
   cluster: build01
+  cron: 31 3 1,26 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6712,7 +9075,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 168h
   labels:
     ci-operator.openshift.io/cloud: openstack-kuryr
     ci-operator.openshift.io/cloud-cluster-profile: openstack-kuryr
@@ -6787,7 +9149,8 @@ periodics:
       secret:
         secretName: result-aggregator
 - agent: kubernetes
-  cluster: build01
+  cluster: build05
+  cron: 48 2 9,28 * *
   decorate: true
   decoration_config:
     skip_cloning: true
@@ -6795,7 +9158,6 @@ periodics:
   - base_ref: main
     org: shiftstack
     repo: shiftstack-ci
-  interval: 24h
   labels:
     ci-operator.openshift.io/cloud: openstack-vexxhost
     ci-operator.openshift.io/cloud-cluster-profile: openstack-vexxhost
@@ -6855,60 +9217,6 @@ periodics:
     - name: cluster-profile
       secret:
         secretName: cluster-secrets-openstack-vexxhost
-    - name: pull-secret
-      secret:
-        secretName: registry-pull-credentials
-    - name: result-aggregator
-      secret:
-        secretName: result-aggregator
-- agent: kubernetes
-  cluster: build01
-  decorate: true
-  decoration_config:
-    skip_cloning: true
-  extra_refs:
-  - base_ref: main
-    org: shiftstack
-    repo: shiftstack-ci
-  interval: 1h
-  labels:
-    ci.openshift.io/generator: prowgen
-    pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  name: periodic-ci-shiftstack-shiftstack-ci-main-quotas-moc
-  reporter_config:
-    slack:
-      channel: '#shiftstack-bot'
-      job_states_to_report:
-      - failure
-      report_template: ':low-battery: Quota check failed on MOC. <{{ .Status.URL }}|View
-        logs>'
-  spec:
-    containers:
-    - args:
-      - --gcs-upload-secret=/secrets/gcs/service-account.json
-      - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
-      - --report-credentials-file=/etc/report/credentials
-      - --target=quotas-moc
-      command:
-      - ci-operator
-      image: ci-operator:latest
-      imagePullPolicy: Always
-      name: ""
-      resources:
-        requests:
-          cpu: 10m
-      volumeMounts:
-      - mountPath: /secrets/gcs
-        name: gcs-credentials
-        readOnly: true
-      - mountPath: /etc/pull-secret
-        name: pull-secret
-        readOnly: true
-      - mountPath: /etc/report
-        name: result-aggregator
-        readOnly: true
-    serviceAccountName: ci-operator
-    volumes:
     - name: pull-secret
       secret:
         secretName: registry-pull-credentials

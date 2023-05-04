@@ -1,0 +1,11 @@
+approve:
+- commandHelpLink: ""
+  repos:
+  - openshift/lvm-operator
+  require_self_approval: false
+plugins:
+  openshift/lvm-operator:
+    plugins:
+    - approve
+    - size
+    - welcome

@@ -1,12 +1,11 @@
 releases:
   initial:
     release:
-      channel: fast
+      channel: candidate
       version: "4.10"
   intermediate:
-    candidate:
-      product: ocp
-      stream: nightly
+    release:
+      channel: candidate
       version: "4.11"
   latest:
     candidate:
@@ -19,13 +18,16 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
-- as: e2e-aws-upgrade-paused
+- as: e2e-aws-sdn-upgrade-paused
   interval: 72h
   steps:
     cluster_profile: aws-2
     env:
       BASE_DOMAIN: aws-2.ci.openshift.org
       TEST_UPGRADE_OPTIONS: ""
+    observers:
+      enable:
+      - observers-resource-watch
     test:
     - as: set-releases-release
       commands: echo "${RELEASE_IMAGE_INTERMEDIATE},${RELEASE_IMAGE_LATEST}" > ${SHARED_DIR}/override-upgrade

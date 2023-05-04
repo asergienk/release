@@ -5,9 +5,14 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- dofinn
+- mitalibhalla
+- supreeth7
 - t0masd
 options: {}
 reviewers:
-- dofinn
+- dee-6777
+- deepanshu276
+- devppratik
+- mitalibhalla
+- supreeth7
 - t0masd

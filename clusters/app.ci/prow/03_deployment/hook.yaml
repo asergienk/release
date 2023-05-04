@@ -112,7 +112,7 @@ items:
         serviceAccountName: hook
         containers:
         - name: hook
-          image: gcr.io/k8s-prow/hook:v20220719-54797060e1
+          image: gcr.io/k8s-prow/hook:v20230424-4981841b2f
           args:
           - --config-path=/etc/config/config.yaml
           - --supplemental-prow-config-dir=/etc/config
@@ -132,6 +132,7 @@ items:
           - --projected-token-file=/var/sa-token/token
           - --supplemental-plugin-config-dir=/etc/plugins
           - --kubeconfig-dir=/etc/build-farm-credentials
+          - --kubeconfig-suffix=config
           env:
           - name: GITHUB_APP_ID
             valueFrom:
@@ -222,7 +223,13 @@ items:
             - configMap:
                 name: job-config-master-presubmits
             - configMap:
+                name: job-config-1.x
+            - configMap:
+                name: job-config-2.x
+            - configMap:
                 name: job-config-3.x
+            - configMap:
+                name: job-config-4.0
             - configMap:
                 name: job-config-4.1
             - configMap:
@@ -249,6 +256,10 @@ items:
                 name: job-config-4.12
             - configMap:
                 name: job-config-4.13
+            - configMap:
+                name: job-config-4.14
+            - configMap:
+                name: job-config-4.15
         - name: build-farm-credentials
           secret:
             secretName: hook

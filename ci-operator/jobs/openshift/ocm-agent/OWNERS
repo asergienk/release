@@ -6,15 +6,15 @@
 
 approvers:
 - bmeng
-- dofinn
 - mrbarge
+- ravitri
 options: {}
 reviewers:
 - a7vicky
 - bmeng
-- dofinn
 - jwai7
 - mrbarge
 - ravitri
 - rendhalver
-- t0masd
+- shitaljante
+- weherdh

@@ -15,14 +15,21 @@ base_images:
     name: builder
     namespace: ocp
     tag: rhel-8-golang-1.18-openshift-4.12
+  ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+    name: builder
+    namespace: ocp
+    tag: rhel-8-golang-1.19-openshift-4.12
 build_root:
   image_stream_tag:
     name: release
     namespace: openshift
-    tag: golang-1.17
+    tag: golang-1.18
 canonical_go_repository: github.com/openshift/ovn-kubernetes
 images:
-- from: base
+- dockerfile_path: Dockerfile.base
+  from: base
+  to: ovn-kubernetes-base
+- from: ovn-kubernetes-base
   inputs:
     ocp_4.12_cli:
       as:
@@ -31,8 +38,17 @@ images:
       as:
       - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
   to: ovn-kubernetes
+- dockerfile_path: Dockerfile.microshift
+  from: ovn-kubernetes-base
+  inputs:
+    ocp_builder_rhel-8-golang-1.18-openshift-4.12:
+      as:
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.18-openshift-4.12
+    ocp_builder_rhel-8-golang-1.19-openshift-4.12:
+      as:
+      - registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.19-openshift-4.12
+  to: ovn-kubernetes-microshift
 promotion:
-  disabled: true
   name: 4.12-priv
   namespace: ocp-private
 releases:
@@ -59,15 +75,18 @@ tests:
       GATEWAY_MODE: local
     workflow: openshift-e2e-aws-ovn
 - as: e2e-metal-ipi-ovn-ipv4
+  cluster: build05
   optional: true
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv4
 - as: e2e-metal-ipi-ovn-ipv6
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-ipv6
 - as: e2e-metal-ipi-ovn-dualstack
+  cluster: build05
   steps:
     cluster_profile: equinix-ocp-metal
     workflow: baremetalds-e2e-ovn-dualstack
@@ -81,7 +100,6 @@ tests:
     cluster_profile: aws
     workflow: openshift-e2e-aws-ovn
 - as: e2e-aws-ovn-windows
-  optional: true
   steps:
     cluster_profile: aws
     test:
@@ -115,7 +133,6 @@ tests:
     cluster_profile: gcp-openshift-gce-devel-ci-2
     workflow: openshift-e2e-gcp-ovn
 - as: e2e-vsphere-windows
-  optional: true
   steps:
     cluster_profile: vsphere
     test:
@@ -141,7 +158,7 @@ tests:
     env:
       GATEWAY_MODE: local
     workflow: openshift-e2e-aws-ovn-local-to-shared-gateway-mode-migration
-- as: e2e-hypershift
+- as: e2e-aws-ovn-hypershift
   optional: true
   steps:
     workflow: hypershift-aws-conformance

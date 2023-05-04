@@ -4,6 +4,26 @@ set -o pipefail
 
 ARTIFACT_DIR=${ARTIFACT_DIR:-/tmp}
 
+function detect_version() {
+    CLUSTER_VERSION=$( oc get clusterversion version -o jsonpath='{.status.desired.version}' )
+    MINOR_VERSION=$( echo $CLUSTER_VERSION | awk --field-separator=. '{print $2}' )
+
+    case $MINOR_VERSION in
+        8 | 9 | 10 | 11 )
+            MIGRATED_FEATURE_GATE="CSIMigrationAWS"
+            MIGRATED_PLUGIN="kubernetes.io/aws-ebs"
+            ;;
+        12 )
+            # Use vSphere for 4.12 OCP releases, it will be GA as the last.
+            MIGRATED_FEATURE_GATE="CSIMigrationvSphere"
+            MIGRATED_PLUGIN="kubernetes.io/vsphere-volume"
+            ;;
+        *)
+            # Migration check is not needed on these versions
+            return 1
+    esac
+}
+
 function list_kcms() {
     # Tolerate errors from API server. Nodes and kube-controller-manager are restarted during this process.
     while true; do
@@ -16,7 +36,7 @@ function kcm_migrated {
 
     # This will return 0 when the migration is enabled in the KCM pod.
     # Any API server failure results in nozero exit code, i.e. not migrated KCM.
-    oc -n openshift-kube-controller-manager get pod $POD -o custom-columns=NAME:.spec.containers[0].args --no-headers  | fgrep -- "--feature-gates=CSIMigrationAWS=true" > /dev/null
+    oc -n openshift-kube-controller-manager get pod $POD -o custom-columns=NAME:.spec.containers[0].args --no-headers  | fgrep -- "--feature-gates=$MIGRATED_FEATURE_GATE=true" > /dev/null
 }
 
 function wait_for_kcms() {
@@ -57,10 +77,9 @@ function list_nodes() {
 function node_migrated {
     local NODE=$1
 
-    # This will return 0 when the migration is enabled in the node. Using AWS just as one representative,
-    # all plugins should be migrated.
+    # This will return 0 when the migration is enabled in the node.
     # Any API server failure results in nozero exit code, i.e. not migrated node.
-    oc get csinode $NODE -o yaml | grep -- "storage.alpha.kubernetes.io/migrated-plugins:.*kubernetes.io/aws-ebs" > /dev/null
+    oc get csinode $NODE -o yaml | grep -- "storage.alpha.kubernetes.io/migrated-plugins:.*$MIGRATED_PLUGIN" > /dev/null
 }
 
 function wait_for_nodes() {
@@ -153,6 +172,10 @@ function wait_for_stable_cluster() {
     done
 }
 
-wait_for_kcms
-wait_for_nodes
-wait_for_stable_cluster
+if detect_version ; then
+    wait_for_kcms
+    wait_for_nodes
+    wait_for_stable_cluster
+else
+    echo "Wait for CSI migration not needed on this version"
+fi

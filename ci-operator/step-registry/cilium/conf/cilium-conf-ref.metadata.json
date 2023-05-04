@@ -2,9 +2,7 @@
 	"path": "cilium/conf/cilium-conf-ref.yaml",
 	"owners": {
 		"approvers": [
-			"wking",
 			"vrutkovs",
-			"abhinavdahiya",
 			"deads2k"
 		]
 	}

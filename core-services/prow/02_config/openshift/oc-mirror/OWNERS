@@ -5,13 +5,15 @@
 # See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
 
 approvers:
-- afflom
 - dinhxuanvu
-- jpower432
+- lmzuccarelli
+- sherine-k
 - soltysh
 options: {}
 reviewers:
-- afflom
+- aguidirh
 - deejross
 - dinhxuanvu
 - jpower432
+- lmzuccarelli
+- sherine-k

@@ -1,13 +1,15 @@
 #!/bin/bash
 
+
 set -o nounset
-# set -o errexit
-# set -o pipefail
+set -o errexit
+set -o pipefail
 
-curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 -o /tmp/yq && chmod +x /tmp/yq
+CLUSTER_NAME="$(yq-go r "${SHARED_DIR}/install-config.yaml" 'metadata.name')"
+BASE_DOMAIN="$(yq-go r "${SHARED_DIR}/install-config.yaml" 'baseDomain')"
 
-CLUSTER_NAME="$(/tmp/yq r "${SHARED_DIR}/install-config.yaml" 'metadata.name')"
-BASE_DOMAIN="$(/tmp/yq r "${SHARED_DIR}/install-config.yaml" 'baseDomain')"
+which openshift-install
+openshift-install version
 
 function populate_artifact_dir() {
   set +e
@@ -19,11 +21,6 @@ function populate_artifact_dir() {
     s/X-Auth-Token.*/X-Auth-Token REDACTED/;
     s/UserData:.*,/UserData: REDACTED,/;
     ' "${dir}/.openshift_install.log" > "${ARTIFACT_DIR}/.openshift_install.log"
-  case "${CLUSTER_TYPE}" in
-    aws|aws-arm64|aws-usgov)
-      grep -Po 'Instance ID: \Ki\-\w+' "${dir}/.openshift_install.log" > "${SHARED_DIR}/aws-instance-ids.txt";;
-  *) >&2 echo "Unsupported cluster type '${CLUSTER_TYPE}' to collect machine IDs"
-  esac
 }
 
 function prepare_next_steps() {
@@ -39,6 +36,41 @@ function prepare_next_steps() {
       "${dir}/auth/kubeconfig" \
       "${dir}/auth/kubeadmin-password" \
       "${dir}/metadata.json"
+  
+  # For private cluster, the bootstrap address is private, installer cann't gather log-bundle directly even if proxy is set
+  # the workaround is gather log-bundle from bastion host
+  # copying install folder to bastion host for gathering logs
+  publish=$(grep "publish:" ${SHARED_DIR}/install-config.yaml | awk '{print $2}')
+  if [[ "${publish}" == "Internal" ]] && [[ ! $(grep "Bootstrap status: complete" "${dir}/.openshift_install.log") ]]; then
+    echo "Copying install dir to bastion host."
+    echo > "${SHARED_DIR}/REQUIRE_INSTALL_DIR_TO_BASTION"
+    if [[ -s "${SHARED_DIR}/bastion_ssh_user" ]] && [[ -s "${SHARED_DIR}/bastion_public_address" ]]; then
+      bastion_ssh_user=$(head -n 1 "${SHARED_DIR}/bastion_ssh_user")
+      bastion_public_address=$(head -n 1 "${SHARED_DIR}/bastion_public_address")
+      if [[ -n "${bastion_ssh_user}" ]] && [[ -n "${bastion_public_address}" ]]; then
+
+        # Ensure our UID, which is randomly generated, is in /etc/passwd. This is required
+        # to be able to SSH.
+        if ! whoami &> /dev/null; then
+          if [[ -w /etc/passwd ]]; then
+            echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
+          else
+            echo "/etc/passwd is not writeable, and user matching this uid is not found."
+            exit 1
+          fi
+        fi
+
+        cmd="scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i \"${CLUSTER_PROFILE_DIR}/ssh-privatekey\" -r ${dir} ${bastion_ssh_user}@${bastion_public_address}:/tmp/installer"
+        echo "Running Command: ${cmd}"
+        eval "${cmd}"
+        echo > "${SHARED_DIR}/COPIED_INSTALL_DIR_TO_BASTION"
+      else
+        echo "ERROR: Can not get bastion user/host, skip to copy install dir."
+      fi
+    else
+      echo "ERROR: File bastion_ssh_user or bastion_public_address is empty or not exist, skip to copy install dir."
+    fi
+  fi
 }
 
 function wait_router_lb_provision() {
@@ -50,7 +82,7 @@ function wait_router_lb_provision() {
       echo "waiting on router-default service load balancer ingress..."
       sleep 30
       SERVICE="$(oc -n openshift-ingress get service router-default -o json)"
-      try="((try + 1))"
+      let try+=1
     done
     if [ "$try" -eq "$retries" ]; then
       echo "${SERVICE}"
@@ -87,8 +119,15 @@ fi
 
 case "${CLUSTER_TYPE}" in
 aws|aws-arm64|aws-usgov) export AWS_SHARED_CREDENTIALS_FILE=${CLUSTER_PROFILE_DIR}/.awscred;;
+aws-c2s|aws-sc2s) export AWS_SHARED_CREDENTIALS_FILE=${SHARED_DIR}/aws_temp_creds;;
 *) >&2 echo "Unsupported cluster type '${CLUSTER_TYPE}'"
 esac
+
+
+# set CA_BUNDLE for C2S and SC2S 
+if [[ "${CLUSTER_TYPE}" =~ ^aws-s?c2s$ ]]; then
+  export AWS_CA_BUNDLE=${SHARED_DIR}/additional_trust_bundle
+fi
 
 dir=/tmp/installer
 mkdir "${dir}/"
@@ -108,8 +147,31 @@ openshift-install --dir="${dir}" create manifests &
 wait "$!"
 
 if [ "${ADD_INGRESS_RECORDS_MANUALLY}" == "yes" ]; then
-  /tmp/yq d -i "${dir}/manifests/cluster-dns-02-config.yml" spec.privateZone
-  /tmp/yq d -i "${dir}/manifests/cluster-dns-02-config.yml" spec.publicZone
+  yq-go d -i "${dir}/manifests/cluster-dns-02-config.yml" spec.privateZone
+  yq-go d -i "${dir}/manifests/cluster-dns-02-config.yml" spec.publicZone
+fi
+
+if [ "${ENABLE_AWS_LOCALZONE}" == "yes" ]; then
+  if [[ -f "${SHARED_DIR}/manifest_localzone_machineset.yaml" ]]; then
+    # Phase 0, inject manifests
+    
+    # replace PLACEHOLDER_INFRA_ID PLACEHOLDER_AMI_ID
+    echo "Local Zone is enabled, updating Infran ID and AMI ID ... "
+    localzone_machineset="${SHARED_DIR}/manifest_localzone_machineset.yaml"
+    infra_id=$(jq -r '."*installconfig.ClusterID".InfraID' "${dir}/.openshift_install_state.json")
+    ami_id=$(grep ami "${dir}/openshift/99_openshift-cluster-api_worker-machineset-0.yaml" | tail -n1 | awk '{print$2}')
+    sed -i "s/PLACEHOLDER_INFRA_ID/$infra_id/g" ${localzone_machineset}
+    sed -i "s/PLACEHOLDER_AMI_ID/$ami_id/g" ${localzone_machineset}
+    cp "${localzone_machineset}" "${ARTIFACT_DIR}/"
+  else
+    # Phase 1, use install-config
+
+    if [[ "${LOCALZONE_WORKER_SCHEDULABLE}" == "yes" ]]; then
+      echo 'LOCALZONE_WORKER_SCHEDULABLE is set to "yes", removing spec.template.spec.taints from 99_openshift-cluster-api_worker-machineset-1.yaml'
+      yq-go d "${dir}/openshift/99_openshift-cluster-api_worker-machineset-1.yaml" spec.template.spec.taints
+    fi
+  fi
+  
 fi
 
 sed -i '/^  channel:/d' "${dir}/manifests/cvo-overrides.yaml"
@@ -132,6 +194,9 @@ do
   cp "${item}" "${dir}/tls/${manifest##tls_}"
 done <   <( find "${SHARED_DIR}" \( -name "tls_*.key" -o -name "tls_*.pub" \) -print0)
 
+if [ "${OPENSHIFT_INSTALL_AWS_PUBLIC_ONLY:-}" == "true" ]; then
+	echo "Cluster will be created with public subnets only"
+fi
 
 # ---------------------------------------------------------
 # create cluster
@@ -140,8 +205,10 @@ done <   <( find "${SHARED_DIR}" \( -name "tls_*.key" -o -name "tls_*.pub" \) -p
 date "+%F %X" > "${SHARED_DIR}/CLUSTER_INSTALL_START_TIME"
 TF_LOG=debug openshift-install --dir="${dir}" create cluster 2>&1 | grep --line-buffered -v 'password\|X-Auth-Token\|UserData:' &
 
+set +e
 wait "$!"
 ret="$?"
+set -e
 
 if test "${ret}" -ne 0 ; then
   echo "Installation failed [create cluster]"
@@ -274,34 +341,19 @@ EOF
     ret=$?
   fi    
     
-  if test "${ret}" -ne 0 ; then
-    echo "Failed to create stack $APPS_DNS_STACK_NAME"
-    exit $ret
-  else
-    echo "Created stack $APPS_DNS_STACK_NAME"
-  fi
+  echo "Created stack $APPS_DNS_STACK_NAME"
 
   aws --region "${REGION}" cloudformation wait stack-create-complete --stack-name "${APPS_DNS_STACK_NAME}" &
   wait "$!"
   ret=$?
-  if test "${ret}" -ne 0 ; then
-    echo "Failed to wait stack $APPS_DNS_STACK_NAME"
-    exit $ret
-  else
-    echo "Waited for stack $APPS_DNS_STACK_NAME"
-  fi
+  echo "Waited for stack $APPS_DNS_STACK_NAME"
 
   # completing installation
   TF_LOG=debug openshift-install --dir="${dir}" wait-for install-complete 2>&1 | grep --line-buffered -v 'password\|X-Auth-Token\|UserData:' &
   wait "$!"
   ret="$?"
 
-  if test "${ret}" -ne 0 ; then
-    echo "Installation failed [wait-for install-complete]"
-    exit $ret
-  else
-    echo "Waited for stack $APPS_DNS_STACK_NAME"
-  fi
+  echo "Waited for stack $APPS_DNS_STACK_NAME"
 fi
 
 echo "$(date +%s)" > "${SHARED_DIR}/TEST_TIME_INSTALL_END"

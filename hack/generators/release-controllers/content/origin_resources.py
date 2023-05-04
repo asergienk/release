@@ -1,5 +1,5 @@
 
-from content.utils import get_rc_volumes, get_rc_volume_mounts, get_kubeconfig_volumes, get_kubeconfig_volume_mounts
+from content.utils import get_rc_volumes, get_rc_volume_mounts, get_rcapi_volumes, get_rcapi_volume_mounts
 
 
 def _add_origin_rbac(gendoc):
@@ -27,6 +27,14 @@ def _add_origin_rbac(gendoc):
                           'delete',
                           'update',
                           'patch']
+            },
+            {
+                'apiGroups': ['release.openshift.io'],
+                'resources': ['releasepayloads'],
+                'verbs': ['get',
+                          'list',
+                          'watch',
+                          'create']
             },
             {
                 'apiGroups': [''],
@@ -127,7 +135,6 @@ def _add_origin_resources(gendoc):
                                     "--supplemental-prow-config-dir=/etc/config",
                                     "--job-config=/etc/job-config",
                                     "--prow-namespace=ci",
-                                    "--non-prow-job-kubeconfig=/etc/kubeconfig/kubeconfig",
                                     "--job-namespace=ci-release",
                                     "--tools-image-stream-tag=4.6:tests",
                                     "--release-architecture=amd64",
@@ -156,7 +163,7 @@ def _add_origin_resources(gendoc):
                             }
                         ],
                         "serviceAccountName": "release-controller",
-                        "volumes": get_rc_volumes(context, None)
+                        "volumes": get_rc_volumes(context)
                     }
                 }
             }
@@ -190,15 +197,17 @@ def _add_origin_resources(gendoc):
                                     "/usr/bin/release-controller-api",
                                     "--release-namespace=origin",
                                     "--prow-namespace=ci",
-                                    "--non-prow-job-kubeconfig=/etc/kubeconfig/kubeconfig",
                                     "--job-namespace=ci-release",
                                     "--tools-image-stream-tag=4.6:tests",
                                     "--release-architecture=amd64",
+                                    "--enable-jira",
+                                    "--jira-endpoint=https://issues.redhat.com",
+                                    "--jira-bearer-token-file=/etc/jira/api",
                                     "-v=4"
                                 ],
                                 "image": "release-controller-api:latest",
                                 "name": "controller",
-                                "volumeMounts": get_kubeconfig_volume_mounts(),
+                                "volumeMounts": get_rcapi_volume_mounts(),
                                 'livenessProbe': {
                                     'httpGet': {
                                         'path': '/healthz',
@@ -219,7 +228,7 @@ def _add_origin_resources(gendoc):
                             }
                         ],
                         "serviceAccountName": "release-controller",
-                        "volumes": get_kubeconfig_volumes(context, namespace=None, secret_name=context.secret_name_tls_api)
+                        "volumes": get_rcapi_volumes(context, secret_name=context.secret_name_tls_api)
                     }
                 }
             }
